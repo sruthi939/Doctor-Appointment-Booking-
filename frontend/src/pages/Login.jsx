@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Arrowleft, ArrowRight, Lock, Mail, Sparkle, User } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Lock, Mail, Sparkle, User } from 'lucide-react';
 
 const Login = ({
     onBackToHome,
@@ -40,7 +40,7 @@ const Login = ({
                     onClick={onBackToHome}
                     className='absolute top-6 left-6 z-50 flex-items-center gap-2 text-xs font-semibold text-slate-400 hover:text-white glass-card px-4 py-2 rounded-xl transition-all'
                 >
-                    <Arrowleft className="w-4 h-4" />
+                    <ArrowLeft className="w-4 h-4" />
                     <span>Back to Home</span>
                 </button>
             )}

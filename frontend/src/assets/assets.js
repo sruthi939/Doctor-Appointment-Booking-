@@ -1,3 +1,4 @@
+import logo from './logo.png'
 import appointment_img from './appointment_img.png'
 import header_img from './header_img.png'
 import profile_pic from './profile_pic.png'
@@ -20,6 +21,7 @@ import doc14 from './doc14.png'
 import doc15 from './doc15.png'
 
 export const assets = {
+    logo,
     appointment_img,
     header_img,
     logo,
