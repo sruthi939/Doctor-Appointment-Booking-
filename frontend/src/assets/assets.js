@@ -19,6 +19,18 @@ import doc12 from './doc12.png'
 import doc13 from './doc13.png'
 import doc14 from './doc14.png'
 import doc15 from './doc15.png'
+import Cardiology from './Cardiology.png'
+import Neurology from './Neurology.png'
+import Orthopedics from './Orthopedics.png'
+import Pediatrics from './Pediatrics.png'
+import Dermatology from './Dermatology.png'
+import Gynecology from './Gynecology.png'
+import ENT from './ENT.png'
+import Ophthalmology from './Ophthalmology.png'
+import Dentistry from './Dentistry.png'
+import Pulmonology from './Pulmonology.png'
+import Urology from './Urology.png'
+import Oncology from './Oncology.png'
 
 export const assets = {
     logo,
@@ -29,6 +41,61 @@ export const assets = {
     contact_image,
     about_image,
 }
+
+export const specialityData = [
+    {
+        speciality: 'General Physician',
+        image: General_physician,
+    },
+    {
+        speciality: 'Cardiology',
+        image: Cardiology,
+    },
+    {
+        speciality: 'Neurology',
+        image: Neurology,
+    },
+    {
+        speciality: 'Orthopedics',
+        image: Orthopedics,
+    },
+    {
+        speciality: 'Pediatrics',
+        image: Pediatrics,
+    },
+    {
+        speciality: 'Dermatology',
+        image: Dermatology,
+    },
+    {
+        speciality: 'Gynecology',
+        image: Gynecology,
+    },
+    {
+        speciality: 'ENT',
+        image: ENT,
+    },
+    {
+        speciality: 'Ophthalmology',
+        image: Ophthalmology,
+    },
+    {
+        speciality: 'Dentistry',
+        image: Dentistry,
+    },
+    {
+        speciality: 'Pulmonology',
+        image: Pulmonology,
+    },
+    {
+        speciality: 'Urology',
+        image: Urology,
+    },
+    {
+        speciality: 'Oncology',
+        image: Oncology,
+    },
+];
 
 export const doctors = [
     {
