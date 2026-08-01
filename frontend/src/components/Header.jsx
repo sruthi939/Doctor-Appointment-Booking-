@@ -4,21 +4,21 @@ import { ArrowRight } from 'lucide-react';
 
 const Header = () => {
     return (
-        <div className='flex flex-col md:flex-row flex-wrap bg-primary rounded-lg px-6 md:px-10 lg:px-20'>
+        <div className='flex flex-col md:flex-row flex-wrap bg-gradient-to-r from-rose-500 via-pink-500 to-orange-500 rounded-3xl px-6 md:px-10 lg:px-20 shadow-2xl shadow-rose-950/40 my-4'>
             {/* ------------ Left Side ------------ */}
             <div className='md:w-1/2 flex flex-col items-start justify-center gap-4 py-10 m-auto md:py-[10vw] md:mb-[-30px]'>
-                <p className='text-3xl md:text-4xl lg:text-5xl text-white font-semibold leading-tight md:leading-tight lg:leading-tight'>
+                <p className='text-3xl md:text-4xl lg:text-5xl text-white font-bold leading-tight md:leading-tight lg:leading-tight'>
                     Book Appointment <br />
                     With Trusted Doctors
                 </p>
-                <div className='flex flex-col md:flex-row items-center gap-3 text-white text-sm font-light'>
+                <div className='flex flex-col md:flex-row items-center gap-3 text-rose-100 text-sm font-light leading-relaxed'>
                     <p>Simply browse through our extensive list of trusted doctors, <br className='hidden sm:block' />
-                        schedule your Appointment hassle-free.
+                        schedule your appointment hassle-free.
                     </p>
                 </div>
                 <a
                     href='#speciality'
-                    className='flex items-center gap-2 bg-white px-8 py-3 rounded-full text-gray-600 text-sm m-auto md:m-0 hover:scale-105 transition-all duration-300'
+                    className='flex items-center gap-2 bg-white text-rose-600 font-semibold hover:bg-gradient-to-r hover:from-rose-600 hover:to-orange-500 hover:text-white px-8 py-3 rounded-full text-sm m-auto md:m-0 hover:scale-105 transition-all duration-300 shadow-xl cursor-pointer'
                 >
                     Book Appointment
                     <ArrowRight size={20} />

@@ -12,7 +12,7 @@ import Navbar from './components/Navbar';
 
 const App = () => {
   return (
-    <div className='mx-4 sm:mx-[10%]'>
+    <div className='min-h-screen bg-[#0b0f19] text-slate-100 px-4 sm:px-[10%] pb-12 font-sans'>
       <Navbar />
       <Routes>
         <Route path='/' element={<Home />} />

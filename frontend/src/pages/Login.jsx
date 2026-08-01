@@ -19,26 +19,26 @@ const Login = ({
 
     const handleSignInSubmit = (e) => {
         e.preventDefault();
-        alert(`Sigining in as ${signInEmail}`);
+        alert(`Signing in as ${signInEmail}`);
     }
 
     const handleSignUpSubmit = (e) => {
         e.preventDefault();
-        alert(`Create account for ${signUpName} (${signUpEmail})`);
+        alert(`Created account for ${signUpName} (${signUpEmail})`);
     }
 
     return (
-        <div className='min-h-screen bg-slate-950 flex items-center justify center p-4 relative overflow-hidden font-sans'>
+        <div className='min-h-screen bg-slate-950 flex items-center justify-center p-4 relative overflow-hidden font-sans'>
 
-            {/* Dynamic Amibent Glows */}
-            <div className='absolute top-1/4 left-1/4 w-96 bg-brand-600/20 rounded-full blur-[120px] pointer-events-none' />
-            <div className='absolute bottom-1/4 right-1/4 w-96 bg-rose-500/20 rounded-full blur-[120px] pointer-events-none' />
+            {/* Dynamic Ambient Blue Glows */}
+            <div className='absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-[120px] pointer-events-none' />
+            <div className='absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-600/20 rounded-full blur-[120px] pointer-events-none' />
 
             {/* Back to Home Button */}
             {onBackToHome && (
                 <button
                     onClick={onBackToHome}
-                    className='absolute top-6 left-6 z-50 flex-items-center gap-2 text-xs font-semibold text-slate-400 hover:text-white glass-card px-4 py-2 rounded-xl transition-all'
+                    className='absolute top-6 left-6 z-50 flex items-center gap-2 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800/80 border border-slate-700 px-4 py-2 rounded-xl transition-all shadow-md cursor-pointer'
                 >
                     <ArrowLeft className="w-4 h-4" />
                     <span>Back to Home</span>
@@ -140,7 +140,7 @@ const Login = ({
                             </div>
                             <button
                                 type='submit'
-                                className='w-full py-3 mt-3 bg-gradient-to-r from-brand-600 via-rose-600 to-amber-500 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-lg shadow-brand-600/30 hover:shadow-brand-500/50 hover:scale-[1.01] transition-all uppercase tracking-wider'
+                                className='w-full py-3 mt-3 bg-white text-rose-600 border border-rose-200 font-semibold text-xs sm:text-sm rounded-xl hover:bg-gradient-to-r hover:from-pink-500 hover:to-orange-500 hover:text-white transition-all duration-300 uppercase tracking-wider shadow-md cursor-pointer'
                             >
                                 Sign Up
                             </button>
@@ -241,7 +241,7 @@ const Login = ({
                             </div>
                             <button
                                 type='submit'
-                                className='w-full py-3 mt-3 bg-gradient-to-r from-brand-600 via-rose-600 to-amber-500 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-lg shadow-brand-600/30 hover:shadow-brand-500/50 hover:scale-[1.01] transition-all uppercase tracking-wider'
+                                className='w-full py-3 mt-3 bg-white text-rose-600 border border-rose-200 font-semibold text-xs sm:text-sm rounded-xl hover:bg-gradient-to-r hover:from-pink-500 hover:to-orange-500 hover:text-white transition-all duration-300 uppercase tracking-wider shadow-md cursor-pointer'
                             >
                                 Sign In
                             </button>
@@ -257,7 +257,7 @@ const Login = ({
                         }`}
                 >
                     {/* Sliding Gradient Overlay */}
-                    <div className={`bg-gradient-to-br from-brand-600 via-rose-600 to-amber-600 text-white relative -left-full h-full w-[200%] transition-transform duration-700 ease-in-out ${isActive
+                    <div className={`bg-gradient-to-br from-rose-500 via-pink-500 to-orange-500 text-white relative -left-full h-full w-[200%] transition-transform duration-700 ease-in-out ${isActive
                         ? 'translate-x-1/2'
                         : 'translate-x-0'
                         }`}
@@ -278,7 +278,7 @@ const Login = ({
                             <button
                                 type='button'
                                 onClick={() => setIsActive(false)}
-                                className='px-8 py-2.5 border-white rounded-xl font-semibold text-xs uppercase tracking-wider text-white hover:bg-white hover:text-rose-600 transition-all shadow-lg flex items-center gap-2 group'
+                                className='px-8 py-2.5 bg-white text-rose-600 border border-white rounded-xl font-semibold text-xs uppercase tracking-wider hover:bg-slate-900 hover:text-white transition-all duration-300 shadow-lg cursor-pointer flex items-center gap-2 group'
                             >
                                 <span>Sign In</span>
                                 <ArrowRight className='w-4 h-4 group-hover:translate-x-1 transition-transform' />
@@ -287,9 +287,9 @@ const Login = ({
 
                         {/* Toggle Right Panel (shown when Sign In active -> allows switching back to Sign Up) */}
                         <div
-                            className={`absolute top-0 flex flex-col items-center justify-center px-8 text-center h-full w-1/2 transition-transform duration-700 ease-in-out ${isActive
-                                ? 'translate-x-0'
-                                : '-translate-x-full'
+                            className={`absolute top-0 right-0 flex flex-col items-center justify-center px-8 text-center h-full w-1/2 transition-transform duration-700 ease-in-out ${isActive
+                                ? 'translate-x-full'
+                                : 'translate-x-0'
                                 }`}
                         >
                             <h1 className='font-serif text-3xl font-bold mb-2'>
@@ -300,8 +300,8 @@ const Login = ({
                             </p>
                             <button
                                 type='button'
-                                onClick={() => setIsActive(false)}
-                                className='px-8 py-2.5 border-white rounded-xl font-semibold text-xs uppercase tracking-wider text-white hover:bg-white hover:text-rose-600 transition-all shadow-lg flex items-center gap-2 group'
+                                onClick={() => setIsActive(true)}
+                                className='px-8 py-2.5 bg-white text-rose-600 border border-white rounded-xl font-semibold text-xs uppercase tracking-wider hover:bg-slate-900 hover:text-white transition-all duration-300 shadow-lg cursor-pointer flex items-center gap-2 group'
                             >
                                 <span>Sign Up</span>
                                 <ArrowRight className='w-4 h-4 group-hover:translate-x-1 transition-transform' />
