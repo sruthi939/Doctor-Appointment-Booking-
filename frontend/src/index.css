@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
 .active hr {
-    @apply block
+    @apply block;
+}
+
+::-webkit-scrollbar {
+    @apply hidden;
 }
