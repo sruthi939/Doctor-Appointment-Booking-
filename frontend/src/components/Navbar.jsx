@@ -37,7 +37,7 @@ const Navbar = () => {
             <div className='flex items-center gap-4'>
                 {
                     token ? (
-                        <div className='flex item-center gap-2 cursor-pointer group-realtive'>
+                        <div className='flex items-center gap-2 cursor-pointer relative group'>
                             <img
                                 className='w-8 rounded-full'
                                 src={assets.profile_pic}
@@ -47,14 +47,14 @@ const Navbar = () => {
                             <div className='absolute top-0 right-0 pt-14 text-base font-medium text-gray-600 z-20 hidden group-hover:block'>
                                 <div className='min-w-48 bg-stone-100 rounded flex flex-col gap-4 p-4'>
                                     <p
-                                        onClick={() => navigate('my-profile')}
+                                        onClick={() => navigate('/my-profile')}
                                         className='hover:text-black cursor-pointer'>
                                         My Profile
                                     </p>
                                     <p
-                                        onClick={() => navigate('my-appointment')}
+                                        onClick={() => navigate('/my-appointments')}
                                         className='hover:text-black cursor-pointer'>
-                                        My Appointment
+                                        My Appointments
                                     </p>
                                     <p
                                         onClick={() => setToken(false)}
