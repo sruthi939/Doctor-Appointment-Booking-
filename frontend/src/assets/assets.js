@@ -31,12 +31,12 @@ import Dentistry from './Dentistry.png'
 import Pulmonology from './Pulmonology.png'
 import Urology from './Urology.png'
 import Oncology from './Oncology.png'
+import General_physician from './General_Physician.png'
 
 export const assets = {
     logo,
     appointment_img,
     header_img,
-    logo,
     profile_pic,
     contact_image,
     about_image,
