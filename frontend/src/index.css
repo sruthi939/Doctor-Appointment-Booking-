@@ -2,6 +2,10 @@
 @import "tailwindcss";
 @config "../tailwind.config.js";
 
+* {
+    font-family: Outline;
+}
+
 @theme {
     --color-primary: #f43f5e;
     --color-primary-dark: #e11d48;
