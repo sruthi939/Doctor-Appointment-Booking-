@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { AppContext } from '../context/AppContext'
 import { BadgeCheck, Info } from 'lucide-react'
+import RelatedDoctors from '../components/RelatedDoctors'
 
 const Appointment = () => {
 
@@ -162,7 +163,15 @@ const Appointment = () => {
                 <div className='flex item-center gap-3 w-full overflow-x-scroll mt-4'>
                     {
                         docSlots.length && docSlots[slotIndex].map((item, index) => {
-                            <p className={`text-sm font-light flex-shrink-0 px-5 py-2 rounded-full cursor-pointer`}>
+                            <p
+                                onClick={() => setDocTime(item.time)}
+                                className={`text-sm font-light flex-shrink-0 px-5 py-2 rounded-full cursor-pointer
+                                    ${item.time === slotIndex
+                                        ? 'bg-primary text-white'
+                                        : 'text-gray-400 border border-gray-300'
+                                    }
+                                `}
+                            >
                                 {
                                     item.time.toLowerCase()
                                 }
@@ -170,7 +179,17 @@ const Appointment = () => {
                         })
                     }
                 </div>
+                <button className='bg-primary text-white text-sm font-light px-14 py-3 rounded-full my-6'>
+                    Book an Appointment
+                </button>
             </div>
+
+            {/* Listing Related Doctors */}
+            <RelatedDoctors
+                docId={docId}
+                speciality={docInfo.speciality}
+            />
+
         </div>
     )
 }
