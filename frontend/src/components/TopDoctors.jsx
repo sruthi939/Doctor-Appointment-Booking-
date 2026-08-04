@@ -15,7 +15,7 @@ const TopDoctors = () => {
                 {doctors.slice(0, 10).map((item, index) => (
                     <div
                         key={index}
-                        onClick={() => navigate(`/appointment/${item._id}`)}
+                        onClick={() => { navigate(`/appointment/${item._id}`); window.scrollTo(0, 0) }}
                         className='bg-slate-900/90 border border-slate-800 rounded-2xl overflow-hidden cursor-pointer hover:border-pink-500/60 hover:shadow-2xl hover:shadow-pink-500/10 hover:-translate-y-2.5 transition-all duration-500 group'
                     >
                         <img className='bg-slate-800/80 w-full' src={item.image} alt='' />
