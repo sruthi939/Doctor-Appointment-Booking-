@@ -36,9 +36,8 @@ const RelatedDoctors = ({ speciality, docId }) => {
                         />
                         <div className='p-4'>
                             <div className='flex items-center gap-2 text-sm text-emerald-400 font-medium mb-1'>
-                                <p className='w-2 h-2 bg-emerald-400 rounded-full animate-pulse'>
-                                    <p>Available</p>
-                                </p>
+                                <span className='w-2 h-2 bg-emerald-400 rounded-full animate-pulse'></span>
+                                <span>Available</span>
                             </div>
                             <p className='text-white text-lg font-semibold group-hover:text-pink-400 transition-colors'>{item.name}</p>
                             <p className='text-slate-400 text-sm mt-0.5'>{item.speciality}</p>
