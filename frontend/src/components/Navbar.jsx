@@ -8,7 +8,7 @@ import RoleSelectorModal from './RoleSelectorModal';
 const Navbar = () => {
     const navigate = useNavigate();
     const { token, setToken, userData } = useContext(AppContext);
-    
+
     const [showRoleModal, setShowRoleModal] = useState(false);
     const [currentRole, setCurrentRole] = useState('USER');
 
@@ -71,31 +71,31 @@ const Navbar = () => {
                                 <p className='text-[10px] text-slate-400 leading-tight mt-0.5'>Patient</p>
                             </div>
                             <ChevronDown size={16} className='text-slate-400 group-hover:text-white transition-colors' />
-                            
+
                             <div className='absolute top-full right-0 pt-2 text-sm font-medium text-slate-300 z-50 hidden group-hover:block animate-in fade-in duration-150'>
                                 <div className='min-w-56 bg-slate-900/95 border border-slate-800 rounded-2xl shadow-2xl backdrop-blur-xl flex flex-col p-2 gap-1'>
-                                    <div 
+                                    <div
                                         onClick={() => navigate('/my-profile')}
                                         className='flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white cursor-pointer transition-all'
                                     >
                                         <User size={16} className='text-pink-400' />
                                         <span>My Profile</span>
                                     </div>
-                                    <div 
+                                    <div
                                         onClick={() => navigate('/my-appointments')}
                                         className='flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white cursor-pointer transition-all'
                                     >
                                         <Calendar size={16} className='text-indigo-400' />
                                         <span>My Appointments</span>
                                     </div>
-                                    <div 
+                                    <div
                                         onClick={() => setShowRoleModal(true)}
                                         className='flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white cursor-pointer transition-all border-t border-slate-800/80 my-0.5'
                                     >
                                         <UserCheck size={16} className='text-emerald-400' />
                                         <span>System Roles</span>
                                     </div>
-                                    <div 
+                                    <div
                                         onClick={() => setToken(false)}
                                         className='flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-rose-500/10 text-rose-400 hover:text-rose-300 cursor-pointer transition-all'
                                     >
@@ -116,9 +116,9 @@ const Navbar = () => {
                 </div>
             </div>
 
-            <RoleSelectorModal 
-                isOpen={showRoleModal} 
-                onClose={() => setShowRoleModal(false)} 
+            <RoleSelectorModal
+                isOpen={showRoleModal}
+                onClose={() => setShowRoleModal(false)}
                 currentRole={currentRole}
                 onSelectRole={setCurrentRole}
             />
@@ -126,4 +126,4 @@ const Navbar = () => {
     );
 };
 
-export default Navbar;
+export default Navbar;
