@@ -74,9 +74,6 @@ const initialDoctorsFallback = [
     }
 ];
 
-// @desc    Get all doctors
-// @route   GET /api/doctors
-// @access  Public
 export const getAllDoctors = async (req, res) => {
     try {
         const doctors = await Doctor.find({});
@@ -90,9 +87,6 @@ export const getAllDoctors = async (req, res) => {
     }
 };
 
-// @desc    Get doctor by ID
-// @route   GET /api/doctors/:id
-// @access  Public
 export const getDoctorById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -111,9 +105,6 @@ export const getDoctorById = async (req, res) => {
     }
 };
 
-// @desc    Add new doctor (Admin)
-// @route   POST /api/doctors/add
-// @access  Private/Admin
 export const addDoctor = async (req, res) => {
     try {
         const doctorData = req.body;
@@ -124,9 +115,6 @@ export const addDoctor = async (req, res) => {
     }
 };
 
-// @desc    Doctor Login
-// @route   POST /api/doctors/login
-// @access  Public
 export const loginDoctor = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -159,9 +147,6 @@ export const loginDoctor = async (req, res) => {
     }
 };
 
-// @desc    Get Doctor Dashboard Stats & Today's Schedule
-// @route   GET /api/doctors/dashboard
-// @access  Private/Doctor
 export const getDoctorDashboard = async (req, res) => {
     try {
         res.json({
@@ -183,9 +168,6 @@ export const getDoctorDashboard = async (req, res) => {
     }
 };
 
-// @desc    Update Doctor Schedule
-// @route   PUT /api/doctors/schedule
-// @access  Private/Doctor
 export const updateDoctorSchedule = async (req, res) => {
     try {
         const { workingDays, timeSlots } = req.body;
@@ -200,9 +182,6 @@ export const updateDoctorSchedule = async (req, res) => {
     }
 };
 
-// @desc    Get Doctor Patient List
-// @route   GET /api/doctors/patients
-// @access  Private/Doctor
 export const getDoctorPatients = async (req, res) => {
     try {
         const patients = [
@@ -219,9 +198,6 @@ export const getDoctorPatients = async (req, res) => {
     }
 };
 
-// @desc    Save Consultation Diagnosis & Prescription
-// @route   POST /api/doctors/consultation
-// @access  Private/Doctor
 export const saveConsultation = async (req, res) => {
     try {
         const { appointmentId, diagnosisNotes, prescriptions } = req.body;
@@ -240,9 +216,6 @@ export const saveConsultation = async (req, res) => {
     }
 };
 
-// @desc    Get Doctor Earnings Summary
-// @route   GET /api/doctors/earnings
-// @access  Private/Doctor
 export const getDoctorEarnings = async (req, res) => {
     try {
         res.json({
@@ -265,9 +238,6 @@ export const getDoctorEarnings = async (req, res) => {
     }
 };
 
-// @desc    Update Doctor Profile
-// @route   PUT /api/doctors/profile
-// @access  Private/Doctor
 export const updateDoctorProfile = async (req, res) => {
     try {
         const profileData = req.body;
