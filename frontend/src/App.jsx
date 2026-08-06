@@ -10,6 +10,7 @@ import MyAppointments from './pages/MyAppointments';
 import Appointment from './pages/Appointment';
 import DoctorRoutes from './routes/DoctorRoutes';
 import ReceptionistRoutes from './routes/ReceptionistRoutes';
+import AccountantRoutes from './routes/AccountantRoutes';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
@@ -17,6 +18,7 @@ const App = () => {
   const location = useLocation();
   const isDoctorRoute = location.pathname.startsWith('/doctor/') || location.pathname === '/doctor';
   const isReceptionistRoute = location.pathname.startsWith('/receptionist/') || location.pathname === '/receptionist';
+  const isAccountantRoute = location.pathname.startsWith('/accountant/') || location.pathname === '/accountant';
 
   if (isDoctorRoute) {
     return <DoctorRoutes />;
@@ -24,6 +26,10 @@ const App = () => {
 
   if (isReceptionistRoute) {
     return <ReceptionistRoutes />;
+  }
+
+  if (isAccountantRoute) {
+    return <AccountantRoutes />;
   }
 
   return (
