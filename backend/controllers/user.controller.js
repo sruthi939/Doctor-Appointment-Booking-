@@ -1,8 +1,5 @@
 import User from '../models/User.js';
 
-// @desc    Get user profile
-// @route   GET /api/user/profile
-// @access  Private
 export const getUserProfile = async (req, res) => {
     try {
         const user = await User.findById(req.user._id).select('-password');
@@ -16,9 +13,6 @@ export const getUserProfile = async (req, res) => {
     }
 };
 
-// @desc    Update user profile
-// @route   PUT /api/user/profile
-// @access  Private
 export const updateUserProfile = async (req, res) => {
     try {
         const { name, phone, address, gender, dob, image } = req.body;
@@ -51,6 +45,15 @@ export const updateUserProfile = async (req, res) => {
         } else {
             res.status(404).json({ success: false, message: 'User not found' });
         }
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+export const getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find({ role: 'USER' }).select('-password').sort({ createdAt: -1 });
+        res.json({ success: true, users });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
