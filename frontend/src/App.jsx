@@ -9,17 +9,22 @@ import MyProfile from './pages/MyProfile';
 import MyAppointments from './pages/MyAppointments';
 import Appointment from './pages/Appointment';
 import DoctorRoutes from './routes/DoctorRoutes';
+import ReceptionistRoutes from './routes/ReceptionistRoutes';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
 const App = () => {
   const location = useLocation();
   const isDoctorRoute = location.pathname.startsWith('/doctor/') || location.pathname === '/doctor';
+  const isReceptionistRoute = location.pathname.startsWith('/receptionist/') || location.pathname === '/receptionist';
 
   if (isDoctorRoute) {
     return <DoctorRoutes />;
   }
 
+  if (isReceptionistRoute) {
+    return <ReceptionistRoutes />;
+  }
 
   return (
     <div className='min-h-screen bg-[#0b0f19] text-slate-100 px-4 sm:px-[10%] pb-12 font-sans'>
