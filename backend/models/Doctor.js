@@ -60,10 +60,36 @@ const doctorSchema = new mongoose.Schema(
         slots_booked: {
             type: Object,
             default: {}
+        },
+        workingDays: {
+            type: [String],
+            default: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
+        },
+        timeSlots: {
+            type: [String],
+            default: [
+                '09:00 AM - 10:00 AM',
+                '10:00 AM - 11:00 AM',
+                '11:00 AM - 12:00 PM',
+                '02:00 PM - 03:00 PM',
+                '03:00 PM - 04:00 PM'
+            ]
         }
     },
     { timestamps: true }
 );
 
+// Match password method
+doctorSchema.methods.matchPassword = async function (enteredPassword) {
+    if (this.password === enteredPassword) return true;
+    try {
+        const bcrypt = await import('bcryptjs');
+        return await bcrypt.default.compare(enteredPassword, this.password);
+    } catch (e) {
+        return this.password === enteredPassword;
+    }
+};
+
 const Doctor = mongoose.model('Doctor', doctorSchema);
 export default Doctor;
+

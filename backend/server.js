@@ -9,6 +9,8 @@ import doctorRoutes from './routes/doctor.routes.js';
 import appointmentRoutes from './routes/appointment.routes.js';
 import paymentRoutes from './routes/payment.routes.js';
 import reviewRoutes from './routes/review.routes.js';
+import receptionistRoutes from './routes/receptionist.routes.js';
+import accountantRoutes from './routes/accountant.routes.js';
 
 import { notFound, errorHandler } from './middleware/error.middleware.js';
 
@@ -30,6 +32,9 @@ app.use('/api/doctors', doctorRoutes);
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/reviews', reviewRoutes);
+app.use('/api/receptionist', receptionistRoutes);
+app.use('/api/accountant', accountantRoutes);
+
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
