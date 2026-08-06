@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { ArrowLeft, ArrowRight, Lock, Mail, Sparkle, User } from 'lucide-react';
 import { AppContext } from '../context/AppContext';
 import { useNavigate } from 'react-router-dom';
+import api from '../services/api';
 
 const Login = ({
     onBackToHome,
@@ -12,38 +13,48 @@ const Login = ({
     const navigate = useNavigate();
 
     const [isActive, setIsActive] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     // Form states
-    const [signInEmail, setSignInEmail] = useState("johnsmith@example.com");
-    const [signInPassword, setSignInPassword] = useState("password123");
+    const [signInEmail, setSignInEmail] = useState("");
+    const [signInPassword, setSignInPassword] = useState("");
 
     const [signUpName, setSignUpName] = useState("");
     const [signUpEmail, setSignUpEmail] = useState("");
     const [signUpPassword, setSignUpPassword] = useState("");
 
-    const handleSignInSubmit = (e) => {
+    const handleSignInSubmit = async (e) => {
         e.preventDefault();
-        setToken("mock_auth_token_patient");
-        if (signInEmail) {
-            setUserData(prev => ({
-                ...prev,
-                email: signInEmail
-            }));
+        setErrorMessage("");
+        try {
+            const res = await api.post('/auth/login', { email: signInEmail, password: signInPassword });
+            if (res.data?.success) {
+                setToken(res.data.token);
+                setUserData(res.data);
+                navigate('/');
+            } else {
+                setErrorMessage(res.data?.message || "Invalid credentials");
+            }
+        } catch (error) {
+            setErrorMessage(error.response?.data?.message || "Login failed. Please check credentials.");
         }
-        navigate('/');
     };
 
-    const handleSignUpSubmit = (e) => {
+    const handleSignUpSubmit = async (e) => {
         e.preventDefault();
-        setToken("mock_auth_token_patient");
-        if (signUpName) {
-            setUserData(prev => ({
-                ...prev,
-                name: signUpName,
-                email: signUpEmail || prev.email
-            }));
+        setErrorMessage("");
+        try {
+            const res = await api.post('/auth/register', { name: signUpName, email: signUpEmail, password: signUpPassword });
+            if (res.data?.success) {
+                setToken(res.data.token);
+                setUserData(res.data);
+                navigate('/');
+            } else {
+                setErrorMessage(res.data?.message || "Registration failed");
+            }
+        } catch (error) {
+            setErrorMessage(error.response?.data?.message || "Sign up failed. User may already exist.");
         }
-        navigate('/');
     };
 
     return (

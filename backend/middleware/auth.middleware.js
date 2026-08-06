@@ -11,15 +11,10 @@ export const protect = async (req, res, next) => {
 
             req.user = await User.findById(decoded.id).select('-password');
             if (!req.user) {
-                // If user deleted or mock token used
-                req.user = {
-                    _id: decoded.id,
-                    name: 'John Smith',
-                    email: 'johnsmith@example.com',
-                    role: 'USER'
-                };
+                return res.status(401).json({ success: false, message: 'Not authorized, user not found' });
             }
             return next();
+
         } catch (error) {
             console.error('[Auth Middleware Error]', error.message);
             return res.status(401).json({ success: false, message: 'Not authorized, token failed' });

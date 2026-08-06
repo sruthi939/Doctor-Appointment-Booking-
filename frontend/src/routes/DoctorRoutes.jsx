@@ -39,6 +39,16 @@ const DoctorRoutes = () => {
     return (
         <>
             <Routes>
+                <Route path='/doctor/login' element={<DoctorLogin />} />
+                <Route path='/doctor/dashboard' element={<Dashboard onOpenConsultation={(apt) => setSelectedConsultationApt(apt)} />} />
+                <Route path='/doctor/appointments' element={<DoctorAppointments onOpenConsultation={(apt) => setSelectedConsultationApt(apt)} />} />
+                <Route path='/doctor/schedule' element={<Schedule />} />
+                <Route path='/doctor/patients' element={<Patients />} />
+                <Route path='/doctor/earnings' element={<Earnings />} />
+                <Route path='/doctor/profile' element={<DoctorProfile />} />
+                <Route path='/doctor/logout-success' element={<DoctorLogoutSuccess />} />
+
+                {/* Fallbacks for sub-router relative paths */}
                 <Route path='/login' element={<DoctorLogin />} />
                 <Route path='/dashboard' element={<Dashboard onOpenConsultation={(apt) => setSelectedConsultationApt(apt)} />} />
                 <Route path='/appointments' element={<DoctorAppointments onOpenConsultation={(apt) => setSelectedConsultationApt(apt)} />} />

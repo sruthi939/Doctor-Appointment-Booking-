@@ -15,17 +15,14 @@ const Dashboard = ({ onOpenConsultation }) => {
     }, []);
 
     const stats = dashboardData?.stats || {
-        todayAppointments: 12,
-        pendingRequests: 3,
-        completed: 8,
-        cancelled: 2
+        todayAppointments: 0,
+        pendingRequests: 0,
+        completed: 0,
+        cancelled: 0
     };
 
-    const queue = dashboardData?.todayQueue || [
-        { id: 'APT1245123', patientName: 'Sarah Wilson', time: '09:00 AM', type: 'Consulting', status: 'Upcoming' },
-        { id: 'APT1245124', patientName: 'Michael Brown', time: '10:30 AM', type: 'Follow Up', status: 'Upcoming' },
-        { id: 'APT1245125', patientName: 'Emily Davis', time: '11:30 AM', type: 'Consulting', status: 'Upcoming' }
-    ];
+    const queue = dashboardData?.todayQueue || [];
+
 
     return (
         <DoctorLayout>

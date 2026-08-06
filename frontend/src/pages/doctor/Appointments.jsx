@@ -2,26 +2,31 @@ import React, { useState } from 'react';
 import DoctorLayout from '../../components/doctor/DoctorLayout';
 import { Calendar, Filter, Stethoscope, Eye, XCircle, CheckCircle } from 'lucide-react';
 
+import { fetchDoctorDashboard } from '../../services/doctorService';
+
 const DoctorAppointments = ({ onOpenConsultation, onOpenDetails }) => {
     const [activeTab, setActiveTab] = useState('All');
+    const [appointmentsList, setAppointmentsList] = useState([]);
 
-    const [appointmentsList, setAppointmentsList] = useState([
-        { id: 'APT1245123', patientName: 'Sarah Wilson', email: 'sarahwilson@example.com', phone: '+1 987 654 3210', date: '15 May 2024', time: '09:00 AM', type: 'Consulting', status: 'Upcoming', reason: 'Fever and headache' },
-        { id: 'APT1245124', patientName: 'Michael Brown', email: 'michaelbrown@example.com', phone: '+1 987 654 3211', date: '15 May 2024', time: '10:30 AM', type: 'Consulting', status: 'Upcoming', reason: 'General checkup' },
-        { id: 'APT1245125', patientName: 'Emily Davis', email: 'emilydavis@example.com', phone: '+1 987 654 3212', date: '15 May 2024', time: '11:30 AM', type: 'Consulting', status: 'Upcoming', reason: 'Routine blood test consultation' },
-        { id: 'APT1245126', patientName: 'David Lee', email: 'davidlee@example.com', phone: '+1 987 654 3213', date: '16 May 2024', time: '09:00 AM', type: 'Consulting', status: 'Pending', reason: 'Back pain consultation' },
-        { id: 'APT1245127', patientName: 'Jessica Taylor', email: 'jessicataylor@example.com', phone: '+1 987 654 3214', date: '14 May 2024', time: '10:00 AM', type: 'Follow Up', status: 'Completed', reason: 'Post treatment review' },
-        { id: 'APT1245128', patientName: 'Robert Johnson', email: 'robertjohnson@example.com', phone: '+1 987 654 3215', date: '14 May 2024', time: '02:00 PM', type: 'Consulting', status: 'Cancelled', reason: 'Cancelled by patient' }
-    ]);
+    useEffect(() => {
+        const loadDoctorAppointments = async () => {
+            const data = await fetchDoctorDashboard();
+            if (data?.todayQueue) {
+                setAppointmentsList(data.todayQueue);
+            }
+        };
+        loadDoctorAppointments();
+    }, []);
 
     const filtered = appointmentsList.filter(item => {
         if (activeTab === 'All') return true;
-        return item.status.toLowerCase() === activeTab.toLowerCase();
+        return item.status?.toLowerCase() === activeTab.toLowerCase();
     });
 
     const handleCancel = (id) => {
         setAppointmentsList(prev => prev.map(a => a.id === id ? { ...a, status: 'Cancelled' } : a));
     };
+
 
     return (
         <DoctorLayout>
