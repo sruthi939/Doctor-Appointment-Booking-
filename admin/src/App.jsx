@@ -15,7 +15,7 @@ const App = () => {
         <DoctorProvider>
           <AppointmentProvider>
             <PaymentProvider>
-              <BrowserRouter basename='/admin'>
+              <BrowserRouter>
                 <AdminRoutes />
               </BrowserRouter>
             </PaymentProvider>
