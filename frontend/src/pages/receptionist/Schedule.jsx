@@ -161,7 +161,7 @@ const ReceptionistSchedule = () => {
                     </form>
                 </div>
             </div>
-        </ReceptionistSchedule>
+        </ReceptionistLayout>
     );
 };
 
