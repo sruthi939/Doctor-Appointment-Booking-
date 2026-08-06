@@ -14,11 +14,12 @@ import Footer from './components/Footer';
 
 const App = () => {
   const location = useLocation();
-  const isDoctorRoute = location.pathname.startsWith('/doctor');
+  const isDoctorRoute = location.pathname.startsWith('/doctor/') || location.pathname === '/doctor';
 
   if (isDoctorRoute) {
     return <DoctorRoutes />;
   }
+
 
   return (
     <div className='min-h-screen bg-[#0b0f19] text-slate-100 px-4 sm:px-[10%] pb-12 font-sans'>
