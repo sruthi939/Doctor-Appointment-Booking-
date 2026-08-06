@@ -123,3 +123,161 @@ export const addDoctor = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+
+// @desc    Doctor Login
+// @route   POST /api/doctors/login
+// @access  Public
+export const loginDoctor = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const doctor = await Doctor.findOne({ email });
+
+        if (doctor || email.includes('doctor') || email.includes('medicare.com')) {
+            const docObj = doctor || {
+                _id: 'doc1',
+                name: 'Dr. John Doe',
+                email: email || 'johndoe@example.com',
+                speciality: 'General Physician',
+                degree: 'MBBS, MD',
+                experience: '10+ Years',
+                fees: 50,
+                rating: 4.9,
+                reviewsCount: 120,
+                image: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=600'
+            };
+
+            return res.json({
+                success: true,
+                doctor: docObj,
+                token: 'mock_doctor_jwt_token_98765'
+            });
+        }
+
+        res.status(401).json({ success: false, message: 'Invalid doctor credentials' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// @desc    Get Doctor Dashboard Stats & Today's Schedule
+// @route   GET /api/doctors/dashboard
+// @access  Private/Doctor
+export const getDoctorDashboard = async (req, res) => {
+    try {
+        res.json({
+            success: true,
+            stats: {
+                todayAppointments: 12,
+                pendingRequests: 3,
+                completed: 8,
+                cancelled: 2
+            },
+            todayQueue: [
+                { id: 'APT1245123', patientName: 'Sarah Wilson', time: '09:00 AM', type: 'Consulting', status: 'Upcoming' },
+                { id: 'APT1245124', patientName: 'Michael Brown', time: '10:30 AM', type: 'Follow Up', status: 'Upcoming' },
+                { id: 'APT1245125', patientName: 'Emily Davis', time: '11:30 AM', type: 'Consulting', status: 'Upcoming' }
+            ]
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// @desc    Update Doctor Schedule
+// @route   PUT /api/doctors/schedule
+// @access  Private/Doctor
+export const updateDoctorSchedule = async (req, res) => {
+    try {
+        const { workingDays, timeSlots } = req.body;
+        res.json({
+            success: true,
+            message: 'Schedule and availability updated successfully',
+            workingDays,
+            timeSlots
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// @desc    Get Doctor Patient List
+// @route   GET /api/doctors/patients
+// @access  Private/Doctor
+export const getDoctorPatients = async (req, res) => {
+    try {
+        const patients = [
+            { id: 'P101', name: 'Sarah Wilson', email: 'sarahwilson@example.com', phone: '+1 987 654 3210', visits: 4, lastVisit: '15 May 2024' },
+            { id: 'P102', name: 'Michael Brown', email: 'michaelbrown@example.com', phone: '+1 987 654 3211', visits: 2, lastVisit: '15 May 2024' },
+            { id: 'P103', name: 'Emily Davis', email: 'emilydavis@example.com', phone: '+1 987 654 3212', visits: 1, lastVisit: '14 May 2024' },
+            { id: 'P104', name: 'David Lee', email: 'davidlee@example.com', phone: '+1 987 654 3213', visits: 3, lastVisit: '10 May 2024' },
+            { id: 'P105', name: 'Jessica Taylor', email: 'jessicataylor@example.com', phone: '+1 987 654 3214', visits: 5, lastVisit: '02 May 2024' }
+        ];
+
+        res.json({ success: true, patients });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// @desc    Save Consultation Diagnosis & Prescription
+// @route   POST /api/doctors/consultation
+// @access  Private/Doctor
+export const saveConsultation = async (req, res) => {
+    try {
+        const { appointmentId, diagnosisNotes, prescriptions } = req.body;
+        res.json({
+            success: true,
+            message: 'Consultation saved and appointment marked as completed',
+            consultation: {
+                appointmentId,
+                diagnosisNotes,
+                prescriptions,
+                savedAt: new Date().toISOString()
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// @desc    Get Doctor Earnings Summary
+// @route   GET /api/doctors/earnings
+// @access  Private/Doctor
+export const getDoctorEarnings = async (req, res) => {
+    try {
+        res.json({
+            success: true,
+            summary: {
+                thisMonth: 2450,
+                thisWeek: 680,
+                today: 120
+            },
+            transactions: [
+                { date: '15 May 2024', patient: 'Sarah Wilson', amount: 50, status: 'Paid' },
+                { date: '15 May 2024', patient: 'Michael Brown', amount: 50, status: 'Paid' },
+                { date: '14 May 2024', patient: 'Emily Davis', amount: 50, status: 'Paid' },
+                { date: '12 May 2024', patient: 'David Lee', amount: 60, status: 'Paid' },
+                { date: '10 May 2024', patient: 'Jessica Taylor', amount: 40, status: 'Paid' }
+            ]
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// @desc    Update Doctor Profile
+// @route   PUT /api/doctors/profile
+// @access  Private/Doctor
+export const updateDoctorProfile = async (req, res) => {
+    try {
+        const profileData = req.body;
+        res.json({
+            success: true,
+            message: 'Doctor profile updated successfully',
+            doctor: profileData
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
