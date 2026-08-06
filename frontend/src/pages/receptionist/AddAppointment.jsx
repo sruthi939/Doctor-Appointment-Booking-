@@ -1,21 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReceptionistLayout from '../../components/receptionist/ReceptionistLayout';
 import { UserPlus, Calendar, Clock, User, Stethoscope, CheckCircle2 } from 'lucide-react';
 import { addWalkInAppointmentApi } from '../../services/receptionistService';
 import { useNavigate } from 'react-router-dom';
+import api from '../../services/api';
 
 const AddAppointment = () => {
     const navigate = useNavigate();
 
-    const [patientName, setPatientName] = useState('John Doe');
-    const [phone, setPhone] = useState('+1 987 654 3210');
-    const [doctorId, setDoctorId] = useState('doc1');
-    const [slotDate, setSlotDate] = useState('2026-05-15');
+    const [patientName, setPatientName] = useState('');
+    const [phone, setPhone] = useState('');
+    const [doctorId, setDoctorId] = useState('');
+    const [slotDate, setSlotDate] = useState(new Date().toISOString().split('T')[0]);
     const [slotTime, setSlotTime] = useState('09:00 AM');
-    const [reason, setReason] = useState('Fever and headache');
+    const [reason, setReason] = useState('');
+    const [doctorsList, setDoctorsList] = useState([]);
 
     const [submitted, setSubmitted] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        const fetchDoctors = async () => {
+            try {
+                const res = await api.get('/doctors');
+                if (res.data?.success && res.data.doctors?.length > 0) {
+                    setDoctorsList(res.data.doctors);
+                    setDoctorId(res.data.doctors[0]._id || res.data.doctors[0].id);
+                }
+            } catch (err) {
+                console.error('Error fetching doctors:', err);
+            }
+        };
+        fetchDoctors();
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -57,7 +74,7 @@ const AddAppointment = () => {
                     </div>
                 )}
 
-                {/* Booking Form matching Step 6 diagram */}
+                {/* Booking Form */}
                 <form onSubmit={handleSubmit} className='bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 backdrop-blur-md shadow-2xl space-y-5'>
                     <div>
                         <label className='block text-xs font-bold text-slate-300 mb-1.5 flex items-center gap-1.5'>
@@ -68,7 +85,21 @@ const AddAppointment = () => {
                             required
                             value={patientName}
                             onChange={(e) => setPatientName(e.target.value)}
-                            placeholder='Select Patient or type name...'
+                            placeholder='Type patient name...'
+                            className='w-full bg-slate-950 border border-slate-700 rounded-2xl px-4 py-3 text-white text-xs focus:outline-none focus:border-rose-500'
+                        />
+                    </div>
+
+                    <div>
+                        <label className='block text-xs font-bold text-slate-300 mb-1.5 flex items-center gap-1.5'>
+                            <User size={14} className='text-rose-400' /> Phone Number
+                        </label>
+                        <input
+                            type='text'
+                            required
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
+                            placeholder='Enter patient phone number...'
                             className='w-full bg-slate-950 border border-slate-700 rounded-2xl px-4 py-3 text-white text-xs focus:outline-none focus:border-rose-500'
                         />
                     </div>
@@ -82,11 +113,11 @@ const AddAppointment = () => {
                             onChange={(e) => setDoctorId(e.target.value)}
                             className='w-full bg-slate-950 border border-slate-700 rounded-2xl px-4 py-3 text-white text-xs focus:outline-none focus:border-rose-500'
                         >
-                            <option value='doc1'>Dr. Richard James (General physician)</option>
-                            <option value='doc2'>Dr. Emily Larson (Gynecologist)</option>
-                            <option value='doc3'>Dr. Sarah Patel (Dermatologist)</option>
-                            <option value='doc4'>Dr. Christopher Lee (Pediatricians)</option>
-                            <option value='doc5'>Dr. Jennifer Garcia (Neurologist)</option>
+                            {doctorsList.map((doc) => (
+                                <option key={doc._id || doc.id} value={doc._id || doc.id}>
+                                    {doc.name} ({doc.speciality})
+                                </option>
+                            ))}
                         </select>
                     </div>
 
@@ -138,7 +169,7 @@ const AddAppointment = () => {
                         disabled={loading}
                         className='w-full py-3.5 bg-gradient-to-r from-rose-500 via-pink-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white font-bold rounded-2xl text-xs transition-all shadow-lg shadow-pink-500/25 cursor-pointer uppercase tracking-wider'
                     >
-                        {loading ? 'Booking...' : 'Book Appointment'}
+                        {loading ? 'Booking Appointment...' : 'Confirm Walk-In Booking'}
                     </button>
                 </form>
             </div>

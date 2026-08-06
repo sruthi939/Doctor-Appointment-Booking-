@@ -4,7 +4,11 @@ import {
     getReceptionistDashboard, 
     getQueueList, 
     markQueueServed, 
-    addWalkInAppointment, 
+    addWalkInAppointment,
+    getReceptionistAppointments,
+    getReceptionistPatients,
+    getReceptionistSchedule,
+    updateReceptionistSchedule,
     updateReceptionistProfile 
 } from '../controllers/receptionist.controller.js';
 
@@ -15,6 +19,10 @@ router.get('/dashboard', getReceptionistDashboard);
 router.get('/queue', getQueueList);
 router.put('/queue/:id/served', markQueueServed);
 router.post('/appointments/add', addWalkInAppointment);
+router.get('/appointments', getReceptionistAppointments);
+router.get('/patients', getReceptionistPatients);
+router.get('/schedule', getReceptionistSchedule);
+router.put('/schedule', updateReceptionistSchedule);
 router.put('/profile', updateReceptionistProfile);
 
 export default router;

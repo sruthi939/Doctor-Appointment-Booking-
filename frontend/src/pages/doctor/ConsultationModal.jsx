@@ -5,18 +5,13 @@ import { saveConsultation } from '../../services/doctorService';
 const ConsultationModal = ({ appointment, isOpen, onClose, onComplete }) => {
     if (!isOpen || !appointment) return null;
 
-    const [diagnosisNotes, setDiagnosisNotes] = useState(
-        'Patient complains of headache and fever since last 2 days. Advised rest and medication.'
-    );
-
-    const [prescriptions, setPrescriptions] = useState([
-        { id: 1, medicine: 'Paracetamol 500mg', dosage: '1 Tab', frequency: 'Twice daily after meals' },
-        { id: 2, medicine: 'Cetirizine 10mg', dosage: '1 Tab', frequency: 'Once daily at night' }
-    ]);
+    const [diagnosisNotes, setDiagnosisNotes] = useState('');
+    const [prescriptions, setPrescriptions] = useState([]);
 
     const [newMed, setNewMed] = useState('');
     const [newDosage, setNewDosage] = useState('1 Tab');
     const [newFreq, setNewFreq] = useState('Twice daily');
+    const [saving, setSaving] = useState(false);
 
     const handleAddMedication = (e) => {
         e.preventDefault();
@@ -34,12 +29,14 @@ const ConsultationModal = ({ appointment, isOpen, onClose, onComplete }) => {
     };
 
     const handleSaveAndComplete = async () => {
+        setSaving(true);
         await saveConsultation({
-            appointmentId: appointment.id,
+            appointmentId: appointment.id || appointment._id,
             diagnosisNotes,
             prescriptions
         });
-        if (onComplete) onComplete(appointment.id);
+        setSaving(false);
+        if (onComplete) onComplete(appointment.id || appointment._id);
         onClose();
     };
 
@@ -59,113 +56,115 @@ const ConsultationModal = ({ appointment, isOpen, onClose, onComplete }) => {
                         <Stethoscope size={24} />
                     </div>
                     <div>
-                        <h2 className='text-xl font-bold text-white'>Patient Consultation & Prescription</h2>
-                        <p className='text-slate-400 text-xs mt-0.5'>
-                            Patient: <strong className='text-white'>{appointment.patientName || appointment.name}</strong> &bull; #{appointment.id}
+                        <h2 className='text-xl font-extrabold text-white'>Consultation & E-Prescription</h2>
+                        <p className='text-xs text-slate-400'>
+                            Patient: <strong className='text-white'>{appointment.patientName}</strong> &bull; Slot: <span className='text-pink-400'>{appointment.time}</span>
                         </p>
                     </div>
                 </div>
 
-                {/* Patient Summary Card */}
-                <div className='bg-slate-950/80 border border-slate-800 rounded-2xl p-4 grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs text-slate-300'>
-                    <div>
-                        <span className='text-slate-400 block'>Reason for Visit</span>
-                        <span className='font-semibold text-pink-400'>{appointment.reason || 'General Consultation'}</span>
-                    </div>
-                    <div>
-                        <span className='text-slate-400 block'>Date & Time</span>
-                        <span className='font-semibold text-white'>{appointment.date || '15 May 2024'} ({appointment.time || '09:00 AM'})</span>
-                    </div>
-                    <div>
-                        <span className='text-slate-400 block'>Contact Phone</span>
-                        <span className='font-semibold text-indigo-400'>{appointment.phone || '+1 987 654 3210'}</span>
-                    </div>
-                </div>
-
-                {/* Diagnosis / Notes Section matching Step 7 diagram */}
+                {/* Diagnosis Notes */}
                 <div className='space-y-2'>
-                    <label className='block text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5'>
-                        <FileText size={16} className='text-pink-400' />
-                        Diagnosis / Clinical Notes
+                    <label className='block text-xs font-bold text-slate-300 flex items-center gap-1.5'>
+                        <FileText size={14} className='text-pink-400' /> Clinical Diagnosis & Medical Notes
                     </label>
                     <textarea
                         rows={3}
                         value={diagnosisNotes}
                         onChange={(e) => setDiagnosisNotes(e.target.value)}
-                        className='w-full bg-slate-950 border border-slate-700/80 rounded-2xl p-4 text-white text-xs focus:outline-none focus:border-pink-500 leading-relaxed'
-                        placeholder='Enter diagnosis, clinical observations and health advice...'
+                        placeholder='Enter diagnosis notes, symptoms, and examination observations...'
+                        className='w-full bg-slate-950 border border-slate-700/80 rounded-2xl p-4 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-pink-500'
                     ></textarea>
                 </div>
 
-                {/* Prescription Items matching Step 7 diagram */}
+                {/* E-Prescription Section */}
                 <div className='space-y-3'>
-                    <div className='flex items-center justify-between'>
-                        <label className='text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5'>
-                            <Pill size={16} className='text-indigo-400' />
-                            Prescription
-                        </label>
-                        <span className='text-[11px] text-slate-400'>{prescriptions.length} Medicines Prescribed</span>
-                    </div>
+                    <label className='block text-xs font-bold text-slate-300 flex items-center gap-1.5'>
+                        <Pill size={14} className='text-rose-400' /> Prescribed Medications ({prescriptions.length})
+                    </label>
 
                     <div className='space-y-2'>
-                        {prescriptions.map((item, idx) => (
-                            <div key={item.id} className='p-3 bg-slate-950/80 border border-slate-800 rounded-xl flex items-center justify-between text-xs text-white'>
-                                <div className='flex items-center gap-2'>
-                                    <span className='font-bold text-pink-400'>{idx + 1}.</span>
-                                    <div>
-                                        <span className='font-bold text-white'>{item.medicine}</span>
-                                        <span className='text-slate-400 ml-2'>({item.dosage} &bull; {item.frequency})</span>
-                                    </div>
-                                </div>
-                                <button
-                                    type='button'
-                                    onClick={() => handleRemoveMed(item.id)}
-                                    className='text-slate-400 hover:text-rose-400 p-1'
+                        {prescriptions.length === 0 ? (
+                            <p className='text-slate-500 text-xs py-2 italic'>No medications added yet.</p>
+                        ) : (
+                            prescriptions.map((item) => (
+                                <div
+                                    key={item.id}
+                                    className='p-3 bg-slate-950 border border-slate-800 rounded-xl flex items-center justify-between text-xs text-white'
                                 >
-                                    <Trash2 size={14} />
-                                </button>
-                            </div>
-                        ))}
+                                    <div className='flex items-center gap-2'>
+                                        <span className='font-bold text-pink-400'>{item.medicine}</span>
+                                        <span className='text-slate-400'>&bull;</span>
+                                        <span className='text-slate-300'>{item.dosage}</span>
+                                        <span className='text-slate-400'>&bull;</span>
+                                        <span className='text-slate-400'>{item.frequency}</span>
+                                    </div>
+                                    <button
+                                        type='button'
+                                        onClick={() => handleRemoveMed(item.id)}
+                                        className='p-1 text-slate-400 hover:text-rose-400 transition-colors'
+                                    >
+                                        <Trash2 size={14} />
+                                    </button>
+                                </div>
+                            ))
+                        )}
                     </div>
 
                     {/* Add Medication Form */}
-                    <form onSubmit={handleAddMedication} className='grid grid-cols-1 sm:grid-cols-4 gap-2 pt-2'>
+                    <form onSubmit={handleAddMedication} className='pt-2 flex flex-col sm:flex-row items-end gap-2'>
                         <input
                             type='text'
                             value={newMed}
                             onChange={(e) => setNewMed(e.target.value)}
-                            placeholder='Medicine Name (e.g. Amoxicillin 250mg)'
-                            className='sm:col-span-2 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs'
+                            placeholder='Medicine Name (e.g. Paracetamol 500mg)'
+                            className='flex-1 bg-slate-950 border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-pink-500 w-full'
                         />
-                        <input
-                            type='text'
+                        <select
                             value={newDosage}
                             onChange={(e) => setNewDosage(e.target.value)}
-                            placeholder='Dosage (1 Tab)'
-                            className='bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs'
-                        />
+                            className='bg-slate-950 border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-pink-500 shrink-0'
+                        >
+                            <option value='1 Tab'>1 Tab</option>
+                            <option value='2 Tabs'>2 Tabs</option>
+                            <option value='1 Syrup Spoon (5ml)'>1 Syrup Spoon (5ml)</option>
+                            <option value='1 Capsule'>1 Capsule</option>
+                        </select>
+                        <select
+                            value={newFreq}
+                            onChange={(e) => setNewFreq(e.target.value)}
+                            className='bg-slate-950 border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-pink-500 shrink-0'
+                        >
+                            <option value='Once daily'>Once daily</option>
+                            <option value='Twice daily'>Twice daily</option>
+                            <option value='Thrice daily'>Thrice daily</option>
+                            <option value='As needed'>As needed</option>
+                        </select>
                         <button
                             type='submit'
-                            className='px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition-colors flex items-center justify-center gap-1 cursor-pointer'
+                            className='px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer shrink-0 flex items-center gap-1'
                         >
                             <Plus size={14} /> Add
                         </button>
                     </form>
                 </div>
 
-                {/* Save & Complete Action Button matching diagram */}
+                {/* Footer Action */}
                 <div className='pt-4 border-t border-slate-800 flex justify-end gap-3'>
                     <button
+                        type='button'
                         onClick={onClose}
-                        className='px-5 py-2.5 bg-slate-800 text-slate-300 hover:text-white rounded-xl text-xs font-semibold'
+                        className='px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold transition-colors cursor-pointer'
                     >
                         Cancel
                     </button>
                     <button
+                        type='button'
+                        disabled={saving}
                         onClick={handleSaveAndComplete}
-                        className='px-8 py-2.5 bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white font-bold rounded-xl text-xs transition-all shadow-lg shadow-pink-500/25 flex items-center gap-2 cursor-pointer'
+                        className='px-6 py-2.5 bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white rounded-xl text-xs font-bold transition-all shadow-lg shadow-pink-500/25 flex items-center gap-2 cursor-pointer'
                     >
-                        <CheckCircle2 size={16} /> Save & Complete Consultation
+                        <CheckCircle2 size={16} /> {saving ? 'Saving...' : 'Complete Consultation'}
                     </button>
                 </div>
             </div>

@@ -6,40 +6,25 @@ import generateToken from '../utils/generateToken.js';
 export const getAllDoctors = async (req, res) => {
     try {
         const doctors = await Doctor.find({});
-        if (doctors && doctors.length > 0) {
-            res.json({ success: true, doctors });
-        } else {
-            res.json({ success: true, doctors: defaultDoctors });
-        }
+        res.json({ success: true, doctors });
     } catch (error) {
-        res.json({ success: true, doctors: defaultDoctors });
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 
-// @desc    Get doctor by ID from database
-// @route   GET /api/doctors/:id
-// @access  Public
 export const getDoctorById = async (req, res) => {
     try {
-        let doctor = await Doctor.findById(req.params.id);
-        if (!doctor) {
-            doctor = defaultDoctors.find(d => d._id === req.params.id);
-        }
+        const doctor = await Doctor.findById(req.params.id);
         if (doctor) {
             res.json({ success: true, doctor });
         } else {
             res.status(404).json({ success: false, message: 'Doctor not found' });
         }
     } catch (error) {
-        const doc = defaultDoctors.find(d => d._id === req.params.id) || defaultDoctors[0];
-        res.json({ success: true, doctor: doc });
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 
-
-// @desc    Add new doctor (Admin)
-// @route   POST /api/doctors/add
-// @access  Private/Admin
 export const addDoctor = async (req, res) => {
     try {
         const doctorData = req.body;
@@ -50,9 +35,6 @@ export const addDoctor = async (req, res) => {
     }
 };
 
-// @desc    Doctor Login with password verification
-// @route   POST /api/doctors/login
-// @access  Public
 export const loginDoctor = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -85,9 +67,6 @@ export const loginDoctor = async (req, res) => {
     }
 };
 
-// @desc    Get Doctor Dashboard Stats & Active Queue from MongoDB
-// @route   GET /api/doctors/dashboard
-// @access  Private/Doctor
 export const getDoctorDashboard = async (req, res) => {
     try {
         const docId = req.user?._id || req.headers['doc_id'];
@@ -128,9 +107,6 @@ export const getDoctorDashboard = async (req, res) => {
     }
 };
 
-// @desc    Update Doctor Schedule in MongoDB
-// @route   PUT /api/doctors/schedule
-// @access  Private/Doctor
 export const updateDoctorSchedule = async (req, res) => {
     try {
         const { workingDays, timeSlots, docId } = req.body;
@@ -151,9 +127,6 @@ export const updateDoctorSchedule = async (req, res) => {
     }
 };
 
-// @desc    Get Doctor Patients Aggregated from MongoDB Appointments
-// @route   GET /api/doctors/patients
-// @access  Private/Doctor
 export const getDoctorPatients = async (req, res) => {
     try {
         const docId = req.user?._id || req.headers['doc_id'];
@@ -189,9 +162,6 @@ export const getDoctorPatients = async (req, res) => {
     }
 };
 
-// @desc    Save Consultation Notes & Prescription to MongoDB Appointment
-// @route   POST /api/doctors/consultation
-// @access  Private/Doctor
 export const saveConsultation = async (req, res) => {
     try {
         const { appointmentId, diagnosisNotes, prescriptions } = req.body;
@@ -220,9 +190,6 @@ export const saveConsultation = async (req, res) => {
     }
 };
 
-// @desc    Get Doctor Earnings Summary Calculated from MongoDB Payments / Appointments
-// @route   GET /api/doctors/earnings
-// @access  Private/Doctor
 export const getDoctorEarnings = async (req, res) => {
     try {
         const docId = req.user?._id || req.headers['doc_id'];
@@ -253,9 +220,6 @@ export const getDoctorEarnings = async (req, res) => {
     }
 };
 
-// @desc    Update Doctor Profile in MongoDB
-// @route   PUT /api/doctors/profile
-// @access  Private/Doctor
 export const updateDoctorProfile = async (req, res) => {
     try {
         const { docId, name, phone, speciality, degree, experience, fees, about, image } = req.body;

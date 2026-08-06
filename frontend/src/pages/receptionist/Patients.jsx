@@ -1,17 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReceptionistLayout from '../../components/receptionist/ReceptionistLayout';
 import { Users, Search, Mail, Phone, ChevronRight } from 'lucide-react';
+import api from '../../services/api';
 
 const ReceptionistPatients = () => {
     const [searchQuery, setSearchQuery] = useState('');
+    const [patientsList, setPatientsList] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const [patientsList] = useState([
-        { id: 'P101', name: 'John Doe', email: 'johndoe@example.com', phone: '+1 987 654 3210' },
-        { id: 'P102', name: 'Sarah Wilson', email: 'sarahwilson@example.com', phone: '+1 987 111 2220' },
-        { id: 'P103', name: 'Michael Brown', email: 'michaelbrown@example.com', phone: '+1 987 333 4440' },
-        { id: 'P104', name: 'Emily Davis', email: 'emilydavis@example.com', phone: '+1 987 555 6670' },
-        { id: 'P105', name: 'David Lee', email: 'davidlee@example.com', phone: '+1 987 888 9990' }
-    ]);
+    useEffect(() => {
+        const fetchPatients = async () => {
+            try {
+                const res = await api.get('/receptionist/patients');
+                if (res.data?.success && res.data.patients) {
+                    setPatientsList(res.data.patients);
+                }
+            } catch (err) {
+                console.error('Error fetching patients:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchPatients();
+    }, []);
 
     const filtered = patientsList.filter(p =>
         p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -46,31 +57,37 @@ const ReceptionistPatients = () => {
                     </div>
                 </div>
 
-                {/* Patient Cards List matching Step 5 diagram */}
+                {/* Patient Cards List */}
                 <div className='space-y-3'>
-                    {filtered.map((item) => (
-                        <div
-                            key={item.id}
-                            className='bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-5 backdrop-blur-md shadow-xl flex items-center justify-between gap-4 hover:border-slate-700 transition-colors group cursor-pointer'
-                        >
-                            <div className='flex items-center gap-4'>
-                                <div className='w-11 h-11 rounded-2xl bg-gradient-to-tr from-rose-500 via-pink-500 to-amber-500 flex items-center justify-center font-bold text-white text-sm shadow-md shrink-0'>
-                                    {item.name.split(' ').map(n => n[0]).join('')}
-                                </div>
+                    {loading ? (
+                        <p className='text-slate-400 text-xs py-8 text-center'>Loading patients...</p>
+                    ) : filtered.length === 0 ? (
+                        <p className='text-slate-400 text-xs py-8 text-center'>No registered patients found.</p>
+                    ) : (
+                        filtered.map((item) => (
+                            <div
+                                key={item.id || item._id}
+                                className='bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-5 backdrop-blur-md shadow-xl flex items-center justify-between gap-4 hover:border-slate-700 transition-colors group cursor-pointer'
+                            >
+                                <div className='flex items-center gap-4'>
+                                    <div className='w-11 h-11 rounded-2xl bg-gradient-to-tr from-rose-500 via-pink-500 to-amber-500 flex items-center justify-center font-bold text-white text-sm shadow-md shrink-0'>
+                                        {item.name ? item.name.split(' ').map(n => n[0]).join('') : 'P'}
+                                    </div>
 
-                                <div>
-                                    <h3 className='font-bold text-white text-sm group-hover:text-rose-400 transition-colors'>{item.name}</h3>
-                                    <div className='flex flex-wrap items-center gap-3 text-xs text-slate-400 mt-0.5'>
-                                        <span className='flex items-center gap-1'><Mail size={12} className='text-rose-400' /> {item.email}</span>
-                                        <span>&bull;</span>
-                                        <span className='flex items-center gap-1'><Phone size={12} className='text-amber-400' /> {item.phone}</span>
+                                    <div>
+                                        <h3 className='font-bold text-white text-sm group-hover:text-rose-400 transition-colors'>{item.name}</h3>
+                                        <div className='flex flex-wrap items-center gap-3 text-xs text-slate-400 mt-0.5'>
+                                            <span className='flex items-center gap-1'><Mail size={12} className='text-rose-400' /> {item.email}</span>
+                                            <span>&bull;</span>
+                                            <span className='flex items-center gap-1'><Phone size={12} className='text-amber-400' /> {item.phone}</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <ChevronRight size={18} className='text-slate-500 group-hover:text-white transition-colors' />
-                        </div>
-                    ))}
+                                <ChevronRight size={18} className='text-slate-500 group-hover:text-white transition-colors' />
+                            </div>
+                        ))
+                    )}
                 </div>
             </div>
         </ReceptionistLayout>

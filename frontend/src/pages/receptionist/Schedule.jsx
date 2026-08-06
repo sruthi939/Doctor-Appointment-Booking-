@@ -1,21 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReceptionistLayout from '../../components/receptionist/ReceptionistLayout';
 import { Clock, Plus, Trash2, Save, Check } from 'lucide-react';
+import api from '../../services/api';
 
 const ReceptionistSchedule = () => {
-    const [workingDays, setWorkingDays] = useState(['Mon', 'Tue', 'Wed', 'Thu', 'Fri']);
-    const [timeSlots, setTimeSlots] = useState([
-        '09:00 AM - 10:00 AM',
-        '10:00 AM - 11:00 AM',
-        '11:00 AM - 12:00 PM',
-        '02:00 PM - 03:00 PM',
-        '03:00 PM - 04:00 PM',
-        '04:00 PM - 05:00 PM'
-    ]);
+    const [workingDays, setWorkingDays] = useState([]);
+    const [timeSlots, setTimeSlots] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const [newStartTime, setNewStartTime] = useState('05:00 PM');
     const [newEndTime, setNewEndTime] = useState('06:00 PM');
     const [savedNotice, setSavedNotice] = useState(false);
+
+    useEffect(() => {
+        const fetchSchedule = async () => {
+            try {
+                const res = await api.get('/receptionist/schedule');
+                if (res.data?.success && res.data.schedule) {
+                    setWorkingDays(res.data.schedule.workingDays || []);
+                    setTimeSlots(res.data.schedule.timeSlots || []);
+                }
+            } catch (err) {
+                console.error('Error loading schedule:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchSchedule();
+    }, []);
 
     const toggleDay = (day) => {
         if (workingDays.includes(day)) {
@@ -37,9 +49,14 @@ const ReceptionistSchedule = () => {
         }
     };
 
-    const handleSaveSchedule = () => {
-        setSavedNotice(true);
-        setTimeout(() => setSavedNotice(false), 3000);
+    const handleSaveSchedule = async () => {
+        try {
+            await api.put('/receptionist/schedule', { workingDays, timeSlots });
+            setSavedNotice(true);
+            setTimeout(() => setSavedNotice(false), 3000);
+        } catch (err) {
+            console.error('Error saving schedule:', err);
+        }
     };
 
     const allDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -68,33 +85,37 @@ const ReceptionistSchedule = () => {
                     </button>
                 </div>
 
-                {/* Working Days Selector Card matching Step 4 diagram */}
+                {/* Working Days Selector Card */}
                 <div className='bg-slate-900/90 border border-slate-800 rounded-3xl p-6 backdrop-blur-md shadow-xl space-y-4'>
                     <h2 className='text-base font-bold text-white uppercase tracking-wider text-rose-400'>
                         Working Days
                     </h2>
-                    <div className='flex flex-wrap gap-3'>
-                        {allDays.map((day) => {
-                            const isSelected = workingDays.includes(day);
-                            return (
-                                <button
-                                    key={day}
-                                    type='button'
-                                    onClick={() => toggleDay(day)}
-                                    className={`px-5 py-3 rounded-2xl text-xs font-bold transition-all border cursor-pointer ${
-                                        isSelected
-                                            ? 'bg-gradient-to-r from-rose-500 via-pink-500 to-amber-500 border-rose-500 text-white shadow-md shadow-rose-500/20'
-                                            : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-white'
-                                    }`}
-                                >
-                                    {day}
-                                </button>
-                            );
-                        })}
-                    </div>
+                    {loading ? (
+                        <p className='text-slate-400 text-xs'>Loading schedule...</p>
+                    ) : (
+                        <div className='flex flex-wrap gap-3'>
+                            {allDays.map((day) => {
+                                const isSelected = workingDays.includes(day);
+                                return (
+                                    <button
+                                        key={day}
+                                        type='button'
+                                        onClick={() => toggleDay(day)}
+                                        className={`px-5 py-3 rounded-2xl text-xs font-bold transition-all border cursor-pointer ${
+                                            isSelected
+                                                ? 'bg-gradient-to-r from-rose-500 via-pink-500 to-amber-500 border-rose-500 text-white shadow-md shadow-rose-500/20'
+                                                : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-white'
+                                        }`}
+                                    >
+                                        {day}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    )}
                 </div>
 
-                {/* Time Slots List Card matching Step 4 diagram */}
+                {/* Time Slots List Card */}
                 <div className='bg-slate-900/90 border border-slate-800 rounded-3xl p-6 backdrop-blur-md shadow-xl space-y-5'>
                     <div className='flex items-center justify-between border-b border-slate-800 pb-3'>
                         <h2 className='text-base font-bold text-white uppercase tracking-wider text-amber-400'>
@@ -105,31 +126,39 @@ const ReceptionistSchedule = () => {
                         </span>
                     </div>
 
-                    <div className='space-y-3'>
-                        {timeSlots.map((slot, idx) => (
-                            <div
-                                key={idx}
-                                className='p-4 bg-slate-950/80 border border-slate-800 rounded-2xl flex items-center justify-between text-xs font-semibold text-white hover:border-slate-700 transition-colors'
-                            >
-                                <div className='flex items-center gap-3'>
-                                    <div className='w-8 h-8 rounded-lg bg-rose-500/10 text-rose-400 flex items-center justify-center border border-rose-500/20'>
-                                        <Clock size={16} />
+                    {loading ? (
+                        <p className='text-slate-400 text-xs'>Loading time slots...</p>
+                    ) : (
+                        <div className='space-y-3'>
+                            {timeSlots.length === 0 ? (
+                                <p className='text-slate-500 text-xs py-4 text-center'>No active time slots configured.</p>
+                            ) : (
+                                timeSlots.map((slot, idx) => (
+                                    <div
+                                        key={idx}
+                                        className='p-4 bg-slate-950/80 border border-slate-800 rounded-2xl flex items-center justify-between text-xs font-semibold text-white hover:border-slate-700 transition-colors'
+                                    >
+                                        <div className='flex items-center gap-3'>
+                                            <div className='w-8 h-8 rounded-lg bg-rose-500/10 text-rose-400 flex items-center justify-center border border-rose-500/20'>
+                                                <Clock size={16} />
+                                            </div>
+                                            <span>{slot}</span>
+                                        </div>
+
+                                        <button
+                                            type='button'
+                                            onClick={() => removeSlot(slot)}
+                                            className='p-2 text-slate-400 hover:text-rose-400 bg-slate-900 hover:bg-rose-500/10 rounded-xl transition-colors cursor-pointer'
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
                                     </div>
-                                    <span>{slot}</span>
-                                </div>
+                                ))
+                            )}
+                        </div>
+                    )}
 
-                                <button
-                                    type='button'
-                                    onClick={() => removeSlot(slot)}
-                                    className='p-2 text-slate-400 hover:text-rose-400 bg-slate-900 hover:bg-rose-500/10 rounded-xl transition-colors cursor-pointer'
-                                >
-                                    <Trash2 size={16} />
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-
-                    {/* Add Time Slot Button Form matching Step 4 diagram */}
+                    {/* Add Time Slot Button Form */}
                     <form onSubmit={handleAddSlot} className='pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-end gap-3'>
                         <div className='flex-1 grid grid-cols-2 gap-3 w-full'>
                             <div>

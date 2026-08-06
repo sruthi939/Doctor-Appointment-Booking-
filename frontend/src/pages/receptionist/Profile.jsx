@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReceptionistLayout from '../../components/receptionist/ReceptionistLayout';
 import { User, Mail, Phone, Save, Edit3, Check } from 'lucide-react';
 import { updateReceptionistProfileApi } from '../../services/receptionistService';
@@ -23,10 +23,17 @@ const ReceptionistProfile = () => {
 
     const [formState, setFormState] = useState(profileData);
 
+    useEffect(() => {
+        setFormState(profileData);
+    }, [profileData]);
+
     const handleSave = async (e) => {
-        e.preventDefault();
+        if (e) e.preventDefault();
         setProfileData(formState);
-        await updateReceptionistProfileApi(formState);
+        const res = await updateReceptionistProfileApi(formState);
+        if (res?.user) {
+            setProfileData(res.user);
+        }
         setIsEdit(false);
         setSavedNotice(true);
         setTimeout(() => setSavedNotice(false), 3000);
@@ -39,7 +46,7 @@ const ReceptionistProfile = () => {
                     <div className='flex flex-col sm:flex-row items-center sm:items-start gap-6 border-b border-slate-800 pb-6'>
                         <img
                             className='w-28 h-28 sm:w-32 sm:h-32 rounded-3xl object-cover border-4 border-slate-800 shadow-xl shrink-0'
-                            src={formState.image}
+                            src={formState.image || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=250'}
                             alt={formState.name}
                         />
 
@@ -47,7 +54,7 @@ const ReceptionistProfile = () => {
                             {isEdit ? (
                                 <input
                                     type='text'
-                                    value={formState.name}
+                                    value={formState.name || ''}
                                     onChange={(e) => setFormState(prev => ({ ...prev, name: e.target.value }))}
                                     className='bg-slate-950 border border-slate-700 rounded-xl px-4 py-2 text-white text-xl font-bold w-full focus:outline-none focus:border-rose-500'
                                 />
@@ -55,7 +62,7 @@ const ReceptionistProfile = () => {
                                 <h1 className='text-2xl sm:text-3xl font-extrabold text-white'>{profileData.name}</h1>
                             )}
                             <p className='text-xs font-semibold px-3 py-1 bg-rose-500/10 text-rose-400 border border-rose-500/20 rounded-full inline-block'>
-                                {profileData.role}
+                                {profileData.role || 'Receptionist'}
                             </p>
                         </div>
 
@@ -79,14 +86,14 @@ const ReceptionistProfile = () => {
                         </div>
                     )}
 
-                    {/* Details Form Grid matching Step 8 diagram */}
+                    {/* Details Form Grid */}
                     <div className='space-y-4 text-xs text-slate-300'>
                         <div>
                             <label className='block text-slate-400 mb-1'>Full Name</label>
                             {isEdit ? (
                                 <input
                                     type='text'
-                                    value={formState.name}
+                                    value={formState.name || ''}
                                     onChange={(e) => setFormState(prev => ({ ...prev, name: e.target.value }))}
                                     className='w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white'
                                 />
@@ -100,7 +107,7 @@ const ReceptionistProfile = () => {
                             {isEdit ? (
                                 <input
                                     type='email'
-                                    value={formState.email}
+                                    value={formState.email || ''}
                                     onChange={(e) => setFormState(prev => ({ ...prev, email: e.target.value }))}
                                     className='w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white'
                                 />
@@ -114,7 +121,7 @@ const ReceptionistProfile = () => {
                             {isEdit ? (
                                 <input
                                     type='text'
-                                    value={formState.phone}
+                                    value={formState.phone || ''}
                                     onChange={(e) => setFormState(prev => ({ ...prev, phone: e.target.value }))}
                                     className='w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white'
                                 />
@@ -125,16 +132,18 @@ const ReceptionistProfile = () => {
 
                         <div>
                             <label className='block text-slate-400 mb-1'>Role</label>
-                            <span className='font-bold text-rose-400 text-sm block p-2.5 bg-slate-950 rounded-xl border border-slate-800'>{profileData.role}</span>
+                            <span className='font-bold text-rose-400 text-sm block p-2.5 bg-slate-950 rounded-xl border border-slate-800'>{profileData.role || 'Receptionist'}</span>
                         </div>
 
-                        <button
-                            type='button'
-                            onClick={handleSave}
-                            className='w-full py-3 bg-gradient-to-r from-rose-500 via-pink-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white font-bold rounded-2xl text-xs transition-all shadow-lg shadow-pink-500/25 cursor-pointer uppercase tracking-wider mt-4'
-                        >
-                            Update Profile
-                        </button>
+                        {isEdit && (
+                            <button
+                                type='button'
+                                onClick={handleSave}
+                                className='w-full py-3 bg-gradient-to-r from-rose-500 via-pink-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white font-bold rounded-2xl text-xs transition-all shadow-lg shadow-pink-500/25 cursor-pointer uppercase tracking-wider mt-4'
+                            >
+                                Update Profile
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>

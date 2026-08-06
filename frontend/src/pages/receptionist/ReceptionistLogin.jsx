@@ -5,17 +5,21 @@ import { receptionistLogin } from '../../services/receptionistService';
 
 const ReceptionistLogin = () => {
     const navigate = useNavigate();
-    const [email, setEmail] = useState('olivia.smith@example.com');
-    const [password, setPassword] = useState('password123');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
+    const [errorMsg, setErrorMsg] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
+        setErrorMsg('');
         const res = await receptionistLogin(email, password);
         setLoading(false);
         if (res.success) {
             navigate('/receptionist/dashboard');
+        } else {
+            setErrorMsg(res.message || 'Login failed');
         }
     };
 
@@ -44,6 +48,12 @@ const ReceptionistLogin = () => {
                     </p>
                 </div>
 
+                {errorMsg && (
+                    <div className='p-3 bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-semibold rounded-xl'>
+                        {errorMsg}
+                    </div>
+                )}
+
                 <form onSubmit={handleSubmit} className='space-y-4'>
                     <div>
                         <label className='block text-xs font-medium text-slate-300 mb-1 flex items-center gap-1.5'>
@@ -54,7 +64,7 @@ const ReceptionistLogin = () => {
                             required
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            placeholder='olivia.smith@example.com'
+                            placeholder='Enter receptionist email...'
                             className='w-full bg-slate-950 border border-slate-700/80 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-rose-500'
                         />
                     </div>
