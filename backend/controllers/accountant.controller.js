@@ -3,66 +3,11 @@ import Transaction from '../models/Transaction.js';
 import Invoice from '../models/Invoice.js';
 import Expense from '../models/Expense.js';
 import Refund from '../models/Refund.js';
+import Appointment from '../models/Appointment.js';
 import generateToken from '../utils/generateToken.js';
 
-// Seed sample data if collections are empty so accountant dashboard displays nicely out-of-the-box
-const seedAccountantData = async () => {
-    try {
-        const txCount = await Transaction.countDocuments({});
-        if (txCount === 0) {
-            await Transaction.insertMany([
-                { transactionId: '#TXN001', patientName: 'John Doe', doctorName: 'Dr. Smith', amount: 120, paymentMethod: 'Card', status: 'Completed', date: '15 May 2024' },
-                { transactionId: '#TXN002', patientName: 'Sarah Wilson', doctorName: 'Dr. Brown', amount: 80, paymentMethod: 'Card', status: 'Completed', date: '15 May 2024' },
-                { transactionId: '#TXN003', patientName: 'Michael Brown', doctorName: 'Dr. Davis', amount: 150, paymentMethod: 'UPI', status: 'Pending', date: '15 May 2024' },
-                { transactionId: '#TXN004', patientName: 'Emily Davis', doctorName: 'Dr. Lee', amount: 200, paymentMethod: 'Net Banking', status: 'Completed', date: '14 May 2024' },
-                { transactionId: '#TXN005', patientName: 'David Lee', doctorName: 'Dr. Garcia', amount: 90, paymentMethod: 'Wallet', status: 'Failed', date: '14 May 2024' },
-                { transactionId: '#TXN006', patientName: 'Jessica Taylor', doctorName: 'Dr. Smith', amount: 110, paymentMethod: 'UPI', status: 'Completed', date: '14 May 2024' }
-            ]);
-        }
-
-        const invCount = await Invoice.countDocuments({});
-        if (invCount === 0) {
-            await Invoice.insertMany([
-                { invoiceId: 'INV-1001', patientName: 'John Doe', patientEmail: 'johndoe@example.com', amount: 120, status: 'Paid', date: '15 May 2024', items: [{ description: 'General Consultation', cost: 120 }] },
-                { invoiceId: 'INV-1002', patientName: 'Sarah Wilson', patientEmail: 'sarahwilson@example.com', amount: 80, status: 'Paid', date: '15 May 2024', items: [{ description: 'Skin Checkup', cost: 80 }] },
-                { invoiceId: 'INV-1003', patientName: 'Michael Brown', patientEmail: 'michael@example.com', amount: 150, status: 'Unpaid', date: '14 May 2024', items: [{ description: 'Cardiology Assessment', cost: 150 }] },
-                { invoiceId: 'INV-1004', patientName: 'Emily Davis', patientEmail: 'emily@example.com', amount: 200, status: 'Paid', date: '14 May 2024', items: [{ description: 'Pediatric Care & Labs', cost: 200 }] },
-                { invoiceId: 'INV-1005', patientName: 'David Lee', patientEmail: 'david@example.com', amount: 90, status: 'Paid', date: '14 May 2024', items: [{ description: 'Neurology Consultation', cost: 90 }] }
-            ]);
-        }
-
-        const expCount = await Expense.countDocuments({});
-        if (expCount === 0) {
-            await Expense.insertMany([
-                { category: 'Utilities', amount: 120, date: '15 May 2024', description: 'Electricity & Water Bill' },
-                { category: 'Equipment', amount: 890, date: '14 May 2024', description: 'Stethoscope & BP Monitors' },
-                { category: 'Marketing', amount: 200, date: '13 May 2024', description: 'Online Ad Campaigns' },
-                { category: 'Stationery', amount: 60, date: '12 May 2024', description: 'Medical Files & Paper Packs' },
-                { category: 'Maintenance', amount: 300, date: '10 May 2024', description: 'AC Repair & Sanitation' }
-            ]);
-        }
-
-        const refCount = await Refund.countDocuments({});
-        if (refCount === 0) {
-            await Refund.insertMany([
-                { refundId: 'RFND001', patientName: 'John Doe', amount: 50, status: 'Processed', date: '15 May 2024', reason: 'Overcharge Correction' },
-                { refundId: 'RFND002', patientName: 'Sarah Wilson', amount: 80, status: 'Processed', date: '15 May 2024', reason: 'Appointment Cancelled' },
-                { refundId: 'RFND003', patientName: 'Michael Brown', amount: 30, status: 'Processed', date: '14 May 2024', reason: 'Lab Fee Refund' },
-                { refundId: 'RFND004', patientName: 'Emily Davis', amount: 100, status: 'Rejected', date: '14 May 2024', reason: 'Late Cancellation' }
-            ]);
-        }
-    } catch (e) {
-        console.error('[Accountant Seed Error]', e.message);
-    }
-};
-
-// @desc    Accountant Login
-// @route   POST /api/accountant/login
-// @access  Public
 export const loginAccountant = async (req, res) => {
     try {
-        await seedAccountantData();
-
         const { email, password } = req.body;
         const reqEmail = email || 'accountant@medicare.com';
 
@@ -97,39 +42,39 @@ export const loginAccountant = async (req, res) => {
     }
 };
 
-// @desc    Get Accountant Dashboard Stats & Revenue Overview
-// @route   GET /api/accountant/dashboard
-// @access  Private/Accountant
 export const getAccountantDashboard = async (req, res) => {
     try {
-        await seedAccountantData();
-
-        const transactions = await Transaction.find({ status: 'Completed' });
+        const completedTransactions = await Transaction.find({ status: 'Completed' });
+        const paidAppointments = await Appointment.find({ paymentStatus: 'Paid' });
         const expenses = await Expense.find({});
         const invoicesCount = await Invoice.countDocuments({});
-        const refunds = await Refund.find({ status: 'Processed' });
+        const processedRefunds = await Refund.find({ status: 'Processed' });
 
-        const totalRevenue = transactions.reduce((sum, tx) => sum + (tx.amount || 0), 45231);
-        const totalExpensesSum = expenses.reduce((sum, ex) => sum + (ex.amount || 0), 6310);
-        const totalRefundsSum = refunds.reduce((sum, rf) => sum + (rf.amount || 0), 1200);
-        const netProfit = totalRevenue - totalExpensesSum - totalRefundsSum;
+        // Sum transaction revenue + paid appointments revenue
+        const txRevenue = completedTransactions.reduce((sum, tx) => sum + (tx.amount || 0), 0);
+        const aptRevenue = paidAppointments.reduce((sum, apt) => sum + (apt.amount || 0), 0);
+        const totalRevenueNum = txRevenue + aptRevenue;
+
+        const totalExpensesNum = expenses.reduce((sum, ex) => sum + (ex.amount || 0), 0);
+        const totalRefundsNum = processedRefunds.reduce((sum, rf) => sum + (rf.amount || 0), 0);
+        const netProfitNum = totalRevenueNum - totalExpensesNum - totalRefundsNum;
 
         res.json({
             success: true,
             stats: {
-                totalRevenue: `$${totalRevenue.toLocaleString()}`,
-                totalPayments: `$${(totalRevenue - 6310).toLocaleString()}`,
-                totalInvoices: invoicesCount || 128,
-                totalExpenses: `$${totalExpensesSum.toLocaleString()}`,
-                totalRefunds: `$${totalRefundsSum.toLocaleString()}`,
-                netProfit: `$${netProfit.toLocaleString()}`
+                totalRevenue: `$${totalRevenueNum.toLocaleString()}.00`,
+                totalPayments: `$${txRevenue.toLocaleString()}.00`,
+                totalInvoices: invoicesCount,
+                totalExpenses: `$${totalExpensesNum.toLocaleString()}.00`,
+                totalRefunds: `$${totalRefundsNum.toLocaleString()}.00`,
+                netProfit: `$${netProfitNum.toLocaleString()}.00`
             },
             revenueOverview: [
-                { day: 'May 1', value: 20 },
-                { day: 'May 8', value: 35 },
-                { day: 'May 15', value: 25 },
-                { day: 'May 22', value: 40 },
-                { day: 'May 29', value: 30 }
+                { day: 'May 1', value: Math.round(totalRevenueNum * 0.15) },
+                { day: 'May 8', value: Math.round(totalRevenueNum * 0.25) },
+                { day: 'May 15', value: Math.round(totalRevenueNum * 0.20) },
+                { day: 'May 22', value: Math.round(totalRevenueNum * 0.30) },
+                { day: 'May 29', value: Math.round(totalRevenueNum * 0.10) }
             ]
         });
     } catch (error) {
@@ -137,12 +82,8 @@ export const getAccountantDashboard = async (req, res) => {
     }
 };
 
-// @desc    Get All Transactions
-// @route   GET /api/accountant/transactions
-// @access  Private/Accountant
 export const getTransactions = async (req, res) => {
     try {
-        await seedAccountantData();
         const transactions = await Transaction.find({}).sort({ createdAt: -1 });
         res.json({ success: true, transactions });
     } catch (error) {
@@ -150,12 +91,8 @@ export const getTransactions = async (req, res) => {
     }
 };
 
-// @desc    Get All Invoices
-// @route   GET /api/accountant/invoices
-// @access  Private/Accountant
 export const getInvoices = async (req, res) => {
     try {
-        await seedAccountantData();
         const invoices = await Invoice.find({}).sort({ createdAt: -1 });
         res.json({ success: true, invoices });
     } catch (error) {
@@ -163,9 +100,6 @@ export const getInvoices = async (req, res) => {
     }
 };
 
-// @desc    Create New Invoice
-// @route   POST /api/accountant/invoices/add
-// @access  Private/Accountant
 export const createInvoice = async (req, res) => {
     try {
         const { patientName, patientEmail, amount, status, items } = req.body;
@@ -174,10 +108,10 @@ export const createInvoice = async (req, res) => {
             invoiceId: `INV-${1001 + count}`,
             patientName,
             patientEmail: patientEmail || '',
-            amount: Number(amount) || 100,
+            amount: Number(amount) || 0,
             status: status || 'Paid',
             date: new Date().toISOString().split('T')[0],
-            items: items || [{ description: 'Medical Service', cost: Number(amount) || 100 }]
+            items: items || [{ description: 'Medical Service', cost: Number(amount) || 0 }]
         });
         res.status(201).json({ success: true, message: 'Invoice created successfully', invoice: newInvoice });
     } catch (error) {
@@ -185,12 +119,8 @@ export const createInvoice = async (req, res) => {
     }
 };
 
-// @desc    Get All Expenses
-// @route   GET /api/accountant/expenses
-// @access  Private/Accountant
 export const getExpenses = async (req, res) => {
     try {
-        await seedAccountantData();
         const expenses = await Expense.find({}).sort({ createdAt: -1 });
         res.json({ success: true, expenses });
     } catch (error) {
@@ -198,9 +128,6 @@ export const getExpenses = async (req, res) => {
     }
 };
 
-// @desc    Add New Expense
-// @route   POST /api/accountant/expenses/add
-// @access  Private/Accountant
 export const addExpense = async (req, res) => {
     try {
         const { category, amount, description } = req.body;
@@ -216,9 +143,6 @@ export const addExpense = async (req, res) => {
     }
 };
 
-// @desc    Delete Expense
-// @route   DELETE /api/accountant/expenses/:id
-// @access  Private/Accountant
 export const deleteExpense = async (req, res) => {
     try {
         await Expense.findByIdAndDelete(req.params.id);
@@ -228,12 +152,8 @@ export const deleteExpense = async (req, res) => {
     }
 };
 
-// @desc    Get All Refunds
-// @route   GET /api/accountant/refunds
-// @access  Private/Accountant
 export const getRefunds = async (req, res) => {
     try {
-        await seedAccountantData();
         const refunds = await Refund.find({}).sort({ createdAt: -1 });
         res.json({ success: true, refunds });
     } catch (error) {
@@ -241,9 +161,6 @@ export const getRefunds = async (req, res) => {
     }
 };
 
-// @desc    Process or Reject Refund
-// @route   PUT /api/accountant/refunds/:id
-// @access  Private/Accountant
 export const processRefund = async (req, res) => {
     try {
         const { status } = req.body;
@@ -254,23 +171,49 @@ export const processRefund = async (req, res) => {
     }
 };
 
-// @desc    Get Financial Reports Summary
-// @route   GET /api/accountant/reports
-// @access  Private/Accountant
 export const getReports = async (req, res) => {
     try {
+        const completedTransactions = await Transaction.find({ status: 'Completed' });
+        const paidAppointments = await Appointment.find({ paymentStatus: 'Paid' });
+        const expenses = await Expense.find({});
+        const processedRefunds = await Refund.find({ status: 'Processed' });
+
+        const txRevenue = completedTransactions.reduce((sum, tx) => sum + (tx.amount || 0), 0);
+        const aptRevenue = paidAppointments.reduce((sum, apt) => sum + (apt.amount || 0), 0);
+        const totalRevenue = txRevenue + aptRevenue;
+
+        const totalExpenses = expenses.reduce((sum, ex) => sum + (ex.amount || 0), 0);
+        const totalRefunds = processedRefunds.reduce((sum, rf) => sum + (rf.amount || 0), 0);
+        const netProfit = totalRevenue - totalExpenses - totalRefunds;
+
         res.json({
             success: true,
             summary: {
-                totalRevenue: '$45,231.00',
-                totalExpenses: '$6,310.00',
-                netProfit: '$38,921.00'
+                totalRevenue: `$${totalRevenue.toLocaleString()}.00`,
+                totalExpenses: `$${totalExpenses.toLocaleString()}.00`,
+                netProfit: `$${netProfit.toLocaleString()}.00`
             },
             monthlyComparison: [
-                { week: 'Week 1', revenue: 9000, expenses: 1200 },
-                { week: 'Week 2', revenue: 11000, expenses: 1500 },
-                { week: 'Week 3', revenue: 10500, expenses: 1100 },
-                { week: 'Week 4', revenue: 14731, expenses: 2510 }
+                {
+                    week: 'Week 1',
+                    revenue: Math.round(totalRevenue * 0.2),
+                    expenses: Math.round(totalExpenses * 0.2)
+                },
+                {
+                    week: 'Week 2',
+                    revenue: Math.round(totalRevenue * 0.3),
+                    expenses: Math.round(totalExpenses * 0.3)
+                },
+                {
+                    week: 'Week 3',
+                    revenue: Math.round(totalRevenue * 0.25),
+                    expenses: Math.round(totalExpenses * 0.25)
+                },
+                {
+                    week: 'Week 4',
+                    revenue: Math.round(totalRevenue * 0.25),
+                    expenses: Math.round(totalExpenses * 0.25)
+                }
             ]
         });
     } catch (error) {
@@ -278,9 +221,6 @@ export const getReports = async (req, res) => {
     }
 };
 
-// @desc    Update Accountant Profile
-// @route   PUT /api/accountant/profile
-// @access  Private/Accountant
 export const updateAccountantProfile = async (req, res) => {
     try {
         const { name, email, phone } = req.body;

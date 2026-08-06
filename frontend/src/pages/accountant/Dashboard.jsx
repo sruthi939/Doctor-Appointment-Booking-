@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import AccountantLayout from '../../components/accountant/AccountantLayout';
-import { DollarSign, CreditCard, FileText, TrendingDown, ArrowUpRight, Plus, Download } from 'lucide-react';
+import { DollarSign, CreditCard, FileText, TrendingDown, ArrowUpRight, Plus } from 'lucide-react';
 import { fetchAccountantDashboard } from '../../services/accountantService';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,10 +19,10 @@ const Dashboard = () => {
     }, []);
 
     const stats = dashboardData?.stats || {
-        totalRevenue: '$45,231.00',
-        totalPayments: '$38,921.00',
-        totalInvoices: 128,
-        totalExpenses: '$6,310.00'
+        totalRevenue: '$0.00',
+        totalPayments: '$0.00',
+        totalInvoices: 0,
+        totalExpenses: '$0.00'
     };
 
     return (
@@ -50,7 +50,7 @@ const Dashboard = () => {
                     </div>
                 </div>
 
-                {/* 4 Stats Cards matching Step 2 diagram */}
+                {/* 4 Stats Cards */}
                 <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'>
                     {/* Total Revenue */}
                     <div className='p-6 rounded-3xl bg-slate-900/90 border border-slate-800 backdrop-blur-md space-y-2 shadow-xl hover:border-amber-500/40 transition-colors'>
@@ -60,9 +60,9 @@ const Dashboard = () => {
                                 <DollarSign size={18} />
                             </div>
                         </div>
-                        <p className='text-3xl font-extrabold text-white'>{stats.totalRevenue}</p>
+                        <p className='text-3xl font-extrabold text-white'>{loading ? '...' : stats.totalRevenue}</p>
                         <p className='text-[11px] text-emerald-400 font-semibold flex items-center gap-1'>
-                            <ArrowUpRight size={14} /> +12.4% from last month
+                            <ArrowUpRight size={14} /> Real-time DB Revenue
                         </p>
                     </div>
 
@@ -74,7 +74,7 @@ const Dashboard = () => {
                                 <CreditCard size={18} />
                             </div>
                         </div>
-                        <p className='text-3xl font-extrabold text-white'>{stats.totalPayments}</p>
+                        <p className='text-3xl font-extrabold text-white'>{loading ? '...' : stats.totalPayments}</p>
                         <p className='text-[11px] text-slate-400 font-medium'>Processed via Card/UPI</p>
                     </div>
 
@@ -86,8 +86,8 @@ const Dashboard = () => {
                                 <FileText size={18} />
                             </div>
                         </div>
-                        <p className='text-3xl font-extrabold text-white'>{stats.totalInvoices}</p>
-                        <p className='text-[11px] text-slate-400 font-medium'>Generated this month</p>
+                        <p className='text-3xl font-extrabold text-white'>{loading ? '...' : stats.totalInvoices}</p>
+                        <p className='text-[11px] text-slate-400 font-medium'>Generated invoices</p>
                     </div>
 
                     {/* Total Expenses */}
@@ -98,23 +98,22 @@ const Dashboard = () => {
                                 <TrendingDown size={18} />
                             </div>
                         </div>
-                        <p className='text-3xl font-extrabold text-white'>{stats.totalExpenses}</p>
+                        <p className='text-3xl font-extrabold text-white'>{loading ? '...' : stats.totalExpenses}</p>
                         <p className='text-[11px] text-rose-400 font-semibold'>Clinic utilities & equipment</p>
                     </div>
                 </div>
 
-                {/* Revenue Overview Chart Section matching Step 2 diagram */}
+                {/* Revenue Overview Chart Section */}
                 <div className='bg-slate-900/90 border border-slate-800 rounded-3xl p-6 backdrop-blur-md shadow-2xl space-y-4'>
                     <div className='flex items-center justify-between border-b border-slate-800 pb-3'>
                         <h2 className='text-base font-bold text-white uppercase tracking-wider text-amber-400'>
                             Revenue Overview
                         </h2>
                         <span className='text-xs text-slate-400 font-semibold bg-slate-950 px-3 py-1 rounded-full border border-slate-800'>
-                            This Month
+                            Live Overview
                         </span>
                     </div>
 
-                    {/* Custom SVG Wave Line Representation matching Step 2 diagram */}
                     <div className='h-48 w-full relative flex items-end pt-6 pb-2 px-4 bg-slate-950/60 rounded-2xl border border-slate-800/80 overflow-hidden'>
                         <svg className='w-full h-full overflow-visible' viewBox='0 0 500 120' preserveAspectRatio='none'>
                             <defs>
@@ -135,11 +134,11 @@ const Dashboard = () => {
                             />
                         </svg>
                         <div className='absolute bottom-2 left-0 right-0 flex justify-between px-6 text-[10px] text-slate-400 font-bold'>
-                            <span>May 1</span>
-                            <span>May 8</span>
-                            <span>May 15</span>
-                            <span>May 22</span>
-                            <span>May 29</span>
+                            <span>Phase 1</span>
+                            <span>Phase 2</span>
+                            <span>Phase 3</span>
+                            <span>Phase 4</span>
+                            <span>Current</span>
                         </div>
                     </div>
                 </div>

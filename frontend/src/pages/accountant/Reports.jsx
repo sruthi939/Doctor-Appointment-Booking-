@@ -1,23 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AccountantLayout from '../../components/accountant/AccountantLayout';
 import { BarChart3, Download, Calendar, DollarSign } from 'lucide-react';
+import { fetchReports } from '../../services/accountantService';
 
 const Reports = () => {
     const [reportType, setReportType] = useState('Monthly Financial Report');
     const [selectedMonth, setSelectedMonth] = useState('May 2024');
+    const [reportData, setReportData] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    const summary = {
-        totalRevenue: '$45,231.00',
-        totalExpenses: '$6,310.00',
-        netProfit: '$38,921.00'
+    useEffect(() => {
+        const load = async () => {
+            const res = await fetchReports();
+            if (res?.success) {
+                setReportData(res);
+            }
+            setLoading(false);
+        };
+        load();
+    }, []);
+
+    const summary = reportData?.summary || {
+        totalRevenue: '$0.00',
+        totalExpenses: '$0.00',
+        netProfit: '$0.00'
     };
 
-    const monthlyData = [
-        { week: 'Week 1', revenue: 90, expenses: 20 },
-        { week: 'Week 2', revenue: 110, expenses: 25 },
-        { week: 'Week 3', revenue: 105, expenses: 18 },
-        { week: 'Week 4', revenue: 147, expenses: 35 }
+    const monthlyData = reportData?.monthlyComparison || [
+        { week: 'Week 1', revenue: 0, expenses: 0 },
+        { week: 'Week 2', revenue: 0, expenses: 0 },
+        { week: 'Week 3', revenue: 0, expenses: 0 },
+        { week: 'Week 4', revenue: 0, expenses: 0 }
     ];
+
+    const maxVal = Math.max(...monthlyData.map(m => Math.max(m.revenue, m.expenses)), 100);
 
     return (
         <AccountantLayout>
@@ -42,7 +58,7 @@ const Reports = () => {
                     </button>
                 </div>
 
-                {/* Filter Controls Card matching Step 5 diagram */}
+                {/* Filter Controls Card */}
                 <div className='bg-slate-900/90 border border-slate-800 rounded-3xl p-6 backdrop-blur-md shadow-xl grid grid-cols-1 sm:grid-cols-2 gap-4'>
                     <div>
                         <label className='block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider'>Select Report Type</label>
@@ -71,25 +87,25 @@ const Reports = () => {
                     </div>
                 </div>
 
-                {/* Summary Metrics Cards matching Step 5 diagram */}
+                {/* Summary Metrics Cards */}
                 <div className='grid grid-cols-1 sm:grid-cols-3 gap-4'>
                     <div className='p-5 rounded-3xl bg-slate-900/90 border border-slate-800 backdrop-blur-md space-y-1 shadow-lg'>
                         <span className='text-xs text-slate-400 font-semibold'>Total Revenue</span>
-                        <p className='text-2xl font-extrabold text-white'>{summary.totalRevenue}</p>
+                        <p className='text-2xl font-extrabold text-white'>{loading ? '...' : summary.totalRevenue}</p>
                     </div>
 
                     <div className='p-5 rounded-3xl bg-slate-900/90 border border-slate-800 backdrop-blur-md space-y-1 shadow-lg'>
                         <span className='text-xs text-slate-400 font-semibold'>Total Expenses</span>
-                        <p className='text-2xl font-extrabold text-rose-400'>{summary.totalExpenses}</p>
+                        <p className='text-2xl font-extrabold text-rose-400'>{loading ? '...' : summary.totalExpenses}</p>
                     </div>
 
                     <div className='p-5 rounded-3xl bg-slate-900/90 border border-slate-800 backdrop-blur-md space-y-1 shadow-lg border-amber-500/30'>
                         <span className='text-xs text-amber-400 font-bold uppercase tracking-wider'>Net Profit</span>
-                        <p className='text-2xl font-extrabold text-amber-400'>{summary.netProfit}</p>
+                        <p className='text-2xl font-extrabold text-amber-400'>{loading ? '...' : summary.netProfit}</p>
                     </div>
                 </div>
 
-                {/* Revenue vs Expenses Bar Chart matching Step 5 diagram */}
+                {/* Revenue vs Expenses Bar Chart */}
                 <div className='bg-slate-900/90 border border-slate-800 rounded-3xl p-6 backdrop-blur-md shadow-2xl space-y-6'>
                     <div className='flex items-center justify-between border-b border-slate-800 pb-3'>
                         <h2 className='text-base font-bold text-white uppercase tracking-wider text-amber-400'>
@@ -110,14 +126,14 @@ const Reports = () => {
                             <div key={idx} className='flex flex-col items-center gap-2 h-full justify-end flex-1 max-w-[60px]'>
                                 <div className='w-full flex items-end justify-center gap-1.5 h-40'>
                                     <div
-                                        style={{ height: `${(item.revenue / 150) * 100}%` }}
+                                        style={{ height: `${Math.min(100, Math.max(10, (item.revenue / maxVal) * 100))}%` }}
                                         className='w-5 bg-blue-500 rounded-t-md transition-all hover:bg-blue-400'
-                                        title={`Revenue: $${item.revenue * 100}`}
+                                        title={`Revenue: $${item.revenue}`}
                                     />
                                     <div
-                                        style={{ height: `${(item.expenses / 150) * 100}%` }}
+                                        style={{ height: `${Math.min(100, Math.max(10, (item.expenses / maxVal) * 100))}%` }}
                                         className='w-5 bg-emerald-500 rounded-t-md transition-all hover:bg-emerald-400'
-                                        title={`Expenses: $${item.expenses * 100}`}
+                                        title={`Expenses: $${item.expenses}`}
                                     />
                                 </div>
                                 <span className='text-[10px] text-slate-400 font-bold'>{item.week}</span>
