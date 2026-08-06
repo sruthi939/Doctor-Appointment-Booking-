@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import DoctorLayout from '../../components/doctor/DoctorLayout';
-import { User, Mail, Phone, Stethoscope, Award, DollarSign, Save, Edit3, Camera } from 'lucide-react';
+import { User, Mail, Phone, Save, Edit3, Camera, Check } from 'lucide-react';
+import { updateDoctorProfileApi } from '../../services/doctorService';
 
 const DoctorProfile = () => {
     const [isEdit, setIsEdit] = useState(false);
+    const [savedNotice, setSavedNotice] = useState(false);
 
     const [profileData, setProfileData] = useState(() => {
         const saved = localStorage.getItem('doctor_user');
@@ -11,25 +13,27 @@ const DoctorProfile = () => {
             try { return JSON.parse(saved); } catch (e) { console.error(e); }
         }
         return {
-            name: 'Dr. John Doe',
-            email: 'johndoe@example.com',
+            name: 'Dr. Richard James',
+            email: 'richard@medicare.com',
             phone: '+1 987 654 3210',
-            speciality: 'General Physician',
-            degree: 'MBBS, MD',
-            experience: '10+ Years',
+            speciality: 'General physician',
+            degree: 'MBBS',
+            experience: '4 Years',
             fees: 50,
             image: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=600',
-            about: 'Dr. John Doe is a dedicated medical specialist with over 10 years of experience in clinical care and preventive medicine.'
+            about: 'Dr. James has a strong commitment to delivering comprehensive medical care.'
         };
     });
 
     const [formState, setFormState] = useState(profileData);
 
-    const handleSave = (e) => {
+    const handleSave = async (e) => {
         e.preventDefault();
         setProfileData(formState);
-        localStorage.setItem('doctor_user', JSON.stringify(formState));
+        await updateDoctorProfileApi(formState);
         setIsEdit(false);
+        setSavedNotice(true);
+        setTimeout(() => setSavedNotice(false), 3000);
     };
 
     return (
@@ -43,11 +47,6 @@ const DoctorProfile = () => {
                                 src={formState.image}
                                 alt={formState.name}
                             />
-                            {isEdit && (
-                                <div className='absolute inset-0 bg-slate-950/60 rounded-3xl flex items-center justify-center text-white cursor-pointer opacity-90 transition-opacity'>
-                                    <Camera size={24} />
-                                </div>
-                            )}
                         </div>
 
                         <div className='text-center sm:text-left space-y-2 flex-1'>
@@ -80,7 +79,13 @@ const DoctorProfile = () => {
                         </button>
                     </div>
 
-                    {/* Details Form Grid matching Step 9 diagram */}
+                    {savedNotice && (
+                        <div className='p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400 text-xs font-semibold flex items-center gap-2'>
+                            <Check size={16} /> Profile updated in database!
+                        </div>
+                    )}
+
+                    {/* Details Form Grid */}
                     <div className='space-y-4 text-xs text-slate-300'>
                         <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
                             <div>
@@ -142,16 +147,16 @@ const DoctorProfile = () => {
                             </div>
 
                             <div>
-                                <label className='block text-slate-400 mb-1'>Experience</label>
+                                <label className='block text-slate-400 mb-1'>Consultation Fee ($)</label>
                                 {isEdit ? (
                                     <input
-                                        type='text'
-                                        value={formState.experience}
-                                        onChange={(e) => setFormState(prev => ({ ...prev, experience: e.target.value }))}
+                                        type='number'
+                                        value={formState.fees}
+                                        onChange={(e) => setFormState(prev => ({ ...prev, fees: e.target.value }))}
                                         className='w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white'
                                     />
                                 ) : (
-                                    <span className='font-bold text-white text-sm block p-2.5 bg-slate-950 rounded-xl border border-slate-800'>{profileData.experience}</span>
+                                    <span className='font-bold text-white text-sm block p-2.5 bg-slate-950 rounded-xl border border-slate-800'>${profileData.fees}.00</span>
                                 )}
                             </div>
                         </div>

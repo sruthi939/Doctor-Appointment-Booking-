@@ -1,21 +1,25 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Stethoscope, Lock, Mail, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Stethoscope, Lock, Mail, ArrowRight, ArrowLeft, AlertCircle } from 'lucide-react';
 import { doctorLogin } from '../../services/doctorService';
 
 const DoctorLogin = () => {
     const navigate = useNavigate();
-    const [email, setEmail] = useState('johndoe@example.com');
-    const [password, setPassword] = useState('password123');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setErrorMessage('');
         setLoading(true);
         const res = await doctorLogin(email, password);
         setLoading(false);
         if (res.success) {
             navigate('/doctor/dashboard');
+        } else {
+            setErrorMessage(res.message || 'Login failed. Please verify doctor credentials.');
         }
     };
 
@@ -44,17 +48,24 @@ const DoctorLogin = () => {
                     </p>
                 </div>
 
+                {errorMessage && (
+                    <div className='p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs flex items-center gap-2'>
+                        <AlertCircle size={16} className='shrink-0' />
+                        <span>{errorMessage}</span>
+                    </div>
+                )}
+
                 <form onSubmit={handleSubmit} className='space-y-4'>
                     <div>
                         <label className='block text-xs font-medium text-slate-300 mb-1 flex items-center gap-1.5'>
-                            <Mail size={14} className='text-slate-400' /> Email Address
+                            <Mail size={14} className='text-slate-400' /> Doctor Email Address
                         </label>
                         <input
                             type='email'
                             required
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            placeholder='doctor@medicare.com'
+                            placeholder='richard@medicare.com'
                             className='w-full bg-slate-950 border border-slate-700/80 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-pink-500'
                         />
                     </div>

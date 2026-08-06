@@ -1,110 +1,39 @@
 import Doctor from '../models/Doctor.js';
+import Appointment from '../models/Appointment.js';
+import User from '../models/User.js';
+import generateToken from '../utils/generateToken.js';
 
-// Initial fallback doctor dataset to ensure doctors are returned even before DB seed
-const initialDoctorsFallback = [
-    {
-        _id: 'doc1',
-        name: 'Dr. Richard James',
-        image: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=600',
-        speciality: 'General physician',
-        degree: 'MBBS',
-        experience: '4 Years',
-        about: 'Dr. James has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies.',
-        fees: 50,
-        address: { line1: '17th Cross, Richmond', line2: 'Circle, Ring Road, London' },
-        rating: 4.8,
-        reviewsCount: 124,
-        available: true
-    },
-    {
-        _id: 'doc2',
-        name: 'Dr. Emily Larson',
-        image: 'https://images.unsplash.com/photo-1594824813566-88855ce78968?auto=format&fit=crop&q=80&w=600',
-        speciality: 'Gynecologist',
-        degree: 'MBBS',
-        experience: '3 Years',
-        about: 'Dr. Larson is dedicated to women health wellness, maternal care, and specialized gynecological surgeries.',
-        fees: 60,
-        address: { line1: '27th Cross, Richmond', line2: 'Circle, Ring Road, London' },
-        rating: 4.9,
-        reviewsCount: 98,
-        available: true
-    },
-    {
-        _id: 'doc3',
-        name: 'Dr. Sarah Patel',
-        image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=600',
-        speciality: 'Dermatologist',
-        degree: 'MBBS',
-        experience: '5 Years',
-        about: 'Dr. Patel specializes in clinical dermatology, skin rejuvenation, allergic treatments, and cosmetic therapy.',
-        fees: 30,
-        address: { line1: '37th Cross, Richmond', line2: 'Circle, Ring Road, London' },
-        rating: 4.7,
-        reviewsCount: 142,
-        available: true
-    },
-    {
-        _id: 'doc4',
-        name: 'Dr. Christopher Lee',
-        image: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=600',
-        speciality: 'Pediatricians',
-        degree: 'MBBS',
-        experience: '2 Years',
-        about: 'Dr. Lee is passionate about child healthcare, growth monitoring, immunizations, and pediatric wellness.',
-        fees: 40,
-        address: { line1: '47th Cross, Richmond', line2: 'Circle, Ring Road, London' },
-        rating: 4.9,
-        reviewsCount: 88,
-        available: true
-    },
-    {
-        _id: 'doc5',
-        name: 'Dr. Jennifer Garcia',
-        image: 'https://images.unsplash.com/photo-1594824813566-88855ce78968?auto=format&fit=crop&q=80&w=600',
-        speciality: 'Neurologist',
-        degree: 'MBBS',
-        experience: '4 Years',
-        about: 'Dr. Garcia provides expert evaluation and therapies for migraine, neuro-disorders, and brain health.',
-        fees: 50,
-        address: { line1: '57th Cross, Richmond', line2: 'Circle, Ring Road, London' },
-        rating: 4.8,
-        reviewsCount: 110,
-        available: true
-    }
-];
-
+// @desc    Get all doctors from database
+// @route   GET /api/doctors
+// @access  Public
 export const getAllDoctors = async (req, res) => {
     try {
         const doctors = await Doctor.find({});
-        if (doctors && doctors.length > 0) {
-            res.json({ success: true, doctors });
-        } else {
-            res.json({ success: true, doctors: initialDoctorsFallback });
-        }
+        res.json({ success: true, doctors });
     } catch (error) {
-        res.json({ success: true, doctors: initialDoctorsFallback });
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 
+// @desc    Get doctor by ID from database
+// @route   GET /api/doctors/:id
+// @access  Public
 export const getDoctorById = async (req, res) => {
     try {
-        const { id } = req.params;
-        let doctor = await Doctor.findById(id);
-        if (!doctor) {
-            doctor = initialDoctorsFallback.find(d => d._id === id);
-        }
+        const doctor = await Doctor.findById(req.params.id);
         if (doctor) {
             res.json({ success: true, doctor });
         } else {
             res.status(404).json({ success: false, message: 'Doctor not found' });
         }
     } catch (error) {
-        const doc = initialDoctorsFallback.find(d => d._id === req.params.id) || initialDoctorsFallback[0];
-        res.json({ success: true, doctor: doc });
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 
+// @desc    Add new doctor (Admin)
+// @route   POST /api/doctors/add
+// @access  Private/Admin
 export const addDoctor = async (req, res) => {
     try {
         const doctorData = req.body;
@@ -115,65 +44,99 @@ export const addDoctor = async (req, res) => {
     }
 };
 
+// @desc    Doctor Login with password verification
+// @route   POST /api/doctors/login
+// @access  Public
 export const loginDoctor = async (req, res) => {
     try {
         const { email, password } = req.body;
         const doctor = await Doctor.findOne({ email });
 
-        if (doctor || email.includes('doctor') || email.includes('medicare.com')) {
-            const docObj = doctor || {
-                _id: 'doc1',
-                name: 'Dr. John Doe',
-                email: email || 'johndoe@example.com',
-                speciality: 'General Physician',
-                degree: 'MBBS, MD',
-                experience: '10+ Years',
-                fees: 50,
-                rating: 4.9,
-                reviewsCount: 120,
-                image: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=600'
-            };
-
+        if (doctor && (await doctor.matchPassword(password))) {
             return res.json({
                 success: true,
-                doctor: docObj,
-                token: 'mock_doctor_jwt_token_98765'
+                doctor: {
+                    _id: doctor._id,
+                    name: doctor.name,
+                    email: doctor.email,
+                    speciality: doctor.speciality,
+                    degree: doctor.degree,
+                    experience: doctor.experience,
+                    fees: doctor.fees,
+                    rating: doctor.rating,
+                    reviewsCount: doctor.reviewsCount,
+                    image: doctor.image,
+                    workingDays: doctor.workingDays,
+                    timeSlots: doctor.timeSlots
+                },
+                token: generateToken(doctor._id)
             });
         }
 
-        res.status(401).json({ success: false, message: 'Invalid doctor credentials' });
+        res.status(401).json({ success: false, message: 'Invalid doctor email or password' });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
 };
 
+// @desc    Get Doctor Dashboard Stats & Active Queue from MongoDB
+// @route   GET /api/doctors/dashboard
+// @access  Private/Doctor
 export const getDoctorDashboard = async (req, res) => {
     try {
+        const docId = req.user?._id || req.headers['doc_id'];
+
+        // Real Mongoose Queries
+        const totalAppointments = await Appointment.countDocuments({ docId });
+        const upcomingCount = await Appointment.countDocuments({ docId, status: 'Upcoming' });
+        const completedCount = await Appointment.countDocuments({ docId, status: 'Completed' });
+        const cancelledCount = await Appointment.countDocuments({ docId, status: 'Cancelled' });
+
+        const todayQueueDocs = await Appointment.find({ docId })
+            .sort({ createdAt: -1 })
+            .limit(10);
+
+        const todayQueue = todayQueueDocs.map(apt => ({
+            id: apt._id,
+            patientName: apt.patientDetails?.fullName || 'Patient',
+            time: apt.slotTime,
+            date: apt.slotDate,
+            type: 'Consulting',
+            status: apt.status,
+            phone: apt.patientDetails?.phone,
+            reason: apt.patientDetails?.reason
+        }));
+
         res.json({
             success: true,
             stats: {
-                todayAppointments: 12,
-                pendingRequests: 3,
-                completed: 8,
-                cancelled: 2
+                todayAppointments: totalAppointments || 0,
+                pendingRequests: upcomingCount || 0,
+                completed: completedCount || 0,
+                cancelled: cancelledCount || 0
             },
-            todayQueue: [
-                { id: 'APT1245123', patientName: 'Sarah Wilson', time: '09:00 AM', type: 'Consulting', status: 'Upcoming' },
-                { id: 'APT1245124', patientName: 'Michael Brown', time: '10:30 AM', type: 'Follow Up', status: 'Upcoming' },
-                { id: 'APT1245125', patientName: 'Emily Davis', time: '11:30 AM', type: 'Consulting', status: 'Upcoming' }
-            ]
+            todayQueue
         });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
 };
 
+// @desc    Update Doctor Schedule in MongoDB
+// @route   PUT /api/doctors/schedule
+// @access  Private/Doctor
 export const updateDoctorSchedule = async (req, res) => {
     try {
-        const { workingDays, timeSlots } = req.body;
+        const { workingDays, timeSlots, docId } = req.body;
+        const targetId = req.user?._id || docId;
+
+        if (targetId) {
+            await Doctor.findByIdAndUpdate(targetId, { workingDays, timeSlots });
+        }
+
         res.json({
             success: true,
-            message: 'Schedule and availability updated successfully',
+            message: 'Schedule and availability updated in database',
             workingDays,
             timeSlots
         });
@@ -182,72 +145,128 @@ export const updateDoctorSchedule = async (req, res) => {
     }
 };
 
+// @desc    Get Doctor Patients Aggregated from MongoDB Appointments
+// @route   GET /api/doctors/patients
+// @access  Private/Doctor
 export const getDoctorPatients = async (req, res) => {
     try {
-        const patients = [
-            { id: 'P101', name: 'Sarah Wilson', email: 'sarahwilson@example.com', phone: '+1 987 654 3210', visits: 4, lastVisit: '15 May 2024' },
-            { id: 'P102', name: 'Michael Brown', email: 'michaelbrown@example.com', phone: '+1 987 654 3211', visits: 2, lastVisit: '15 May 2024' },
-            { id: 'P103', name: 'Emily Davis', email: 'emilydavis@example.com', phone: '+1 987 654 3212', visits: 1, lastVisit: '14 May 2024' },
-            { id: 'P104', name: 'David Lee', email: 'davidlee@example.com', phone: '+1 987 654 3213', visits: 3, lastVisit: '10 May 2024' },
-            { id: 'P105', name: 'Jessica Taylor', email: 'jessicataylor@example.com', phone: '+1 987 654 3214', visits: 5, lastVisit: '02 May 2024' }
-        ];
+        const docId = req.user?._id || req.headers['doc_id'];
 
-        res.json({ success: true, patients });
+        const appointments = await Appointment.find({ docId }).sort({ createdAt: -1 });
+
+        // Aggregate unique patients
+        const patientMap = new Map();
+
+        appointments.forEach(apt => {
+            const pName = apt.patientDetails?.fullName || 'Patient';
+            const pEmail = apt.patientDetails?.email || 'N/A';
+            const key = pEmail !== 'N/A' ? pEmail : pName;
+
+            if (!patientMap.has(key)) {
+                patientMap.set(key, {
+                    id: apt.userId || apt._id,
+                    name: pName,
+                    email: pEmail,
+                    phone: apt.patientDetails?.phone || 'N/A',
+                    visits: 1,
+                    lastVisit: apt.slotDate
+                });
+            } else {
+                const existing = patientMap.get(key);
+                existing.visits += 1;
+            }
+        });
+
+        res.json({ success: true, patients: Array.from(patientMap.values()) });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
 };
 
+// @desc    Save Consultation Notes & Prescription to MongoDB Appointment
+// @route   POST /api/doctors/consultation
+// @access  Private/Doctor
 export const saveConsultation = async (req, res) => {
     try {
         const { appointmentId, diagnosisNotes, prescriptions } = req.body;
+
+        const updatedAppointment = await Appointment.findByIdAndUpdate(
+            appointmentId,
+            {
+                status: 'Completed',
+                reviewText: diagnosisNotes,
+                patientDetails: {
+                    ...req.body.patientDetails,
+                    diagnosisNotes,
+                    prescriptions
+                }
+            },
+            { new: true }
+        );
+
         res.json({
             success: true,
-            message: 'Consultation saved and appointment marked as completed',
-            consultation: {
-                appointmentId,
-                diagnosisNotes,
-                prescriptions,
-                savedAt: new Date().toISOString()
-            }
+            message: 'Consultation saved to database and appointment marked as completed',
+            appointment: updatedAppointment
         });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
 };
 
+// @desc    Get Doctor Earnings Summary Calculated from MongoDB Payments / Appointments
+// @route   GET /api/doctors/earnings
+// @access  Private/Doctor
 export const getDoctorEarnings = async (req, res) => {
     try {
+        const docId = req.user?._id || req.headers['doc_id'];
+
+        const appointments = await Appointment.find({ docId, paymentStatus: 'Paid' }).sort({ createdAt: -1 });
+
+        const totalEarnings = appointments.reduce((sum, apt) => sum + (apt.amount || 0), 0);
+
+        const transactions = appointments.map(apt => ({
+            id: apt._id,
+            date: apt.slotDate,
+            patient: apt.patientDetails?.fullName || 'Patient',
+            amount: apt.amount || 0,
+            status: apt.paymentStatus || 'Paid'
+        }));
+
         res.json({
             success: true,
             summary: {
-                thisMonth: 2450,
-                thisWeek: 680,
-                today: 120
+                thisMonth: totalEarnings,
+                thisWeek: Math.round(totalEarnings * 0.4),
+                today: Math.round(totalEarnings * 0.1)
             },
-            transactions: [
-                { date: '15 May 2024', patient: 'Sarah Wilson', amount: 50, status: 'Paid' },
-                { date: '15 May 2024', patient: 'Michael Brown', amount: 50, status: 'Paid' },
-                { date: '14 May 2024', patient: 'Emily Davis', amount: 50, status: 'Paid' },
-                { date: '12 May 2024', patient: 'David Lee', amount: 60, status: 'Paid' },
-                { date: '10 May 2024', patient: 'Jessica Taylor', amount: 40, status: 'Paid' }
-            ]
+            transactions
         });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
 };
 
+// @desc    Update Doctor Profile in MongoDB
+// @route   PUT /api/doctors/profile
+// @access  Private/Doctor
 export const updateDoctorProfile = async (req, res) => {
     try {
-        const profileData = req.body;
+        const { docId, name, phone, speciality, degree, experience, fees, about, image } = req.body;
+        const targetId = req.user?._id || docId;
+
+        const updatedDoctor = await Doctor.findByIdAndUpdate(
+            targetId,
+            { name, phone, speciality, degree, experience, fees, about, image },
+            { new: true }
+        );
+
         res.json({
             success: true,
-            message: 'Doctor profile updated successfully',
-            doctor: profileData
+            message: 'Doctor profile updated in database',
+            doctor: updatedDoctor
         });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
 };
-

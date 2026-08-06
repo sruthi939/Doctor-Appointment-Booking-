@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DoctorLayout from '../../components/doctor/DoctorLayout';
 import { Clock, Plus, Trash2, Save, Check } from 'lucide-react';
+import { updateScheduleApi } from '../../services/doctorService';
 
 const Schedule = () => {
     const [workingDays, setWorkingDays] = useState(['Mon', 'Tue', 'Wed', 'Thu', 'Fri']);
@@ -15,6 +16,12 @@ const Schedule = () => {
     const [newStartTime, setNewStartTime] = useState('05:00 PM');
     const [newEndTime, setNewEndTime] = useState('06:00 PM');
     const [savedNotice, setSavedNotice] = useState(false);
+
+    useEffect(() => {
+        const savedDoc = JSON.parse(localStorage.getItem('doctor_user') || '{}');
+        if (savedDoc.workingDays) setWorkingDays(savedDoc.workingDays);
+        if (savedDoc.timeSlots) setTimeSlots(savedDoc.timeSlots);
+    }, []);
 
     const toggleDay = (day) => {
         if (workingDays.includes(day)) {
@@ -36,7 +43,8 @@ const Schedule = () => {
         }
     };
 
-    const handleSaveSchedule = () => {
+    const handleSaveSchedule = async () => {
+        await updateScheduleApi({ workingDays, timeSlots });
         setSavedNotice(true);
         setTimeout(() => setSavedNotice(false), 3000);
     };
