@@ -8,7 +8,7 @@ import ReceptionistPatients from '../pages/receptionist/Patients';
 import AddAppointment from '../pages/receptionist/AddAppointment';
 import ReceptionistQueue from '../pages/receptionist/Queue';
 import ReceptionistProfile from '../pages/receptionist/Profile';
-import { CheckCircle2 } from 'lucide-react';
+import { ProtectedReceptionistRoute } from '../components/RoleProtectedRoutes';
 
 const ReceptionistLogoutSuccess = () => {
     const navigate = useNavigate();
@@ -36,26 +36,31 @@ const ReceptionistLogoutSuccess = () => {
 const ReceptionistRoutes = () => {
     return (
         <Routes>
+            {/* Public Auth Routes */}
             <Route path='/receptionist/login' element={<ReceptionistLogin />} />
-            <Route path='/receptionist/dashboard' element={<ReceptionistDashboard />} />
-            <Route path='/receptionist/appointments' element={<ReceptionistAppointments />} />
-            <Route path='/receptionist/schedule' element={<ReceptionistSchedule />} />
-            <Route path='/receptionist/patients' element={<ReceptionistPatients />} />
-            <Route path='/receptionist/add-appointment' element={<AddAppointment />} />
-            <Route path='/receptionist/queue' element={<ReceptionistQueue />} />
-            <Route path='/receptionist/profile' element={<ReceptionistProfile />} />
-            <Route path='/receptionist/logout-success' element={<ReceptionistLogoutSuccess />} />
-
-            {/* Fallbacks */}
             <Route path='/login' element={<ReceptionistLogin />} />
-            <Route path='/dashboard' element={<ReceptionistDashboard />} />
-            <Route path='/appointments' element={<ReceptionistAppointments />} />
-            <Route path='/schedule' element={<ReceptionistSchedule />} />
-            <Route path='/patients' element={<ReceptionistPatients />} />
-            <Route path='/add-appointment' element={<AddAppointment />} />
-            <Route path='/queue' element={<ReceptionistQueue />} />
-            <Route path='/profile' element={<ReceptionistProfile />} />
+            <Route path='/receptionist/logout-success' element={<ReceptionistLogoutSuccess />} />
             <Route path='/logout-success' element={<ReceptionistLogoutSuccess />} />
+
+            {/* Protected Receptionist Routes */}
+            <Route element={<ProtectedReceptionistRoute />}>
+                <Route path='/receptionist/dashboard' element={<ReceptionistDashboard />} />
+                <Route path='/receptionist/appointments' element={<ReceptionistAppointments />} />
+                <Route path='/receptionist/schedule' element={<ReceptionistSchedule />} />
+                <Route path='/receptionist/patients' element={<ReceptionistPatients />} />
+                <Route path='/receptionist/add-appointment' element={<AddAppointment />} />
+                <Route path='/receptionist/queue' element={<ReceptionistQueue />} />
+                <Route path='/receptionist/profile' element={<ReceptionistProfile />} />
+
+                {/* Fallbacks */}
+                <Route path='/dashboard' element={<ReceptionistDashboard />} />
+                <Route path='/appointments' element={<ReceptionistAppointments />} />
+                <Route path='/schedule' element={<ReceptionistSchedule />} />
+                <Route path='/patients' element={<ReceptionistPatients />} />
+                <Route path='/add-appointment' element={<AddAppointment />} />
+                <Route path='/queue' element={<ReceptionistQueue />} />
+                <Route path='/profile' element={<ReceptionistProfile />} />
+            </Route>
         </Routes>
     );
 };
