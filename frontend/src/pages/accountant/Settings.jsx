@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AccountantLayout from '../../components/accountant/AccountantLayout';
-import { Settings as SettingsIcon, User, Shield, Bell, Sliders, Check, Save } from 'lucide-react';
+import { Settings as SettingsIcon, User, Shield, Bell, Sliders, Check } from 'lucide-react';
 import { updateAccountantProfileApi } from '../../services/accountantService';
 
 const Settings = () => {
@@ -13,15 +13,28 @@ const Settings = () => {
             try { return JSON.parse(saved); } catch (e) { console.error(e); }
         }
         return {
-            name: 'Olivia Smith',
-            email: 'olivia.smith@example.com',
-            phone: '+1 987 654 3210'
+            name: '',
+            email: '',
+            phone: ''
         };
     });
 
+    useEffect(() => {
+        const saved = localStorage.getItem('accountant_user');
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                if (parsed) setFormState(parsed);
+            } catch (e) {}
+        }
+    }, []);
+
     const handleUpdateProfile = async (e) => {
         e.preventDefault();
-        await updateAccountantProfileApi(formState);
+        const res = await updateAccountantProfileApi(formState);
+        if (res?.user) {
+            setFormState(res.user);
+        }
         setSavedNotice(true);
         setTimeout(() => setSavedNotice(false), 3000);
     };
@@ -46,7 +59,7 @@ const Settings = () => {
                     </div>
                 )}
 
-                {/* Settings Layout Grid matching Step 9 diagram */}
+                {/* Settings Layout Grid */}
                 <div className='grid grid-cols-1 md:grid-cols-4 gap-6'>
                     {/* Left Sidebar Menu */}
                     <div className='bg-slate-900/90 border border-slate-800 rounded-3xl p-4 backdrop-blur-md shadow-xl space-y-1 self-start'>
@@ -73,7 +86,7 @@ const Settings = () => {
                         })}
                     </div>
 
-                    {/* Right Form Card matching Step 9 diagram */}
+                    {/* Right Form Card */}
                     <div className='md:col-span-3 bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 backdrop-blur-md shadow-2xl space-y-6'>
                         <h2 className='text-lg font-bold text-white border-b border-slate-800 pb-3'>
                             {activeSection} Information
@@ -86,8 +99,9 @@ const Settings = () => {
                                     <input
                                         type='text'
                                         required
-                                        value={formState.name}
+                                        value={formState.name || ''}
                                         onChange={(e) => setFormState(prev => ({ ...prev, name: e.target.value }))}
+                                        placeholder='Enter your full name...'
                                         className='w-full bg-slate-950 border border-slate-700 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-amber-500'
                                     />
                                 </div>
@@ -97,8 +111,9 @@ const Settings = () => {
                                     <input
                                         type='email'
                                         required
-                                        value={formState.email}
+                                        value={formState.email || ''}
                                         onChange={(e) => setFormState(prev => ({ ...prev, email: e.target.value }))}
+                                        placeholder='Enter accountant email...'
                                         className='w-full bg-slate-950 border border-slate-700 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-amber-500'
                                     />
                                 </div>
@@ -107,8 +122,9 @@ const Settings = () => {
                                     <label className='block text-slate-400 mb-1.5 font-semibold'>Phone Number</label>
                                     <input
                                         type='text'
-                                        value={formState.phone}
+                                        value={formState.phone || ''}
                                         onChange={(e) => setFormState(prev => ({ ...prev, phone: e.target.value }))}
+                                        placeholder='Enter phone number...'
                                         className='w-full bg-slate-950 border border-slate-700 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-amber-500'
                                     />
                                 </div>

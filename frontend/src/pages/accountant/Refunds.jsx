@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import AccountantLayout from '../../components/accountant/AccountantLayout';
-import { RotateCcw, Check, XCheck, Search, CheckCircle2, XCircle } from 'lucide-react';
+import { RotateCcw, Search, CheckCircle2, XCircle } from 'lucide-react';
 import { fetchRefunds, processRefundApi } from '../../services/accountantService';
 
 const Refunds = () => {
