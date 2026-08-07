@@ -8,6 +8,11 @@ export const AppointmentProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     const loadAppointments = async () => {
+        const token = localStorage.getItem('admin_token');
+        if (!token || token === 'false') {
+            setLoading(false);
+            return;
+        }
         setLoading(true);
         const res = await fetchAppointments();
         if (res.appointments) setAppointments(res.appointments);

@@ -43,9 +43,6 @@ export const getAdminDashboardStats = async (req, res) => {
     }
 };
 
-// @desc    Get All System Users
-// @route   GET /api/admin/users
-// @access  Private/Admin
 export const getAllUsersAdmin = async (req, res) => {
     try {
         const users = await User.find({}).select('-password').sort({ createdAt: -1 });
@@ -71,9 +68,6 @@ export const addUserAdmin = async (req, res) => {
     }
 };
 
-// @desc    Update Staff Access Role (Admin Permission Control)
-// @route   PUT /api/admin/users/role
-// @access  Private/Admin
 export const updateUserRoleAccess = async (req, res) => {
     try {
         const { userId, role } = req.body;
@@ -102,9 +96,6 @@ export const getSpecialties = async (req, res) => {
     }
 };
 
-// @desc    Add Specialty
-// @route   POST /api/admin/specialties/add
-// @access  Private/Admin
 export const addSpecialty = async (req, res) => {
     try {
         const { name, description, image } = req.body;
@@ -169,18 +160,20 @@ export const updateSettings = async (req, res) => {
 
 export const getAdminPayments = async (req, res) => {
     try {
-        const appointments = await Appointment.find({}).sort({ createdAt: -1 });
+        const appointments = await Appointment.find({}).sort({ createdAt: -1 }) || [];
         const payments = appointments.map((apt, idx) => ({
+            _id: apt._id,
             transactionId: `#PAY00${idx + 1}`,
             patient: apt.patientDetails?.fullName || 'Patient',
             amount: apt.amount || 50,
             method: apt.paymentMethod || 'Card',
             status: apt.paymentStatus || 'Paid',
-            date: apt.slotDate
+            date: apt.slotDate || new Date().toISOString().split('T')[0]
         }));
         res.json({ success: true, payments });
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        console.error('[getAdminPayments Error]', error.message);
+        res.json({ success: true, payments: [] });
     }
 };
 

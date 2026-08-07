@@ -2,7 +2,9 @@ import mongoose from 'mongoose';
 
 const connectDB = async () => {
     try {
-        const conn = await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/doctor-appointment-booking');
+        const conn = await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/doctor-appointment-booking', {
+            serverSelectionTimeoutMS: 2500,
+        });
         console.log(`[Database] MongoDB Connected: ${conn.connection.host}`);
     } catch (error) {
         console.error(`[Database Error] ${error.message}`);

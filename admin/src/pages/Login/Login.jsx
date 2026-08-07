@@ -31,7 +31,7 @@ const Login = () => {
                     <div className='w-14 h-14 rounded-2xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-pink-500 flex items-center justify-center mx-auto shadow-lg shadow-purple-500/25 text-white'>
                         <ShieldCheck size={28} />
                     </div>
-                    <h1 className='text-2xl font-extrabold text-white'>MediCare Admin</h1>
+                    <h1 className='text-2xl font-extrabold text-white'>Doctor Appointment Admin Portal</h1>
                     <p className='text-slate-400 text-xs'>
                         Sign in to access admin panel workflow.
                     </p>
@@ -54,7 +54,7 @@ const Login = () => {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder='admin@medicare.com'
-                            className='w-full bg-slate-950 border border-slate-700/80 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500'
+                            className='w-full bg-slate-950 border border-slate-700/80 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500 transition-all'
                         />
                     </div>
 
@@ -71,7 +71,7 @@ const Login = () => {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder='••••••••'
-                            className='w-full bg-slate-950 border border-slate-700/80 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500'
+                            className='w-full bg-slate-950 border border-slate-700/80 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500 transition-all'
                         />
                     </div>
 

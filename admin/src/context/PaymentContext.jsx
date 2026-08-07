@@ -8,6 +8,11 @@ export const PaymentProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     const loadPayments = async () => {
+        const token = localStorage.getItem('admin_token');
+        if (!token || token === 'false') {
+            setLoading(false);
+            return;
+        }
         setLoading(true);
         const res = await fetchPayments();
         if (res.payments) setPayments(res.payments);
