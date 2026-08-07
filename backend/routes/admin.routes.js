@@ -3,6 +3,7 @@ import {
     getAdminDashboardStats,
     getAllUsersAdmin,
     addUserAdmin,
+    updateUserRoleAccess,
     getSpecialties,
     addSpecialty,
     getCoupons,
@@ -18,6 +19,7 @@ const router = express.Router();
 router.get('/dashboard', getAdminDashboardStats);
 router.get('/users', getAllUsersAdmin);
 router.post('/users/add', addUserAdmin);
+router.put('/users/role', updateUserRoleAccess);
 
 router.get('/specialties', getSpecialties);
 router.post('/specialties/add', addSpecialty);

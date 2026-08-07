@@ -58,8 +58,14 @@ import ProtectedRoutes from './ProtectedRoutes';
 const AdminRoutes = () => {
     return (
         <Routes>
+            {/* Root Redirect */}
+            <Route path='/' element={<Navigate to='/dashboard' replace />} />
+            <Route path='/admin' element={<Navigate to='/dashboard' replace />} />
+            <Route path='/admin/dashboard' element={<Navigate to='/dashboard' replace />} />
+
             {/* Public Auth Routes */}
             <Route path='/login' element={<Login />} />
+            <Route path='/admin/login' element={<Login />} />
             <Route path='/forgot-password' element={<ForgotPassword />} />
             <Route path='/reset-password' element={<ResetPassword />} />
 
@@ -69,35 +75,42 @@ const AdminRoutes = () => {
 
                 {/* Doctors */}
                 <Route path='/doctors' element={<DoctorsList />} />
+                <Route path='/admin/doctors' element={<DoctorsList />} />
                 <Route path='/doctors/add' element={<AddDoctor />} />
+                <Route path='/admin/doctors/add' element={<AddDoctor />} />
                 <Route path='/doctors/edit/:id' element={<EditDoctor />} />
                 <Route path='/doctors/profile/:id' element={<DoctorProfile />} />
                 <Route path='/doctors/schedule/:id' element={<DoctorSchedule />} />
 
                 {/* Patients */}
                 <Route path='/patients' element={<PatientList />} />
+                <Route path='/admin/patients' element={<PatientList />} />
                 <Route path='/patients/details/:id' element={<PatientDetails />} />
                 <Route path='/patients/edit/:id' element={<EditPatient />} />
 
                 {/* Appointments */}
                 <Route path='/appointments' element={<AppointmentList />} />
+                <Route path='/admin/appointments' element={<AppointmentList />} />
                 <Route path='/appointments/details/:id' element={<AppointmentDetails />} />
                 <Route path='/appointments/reschedule/:id' element={<RescheduleAppointment />} />
                 <Route path='/appointments/cancel/:id' element={<CancelAppointment />} />
 
                 {/* Payments */}
                 <Route path='/payments' element={<PaymentList />} />
+                <Route path='/admin/payments' element={<PaymentList />} />
                 <Route path='/payments/invoice/:id' element={<Invoice />} />
                 <Route path='/payments/refund/:id' element={<Refund />} />
                 <Route path='/payments/history' element={<PaymentHistory />} />
 
                 {/* Specialities */}
                 <Route path='/specialties' element={<SpecialityList />} />
+                <Route path='/admin/specialties' element={<SpecialityList />} />
                 <Route path='/specialties/add' element={<AddSpeciality />} />
                 <Route path='/specialties/edit/:id' element={<EditSpeciality />} />
 
                 {/* Reports */}
                 <Route path='/reports' element={<Reports />} />
+                <Route path='/admin/reports' element={<Reports />} />
                 <Route path='/reports/revenue' element={<RevenueReport />} />
                 <Route path='/reports/appointments' element={<AppointmentReport />} />
                 <Route path='/reports/doctors' element={<DoctorReport />} />
@@ -105,24 +118,27 @@ const AdminRoutes = () => {
 
                 {/* Users */}
                 <Route path='/users' element={<UserList />} />
+                <Route path='/admin/users' element={<UserList />} />
                 <Route path='/users/add' element={<AddUser />} />
                 <Route path='/users/edit/:id' element={<EditUser />} />
                 <Route path='/users/roles' element={<UserRoles />} />
 
                 {/* Notifications */}
                 <Route path='/notifications' element={<NotificationList />} />
+                <Route path='/admin/notifications' element={<NotificationList />} />
                 <Route path='/notifications/send' element={<SendNotification />} />
                 <Route path='/notifications/templates' element={<EmailTemplate />} />
 
                 {/* Settings */}
                 <Route path='/settings' element={<GeneralSettings />} />
+                <Route path='/admin/settings' element={<GeneralSettings />} />
                 <Route path='/settings/hospital' element={<HospitalProfile />} />
                 <Route path='/settings/security' element={<SecuritySettings />} />
                 <Route path='/settings/payment' element={<PaymentSettings />} />
                 <Route path='/settings/backup' element={<BackupRestore />} />
             </Route>
 
-            <Route path='*' element={<Navigate to='/admin/dashboard' replace />} />
+            <Route path='*' element={<Navigate to='/dashboard' replace />} />
         </Routes>
     );
 };

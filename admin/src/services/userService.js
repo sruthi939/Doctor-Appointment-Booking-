@@ -17,3 +17,12 @@ export const addUser = async (userData) => {
         return { success: false, message: e.response?.data?.message || e.message };
     }
 };
+
+export const updateUserRoleApi = async (userId, role) => {
+    try {
+        const res = await api.put('/admin/users/role', { userId, role });
+        return res.data;
+    } catch (e) {
+        return { success: false, message: e.response?.data?.message || e.message };
+    }
+};
