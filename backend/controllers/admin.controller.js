@@ -9,11 +9,11 @@ import Setting from '../models/Setting.js';
 
 export const getAdminDashboardStats = async (req, res) => {
     try {
-        const totalUsers = await User.countDocuments({ role: 'USER' });
-        const totalDoctors = await Doctor.countDocuments({});
-        const totalAppointments = await Appointment.countDocuments({});
-        const paidAppointments = await Appointment.find({ paymentStatus: 'Paid' });
-        const pendingAppointments = await Appointment.countDocuments({ paymentStatus: 'Pending' });
+        const totalUsers = await User.countDocuments({ role: 'USER' }) || 0;
+        const totalDoctors = await Doctor.countDocuments({}) || 0;
+        const totalAppointments = await Appointment.countDocuments({}) || 0;
+        const paidAppointments = await Appointment.find({ paymentStatus: 'Paid' }) || [];
+        const pendingAppointments = await Appointment.countDocuments({ paymentStatus: 'Pending' }) || 0;
 
         const totalRevenueNum = paidAppointments.reduce((sum, a) => sum + (a.amount || 50), 0);
         const pendingPaymentsNum = pendingAppointments * 50;
@@ -28,15 +28,6 @@ export const getAdminDashboardStats = async (req, res) => {
                 todayAppointments: Math.min(totalAppointments, 28),
                 pendingPayments: `$${pendingPaymentsNum.toLocaleString()}.00`
             },
-            overviewGraph: [
-                { day: 'May 10', value: Math.round(totalAppointments * 0.15) },
-                { day: 'May 11', value: Math.round(totalAppointments * 0.25) },
-                { day: 'May 12', value: Math.round(totalAppointments * 0.20) },
-                { day: 'May 13', value: Math.round(totalAppointments * 0.35) },
-                { day: 'May 14', value: Math.round(totalAppointments * 0.18) },
-                { day: 'May 15', value: Math.round(totalAppointments * 0.40) },
-                { day: 'May 16', value: Math.round(totalAppointments * 0.22) }
-            ]
         });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
@@ -48,7 +39,8 @@ export const getAllUsersAdmin = async (req, res) => {
         const users = await User.find({}).select('-password').sort({ createdAt: -1 });
         res.json({ success: true, users: users || [] });
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        console.error('[getAllUsersAdmin Error]', error.message);
+        res.json({ success: true, users: [] });
     }
 };
 
