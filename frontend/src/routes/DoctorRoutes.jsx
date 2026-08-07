@@ -8,7 +8,7 @@ import Patients from '../pages/doctor/Patients';
 import Earnings from '../pages/doctor/Earnings';
 import DoctorProfile from '../pages/doctor/Profile';
 import ConsultationModal from '../pages/doctor/ConsultationModal';
-import { CheckCircle2 } from 'lucide-react';
+import { ProtectedDoctorRoute } from '../components/RoleProtectedRoutes';
 
 const DoctorLogoutSuccess = () => {
     const navigate = useNavigate();
@@ -39,24 +39,29 @@ const DoctorRoutes = () => {
     return (
         <>
             <Routes>
+                {/* Public Auth Routes */}
                 <Route path='/doctor/login' element={<DoctorLogin />} />
-                <Route path='/doctor/dashboard' element={<Dashboard onOpenConsultation={(apt) => setSelectedConsultationApt(apt)} />} />
-                <Route path='/doctor/appointments' element={<DoctorAppointments onOpenConsultation={(apt) => setSelectedConsultationApt(apt)} />} />
-                <Route path='/doctor/schedule' element={<Schedule />} />
-                <Route path='/doctor/patients' element={<Patients />} />
-                <Route path='/doctor/earnings' element={<Earnings />} />
-                <Route path='/doctor/profile' element={<DoctorProfile />} />
-                <Route path='/doctor/logout-success' element={<DoctorLogoutSuccess />} />
-
-                {/* Fallbacks for sub-router relative paths */}
                 <Route path='/login' element={<DoctorLogin />} />
-                <Route path='/dashboard' element={<Dashboard onOpenConsultation={(apt) => setSelectedConsultationApt(apt)} />} />
-                <Route path='/appointments' element={<DoctorAppointments onOpenConsultation={(apt) => setSelectedConsultationApt(apt)} />} />
-                <Route path='/schedule' element={<Schedule />} />
-                <Route path='/patients' element={<Patients />} />
-                <Route path='/earnings' element={<Earnings />} />
-                <Route path='/profile' element={<DoctorProfile />} />
+                <Route path='/doctor/logout-success' element={<DoctorLogoutSuccess />} />
                 <Route path='/logout-success' element={<DoctorLogoutSuccess />} />
+
+                {/* Protected Doctor Routes */}
+                <Route element={<ProtectedDoctorRoute />}>
+                    <Route path='/doctor/dashboard' element={<Dashboard onOpenConsultation={(apt) => setSelectedConsultationApt(apt)} />} />
+                    <Route path='/doctor/appointments' element={<DoctorAppointments onOpenConsultation={(apt) => setSelectedConsultationApt(apt)} />} />
+                    <Route path='/doctor/schedule' element={<Schedule />} />
+                    <Route path='/doctor/patients' element={<Patients />} />
+                    <Route path='/doctor/earnings' element={<Earnings />} />
+                    <Route path='/doctor/profile' element={<DoctorProfile />} />
+
+                    {/* Fallbacks for sub-router relative paths */}
+                    <Route path='/dashboard' element={<Dashboard onOpenConsultation={(apt) => setSelectedConsultationApt(apt)} />} />
+                    <Route path='/appointments' element={<DoctorAppointments onOpenConsultation={(apt) => setSelectedConsultationApt(apt)} />} />
+                    <Route path='/schedule' element={<Schedule />} />
+                    <Route path='/patients' element={<Patients />} />
+                    <Route path='/earnings' element={<Earnings />} />
+                    <Route path='/profile' element={<DoctorProfile />} />
+                </Route>
             </Routes>
 
             {/* Global Doctor Consultation Modal */}

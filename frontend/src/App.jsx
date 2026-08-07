@@ -12,7 +12,7 @@ import DoctorRoutes from './routes/DoctorRoutes';
 import ReceptionistRoutes from './routes/ReceptionistRoutes';
 import AccountantRoutes from './routes/AccountantRoutes';
 import Navbar from './components/Navbar';
-import Footer from './components/Footer';
+import { ProtectedUserRoute } from './components/RoleProtectedRoutes';
 
 const App = () => {
   const location = useLocation();
@@ -42,8 +42,13 @@ const App = () => {
         <Route path='/login' element={<Login />} />
         <Route path='/about' element={<About />} />
         <Route path='/contact' element={<Contact />} />
-        <Route path='/my-profile' element={<MyProfile />} />
-        <Route path='/my-appointments' element={<MyAppointments />} />
+        
+        {/* Protected Patient Routes */}
+        <Route element={<ProtectedUserRoute />}>
+          <Route path='/my-profile' element={<MyProfile />} />
+          <Route path='/my-appointments' element={<MyAppointments />} />
+        </Route>
+
         <Route path='/appointment/:docId' element={<Appointment />} />
       </Routes>
       <Footer />

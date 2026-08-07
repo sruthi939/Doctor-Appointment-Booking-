@@ -8,7 +8,7 @@ import Reports from '../pages/accountant/Reports';
 import Expenses from '../pages/accountant/Expenses';
 import Refunds from '../pages/accountant/Refunds';
 import Settings from '../pages/accountant/Settings';
-import { CheckCircle2 } from 'lucide-react';
+import { ProtectedAccountantRoute } from '../components/RoleProtectedRoutes';
 
 const AccountantLogoutSuccess = () => {
     const navigate = useNavigate();
@@ -36,26 +36,31 @@ const AccountantLogoutSuccess = () => {
 const AccountantRoutes = () => {
     return (
         <Routes>
+            {/* Public Auth Routes */}
             <Route path='/accountant/login' element={<AccountantLogin />} />
-            <Route path='/accountant/dashboard' element={<AccountantDashboard />} />
-            <Route path='/accountant/transactions' element={<Transactions />} />
-            <Route path='/accountant/invoices' element={<Invoices />} />
-            <Route path='/accountant/reports' element={<Reports />} />
-            <Route path='/accountant/expenses' element={<Expenses />} />
-            <Route path='/accountant/refunds' element={<Refunds />} />
-            <Route path='/accountant/settings' element={<Settings />} />
-            <Route path='/accountant/logout-success' element={<AccountantLogoutSuccess />} />
-
-            {/* Fallbacks */}
             <Route path='/login' element={<AccountantLogin />} />
-            <Route path='/dashboard' element={<AccountantDashboard />} />
-            <Route path='/transactions' element={<Transactions />} />
-            <Route path='/invoices' element={<Invoices />} />
-            <Route path='/reports' element={<Reports />} />
-            <Route path='/expenses' element={<Expenses />} />
-            <Route path='/refunds' element={<Refunds />} />
-            <Route path='/settings' element={<Settings />} />
+            <Route path='/accountant/logout-success' element={<AccountantLogoutSuccess />} />
             <Route path='/logout-success' element={<AccountantLogoutSuccess />} />
+
+            {/* Protected Accountant Routes */}
+            <Route element={<ProtectedAccountantRoute />}>
+                <Route path='/accountant/dashboard' element={<AccountantDashboard />} />
+                <Route path='/accountant/transactions' element={<Transactions />} />
+                <Route path='/accountant/invoices' element={<Invoices />} />
+                <Route path='/accountant/reports' element={<Reports />} />
+                <Route path='/accountant/expenses' element={<Expenses />} />
+                <Route path='/accountant/refunds' element={<Refunds />} />
+                <Route path='/accountant/settings' element={<Settings />} />
+
+                {/* Fallbacks */}
+                <Route path='/dashboard' element={<AccountantDashboard />} />
+                <Route path='/transactions' element={<Transactions />} />
+                <Route path='/invoices' element={<Invoices />} />
+                <Route path='/reports' element={<Reports />} />
+                <Route path='/expenses' element={<Expenses />} />
+                <Route path='/refunds' element={<Refunds />} />
+                <Route path='/settings' element={<Settings />} />
+            </Route>
         </Routes>
     );
 };

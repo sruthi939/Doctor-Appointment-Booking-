@@ -16,8 +16,8 @@ const AppContextProvider = (props) => {
     });
 
     const [token, setToken] = useState(() => {
-        const stored = localStorage.getItem('doc_token');
-        return (stored && stored !== 'mock_token_12345' && stored !== 'false') ? stored : false;
+        const stored = localStorage.getItem('token') || localStorage.getItem('user_token') || localStorage.getItem('doc_token');
+        return (stored && stored !== 'mock_token_12345' && stored !== 'false' && stored !== 'null') ? stored : false;
     });
 
     const [userData, setUserData] = useState(() => {
@@ -48,14 +48,15 @@ const AppContextProvider = (props) => {
     };
 
     const fetchAppointments = async () => {
-        if (!token || token === 'mock_token_12345') return;
+        const activeToken = localStorage.getItem('token') || localStorage.getItem('user_token') || localStorage.getItem('doc_token');
+        if (!activeToken || activeToken === 'mock_token_12345' || activeToken === 'false') return;
         try {
             const res = await api.get('/appointments/my-appointments');
             if (res.data?.success && res.data.appointments) {
                 setAppointments(res.data.appointments);
             }
         } catch (error) {
-            // Handle unauthenticated state gracefully without error spam
+            // Silently handle unauthenticated state gracefully
         }
     };
 

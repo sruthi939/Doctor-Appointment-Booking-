@@ -61,6 +61,10 @@ const RoleSelectorModal = ({ isOpen, onClose, currentRole, onSelectRole }) => {
             navigate('/doctor/dashboard');
         } else if (role.id === 'RECEPTIONIST') {
             navigate('/receptionist/dashboard');
+        } else if (role.id === 'ACCOUNTANT') {
+            navigate('/accountant/dashboard');
+        } else if (role.id === 'ADMIN') {
+            window.location.href = 'http://localhost:5174';
         } else if (role.id === 'USER') {
             navigate('/');
         }
@@ -108,7 +112,7 @@ const RoleSelectorModal = ({ isOpen, onClose, currentRole, onSelectRole }) => {
                                     <div>
                                         <div className='flex items-center gap-2'>
                                             <h3 className='font-bold text-white text-base'>{role.title}</h3>
-                                            {(role.id === 'DOCTOR' || role.id === 'RECEPTIONIST') && (
+                                            {(role.id === 'DOCTOR' || role.id === 'RECEPTIONIST' || role.id === 'ACCOUNTANT' || role.id === 'ADMIN') && (
                                                 <span className='text-[10px] font-bold bg-pink-500/20 text-pink-300 px-2 py-0.5 rounded-full flex items-center gap-1 border border-pink-500/30'>
                                                     <ExternalLink size={10} /> Launch Portal
                                                 </span>
