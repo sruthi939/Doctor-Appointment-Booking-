@@ -44,7 +44,7 @@ const Login = ({ setToken }) => {
 
                 <div className='backdrop-blur-xl bg-black/40 border border-[#D4AF37]/30 shadow-2xl rounded-2xl px-10 py-12 text-white relative z-10'>
                     <div className='text-center mb-10'>
-                        <h1 className='text-4xl font-bold text-[#D4AF37] mb-2 tracking-tighter'>DD CLOTH HUB</h1>
+                        <h1 className='text-4xl font-bold text-[#D4AF37] mb-2 tracking-tighter'>Medicare</h1>
                         <p className='text-gray-400 text-sm tracking-widest uppercase'>Admin Portal</p>
                     </div>
 
@@ -107,7 +107,7 @@ const Login = ({ setToken }) => {
                     </form>
 
                     <p className='text-center mt-8 text-xs text-gray-500'>
-                        © 2026 DD Cloth Hub • Authorized Personnel Only
+                        © 2026 Medicare • Authorized Personnel Only
                     </p>
                 </div>
             </div>
