@@ -10,8 +10,13 @@ try {
 const connectDB = async () => {
     try {
         const uri = process.env.MONGODB_URL || process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/Medicare';
+        
+        // Disable command buffering so queries fail fast instead of hanging 10s
+        mongoose.set('bufferCommands', false);
+
         await mongoose.connect(uri, {
-            dbName: 'Medicare'
+            dbName: 'Medicare',
+            serverSelectionTimeoutMS: 5000,
         });
         console.log("Data Base is Connected");
     } catch (error) {
