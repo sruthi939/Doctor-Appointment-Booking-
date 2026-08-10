@@ -172,4 +172,28 @@ const adminDashboard = async (req, res) => {
     }
 }
 
-export { addDoctor, loginAdmin, appointmentsAdmin, appointmentCancelAdmin, adminDashboard }
+// API to get all doctors list for admin panel
+const allDoctors = async (req, res) => {
+    try {
+        const doctors = await doctorModel.find({}).select('-password')
+        res.json({ success: true, doctors })
+    } catch (error) {
+        console.log(error)
+        res.json({ success: false, message: error.message })
+    }
+}
+
+// API to change doctor availability for admin panel
+const changeAvailability = async (req, res) => {
+    try {
+        const { docId } = req.body
+        const docData = await doctorModel.findById(docId)
+        await doctorModel.findByIdAndUpdate(docId, { available: !docData.available })
+        res.json({ success: true, message: 'Availability Changed' })
+    } catch (error) {
+        console.log(error)
+        res.json({ success: false, message: error.message })
+    }
+}
+
+export { addDoctor, loginAdmin, appointmentsAdmin, appointmentCancelAdmin, adminDashboard, allDoctors, changeAvailability }
