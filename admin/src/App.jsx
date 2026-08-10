@@ -11,6 +11,11 @@ import Dashboard from './pages/admin/Dashboard.jsx';
 import AllAppointments from './pages/admin/AllAppointments.jsx';
 import AddDoctor from './pages/admin/AddDoctor.jsx';
 import DoctorsList from './pages/admin/DoctorsList.jsx';
+import AccountantsList from './pages/admin/AccountantsList.jsx';
+import ReceptionistsList from './pages/admin/ReceptionistsList.jsx';
+import DoctorDashboard from './pages/doctor/DoctorDashboard.jsx';
+import DoctorAppointments from './pages/doctor/DoctorAppointments.jsx';
+import DoctorProfile from './pages/doctor/DoctorProfile.jsx';
 
 const App = () => {
   const { aToken } = useContext(AdminContext);
@@ -24,11 +29,19 @@ const App = () => {
         <Sidebar />
         <div className='flex-1 p-6'>
           <Routes>
+            {/* Admin Routes */}
             <Route path='/' element={<Dashboard />} />
             <Route path='/admin-dashboard' element={<Dashboard />} />
             <Route path='/all-appointments' element={<AllAppointments />} />
             <Route path='/add-doctor' element={<AddDoctor />} />
             <Route path='/doctor-list' element={<DoctorsList />} />
+            <Route path='/accountants-list' element={<AccountantsList />} />
+            <Route path='/receptionists-list' element={<ReceptionistsList />} />
+
+            {/* Doctor Routes */}
+            <Route path='/doctor-dashboard' element={<DoctorDashboard />} />
+            <Route path='/doctor-appointments' element={<DoctorAppointments />} />
+            <Route path='/doctor-profile' element={<DoctorProfile />} />
           </Routes>
         </div>
       </div>

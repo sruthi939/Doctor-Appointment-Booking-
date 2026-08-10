@@ -23,13 +23,13 @@ const registerUser = async (req, res) => {
 
         // validating strong password
         if (password.length < 8) {
-            return res.json({ success: false, message: "Please enter a strong password" });
+            return res.json({ success: false, message: "Please enter a strong password (minimum 8 characters)" });
         }
 
-        // checking if user already exists
+        // checking if user already exists in database
         const exists = await userModel.findOne({ email });
         if (exists) {
-            return res.json({ success: false, message: "User already exists" });
+            return res.json({ success: false, message: "User already exists with this email" });
         }
 
         // hashing user password
@@ -46,12 +46,18 @@ const registerUser = async (req, res) => {
         const newUser = new userModel(userData);
         const user = await newUser.save();
 
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || 'medicare_secret_key_super_secure_987654321');
 
-        res.json({ success: true, token });
+        res.json({ 
+            success: true, 
+            token,
+            name: user.name,
+            email: user.email,
+            image: user.image
+        });
 
     } catch (error) {
-        console.log(error);
+        console.log("Registration Error:", error);
         res.json({ success: false, message: error.message });
     }
 };
@@ -60,23 +66,34 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
+
+        if (!email || !password) {
+            return res.json({ success: false, message: "Email and password are required" });
+        }
+
         const user = await userModel.findOne({ email });
 
         if (!user) {
-            return res.json({ success: false, message: "User does not exist" });
+            return res.json({ success: false, message: "User does not exist. Please sign up first." });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
 
         if (isMatch) {
-            const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-            res.json({ success: true, token });
+            const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || 'medicare_secret_key_super_secure_987654321');
+            res.json({ 
+                success: true, 
+                token,
+                name: user.name,
+                email: user.email,
+                image: user.image
+            });
         } else {
-            res.json({ success: false, message: "Invalid credentials" });
+            res.json({ success: false, message: "Invalid password credentials" });
         }
 
     } catch (error) {
-        console.log(error);
+        console.log("Login Error:", error);
         res.json({ success: false, message: error.message });
     }
 };
@@ -88,7 +105,7 @@ const getProfile = async (req, res) => {
         const userData = await userModel.findById(userId).select('-password');
         res.json({ success: true, userData });
     } catch (error) {
-        console.log(error);
+        console.log("Get Profile Error:", error);
         res.json({ success: false, message: error.message });
     }
 };
@@ -114,7 +131,6 @@ const updateProfile = async (req, res) => {
         });
 
         if (imageFile) {
-            // upload image to cloudinary
             const imageUpload = await cloudinary.uploader.upload(imageFile.path, { resource_type: 'image' });
             const imageUrl = imageUpload.secure_url;
             await userModel.findByIdAndUpdate(userId, { image: imageUrl });
@@ -123,7 +139,7 @@ const updateProfile = async (req, res) => {
         res.json({ success: true, message: "Profile Updated" });
 
     } catch (error) {
-        console.log(error);
+        console.log("Update Profile Error:", error);
         res.json({ success: false, message: error.message });
     }
 };
@@ -140,7 +156,6 @@ const bookAppointment = async (req, res) => {
 
         let slots_booked = docData.slots_booked || {};
 
-        // checking for slot availability
         if (slots_booked[slotDate]) {
             if (slots_booked[slotDate].includes(slotTime)) {
                 return res.json({ success: false, message: "Slot Not Available" });
@@ -170,13 +185,12 @@ const bookAppointment = async (req, res) => {
         const newAppointment = new appointmentModel(appointmentData);
         await newAppointment.save();
 
-        // save new slots data in docData
         await doctorModel.findByIdAndUpdate(docId, { slots_booked });
 
         res.json({ success: true, message: "Appointment Booked" });
 
     } catch (error) {
-        console.log(error);
+        console.log("Book Appointment Error:", error);
         res.json({ success: false, message: error.message });
     }
 };
@@ -188,7 +202,7 @@ const listAppointment = async (req, res) => {
         const appointments = await appointmentModel.find({ userId });
         res.json({ success: true, appointments });
     } catch (error) {
-        console.log(error);
+        console.log("List Appointments Error:", error);
         res.json({ success: false, message: error.message });
     }
 };
@@ -199,14 +213,12 @@ const cancelAppointment = async (req, res) => {
         const { userId, appointmentId } = req.body;
         const appointmentData = await appointmentModel.findById(appointmentId);
 
-        // verify appointment user
         if (appointmentData.userId !== userId) {
             return res.json({ success: false, message: "Unauthorized action" });
         }
 
         await appointmentModel.findByIdAndUpdate(appointmentId, { cancelled: true });
 
-        // releasing doctor slot
         const { docId, slotDate, slotTime } = appointmentData;
         const doctorData = await doctorModel.findById(docId);
 
@@ -221,7 +233,7 @@ const cancelAppointment = async (req, res) => {
         res.json({ success: true, message: "Appointment Cancelled" });
 
     } catch (error) {
-        console.log(error);
+        console.log("Cancel Appointment Error:", error);
         res.json({ success: false, message: error.message });
     }
 };

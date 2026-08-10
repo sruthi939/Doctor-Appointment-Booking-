@@ -8,6 +8,8 @@ const AdminContextProvider = (props) => {
     const [aToken, setAToken] = useState(localStorage.getItem('aToken') ? localStorage.getItem('aToken') : '');
     const [doctors, setDoctors] = useState([]);
     const [appointments, setAppointments] = useState([]);
+    const [accountants, setAccountants] = useState([]);
+    const [receptionists, setReceptionists] = useState([]);
     const [dashData, setDashData] = useState(false);
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -78,6 +80,32 @@ const AdminContextProvider = (props) => {
         }
     }
 
+    const getAllAccountants = async () => {
+        try {
+            const { data } = await axios.get(backendUrl + '/api/admin/all-accountants', { headers: { aToken } })
+            if (data.success) {
+                setAccountants(data.accountants)
+            } else {
+                toast.error(data.message)
+            }
+        } catch (error) {
+            toast.error(error.message)
+        }
+    }
+
+    const getAllReceptionists = async () => {
+        try {
+            const { data } = await axios.get(backendUrl + '/api/admin/all-receptionists', { headers: { aToken } })
+            if (data.success) {
+                setReceptionists(data.receptionists)
+            } else {
+                toast.error(data.message)
+            }
+        } catch (error) {
+            toast.error(error.message)
+        }
+    }
+
     const value = {
         aToken, 
         setAToken,
@@ -90,7 +118,13 @@ const AdminContextProvider = (props) => {
         getAllAppointments,
         cancelAppointment,
         dashData,
-        getDashData
+        getDashData,
+        accountants,
+        setAccountants,
+        getAllAccountants,
+        receptionists,
+        setReceptionists,
+        getAllReceptionists
     }
 
     return (

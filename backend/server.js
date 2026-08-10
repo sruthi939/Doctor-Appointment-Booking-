@@ -23,6 +23,7 @@ app.use(cors())
 app.use('/api/admin', adminRouter)
 app.use('/api/doctor', doctorRouter)
 app.use('/api/user', userRouter)
+app.use('/api/auth', userRouter)
 app.use('/api/accountant', accountantRouter)
 app.use('/api/receptionist', receptionistRouter)
 

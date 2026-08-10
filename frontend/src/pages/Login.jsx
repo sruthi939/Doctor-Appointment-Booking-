@@ -58,24 +58,20 @@ const Login = ({
     };
 
     return (
-        <div className='min-h-[80vh] flex items-center justify-center p-4 relative overflow-hidden font-sans my-4'>
-
-            {/* Dynamic Ambient Glows */}
-            <div className='absolute top-1/4 left-1/4 w-96 h-96 bg-pink-600/10 rounded-full blur-[120px] pointer-events-none' />
-            <div className='absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none' />
+        <div className='min-h-screen flex items-center justify-center p-4 relative overflow-hidden font-sans bg-[#F8F9FD]'>
 
             {/* Back to Home Button */}
             <button
                 onClick={() => navigate('/')}
-                className='absolute top-2 left-2 z-50 flex items-center gap-2 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800/80 border border-slate-700 px-4 py-2 rounded-xl transition-all shadow-md cursor-pointer'
+                className='absolute top-6 left-6 z-50 flex items-center gap-2 text-xs font-semibold text-slate-700 hover:text-slate-900 bg-white border border-slate-200 px-4 py-2.5 rounded-xl transition-all shadow-xs cursor-pointer'
             >
-                <ArrowLeft className="w-4 h-4" />
+                <ArrowLeft className="w-4 h-4 text-[#5F6FFF]" />
                 <span>Back to Home</span>
             </button>
 
             {/* Main Container */}
             <div
-                className={`relative bg-slate-900/90 backdrop-blur-xl border border-slate-800 rounded-[30px] shadow-2xl overflow-hidden w-full max-w-[768px] min-h-[480px] transition-all duration-700 ease-in-out`}
+                className={`relative bg-white border border-slate-200 rounded-[30px] shadow-xl overflow-hidden w-full max-w-[768px] min-h-[480px] transition-all duration-700 ease-in-out`}
             >
                 {/* Sign Up Form Container */}
                 <div className={`absolute top-0 left-0 h-full w-full sm:w-1/2 transition-all duration-700 ease-in-out ${isActive
@@ -85,57 +81,21 @@ const Login = ({
                 >
                     <form
                         onSubmit={handleSignUpSubmit}
-                        className='bg-slate-900/95 flex flex-col items-center justify-center px-8 sm:px-10 h-full text-center space-y-4'
-
+                        className='bg-white flex flex-col items-center justify-center px-8 sm:px-10 h-full text-center space-y-4'
                     >
                         <div className='flex items-center gap-2 mb-1'>
-                            <div className='w-8 h-8 rounded-lg bg-gradient-to-tr from-brand-600 to-amber-400 flex items-center justify-center shadow-md'>
-                                <Sparkle className='w-4 h-4 text-white' />
+                            <div className='w-8 h-8 rounded-lg bg-blue-50 text-[#5F6FFF] flex items-center justify-center shadow-xs border border-blue-200'>
+                                <Sparkle className='w-4 h-4 text-[#5F6FFF]' />
                             </div>
-                            <h1 className='font-serif text-2xl sm:text-3xl font-bold text-white'>Create Account</h1>
+                            <h1 className='text-2xl sm:text-3xl font-bold text-slate-900'>Create Account</h1>
                         </div>
 
-                        {/* Social Icons */}
-                        <div className='flex items-center gap-3 my-2'>
-                            <a
-                                href='#'
-                                className='w-10 h-10 rounded-xl bg-slate-800/80 border border-slate-700 hover:border-brand-500 flex-items-center justify-center text-slate-300 hover:text-white transition-all hover:scale-105'
-                                title='Google'
-                            >
-                                <svg className='w-4 h-4 fill-current' viewBox='0 0 24 24'>
-                                    <path d='M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 15.973 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z' />
-                                </svg>
-                            </a>
-                            <a
-                                href='#'
-                                className='w-10 h-10 rounded-xl bg-slate-800/80 border border-slate-700 hover:border-brand-500 flex-items-center justify-center text-slate-300 hover:text-white transition-all hover:scale-105'
-                                title='Facebook'
-                            >
-                                <svg className='w-4 h-4 fill-current' viewBox='0 0 24 24'>
-                                    <path d='M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z' />
-                                </svg>
-                            </a>
-                            <a
-                                href='#'
-                                className='w-10 h-10 rounded-xl bg-slate-800/80 border border-slate-700 hover:border-brand-500 flex-items-center justify-center text-slate-300 hover:text-white transition-all hover:scale-105'
-                                title='GitHub'
-                            >
-                                <svg className='w-4 h-4 fill-current' viewBox='0 0 24 24'>
-                                    <path d='M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z' />
-                                </svg>
-                            </a>
-                            <a
-                                href='#'
-                                className='w-10 h-10 rounded-xl bg-slate-800/80 border border-slate-700 hover:border-brand-500 flex-items-center justify-center text-slate-300 hover:text-white transition-all hover:scale-105'
-                                title='LinkedIn'
-                            >
-                                <svg className='w-4 h-4 fill-current' viewBox='0 0 24 24'>
-                                    <path d='M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z' />
-                                </svg>
-                            </a>
-                        </div>
+                        {errorMessage && (
+                            <p className='text-xs text-rose-500 font-semibold bg-rose-50 px-3 py-1 rounded-md border border-rose-200'>
+                                {errorMessage}
+                            </p>
+                        )}
 
-                        <span className='text-xs text-slate-400'>or use your email for register</span>
                         <div className='w-full space-y-3 pt-2'>
                             <div className='relative'>
                                 <User className='w-4 h-4 text-slate-400 absolute left-3.5 top-3' />
@@ -144,7 +104,8 @@ const Login = ({
                                     placeholder='Name'
                                     value={signUpName}
                                     onChange={(e) => setSignUpName(e.target.value)}
-                                    className='w-full pl-10 pr-4 py-2.5 bg-slate-800/90 border border-slate-700 rounded-xl sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition-colors'
+                                    className='w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl sm:text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#5F6FFF] transition-colors'
+                                    required
                                 />
                             </div>
                             <div className='relative'>
@@ -154,7 +115,8 @@ const Login = ({
                                     placeholder='Email'
                                     value={signUpEmail}
                                     onChange={(e) => setSignUpEmail(e.target.value)}
-                                    className='w-full pl-10 pr-4 py-2.5 bg-slate-800/90 border border-slate-700 rounded-xl sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition-colors'
+                                    className='w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl sm:text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#5F6FFF] transition-colors'
+                                    required
                                 />
                             </div>
                             <div className='relative'>
@@ -164,12 +126,13 @@ const Login = ({
                                     placeholder='Password'
                                     value={signUpPassword}
                                     onChange={(e) => setSignUpPassword(e.target.value)}
-                                    className='w-full pl-10 pr-4 py-2.5 bg-slate-800/90 border border-slate-700 rounded-xl sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition-colors'
+                                    className='w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl sm:text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#5F6FFF] transition-colors'
+                                    required
                                 />
                             </div>
                             <button
                                 type='submit'
-                                className='w-full py-3 mt-3 bg-white text-rose-600 border border-rose-200 font-semibold text-xs sm:text-sm rounded-xl hover:bg-gradient-to-r hover:from-pink-500 hover:to-orange-500 hover:text-white transition-all duration-300 uppercase tracking-wider shadow-md cursor-pointer'
+                                className='w-full py-3 mt-3 bg-[#5F6FFF] hover:bg-indigo-600 text-white font-semibold text-xs sm:text-sm rounded-xl transition-all duration-300 uppercase tracking-wider shadow-sm cursor-pointer'
                             >
                                 Sign Up
                             </button>
@@ -184,57 +147,22 @@ const Login = ({
                     }`}
                 >
                     <form
-                        onClick={handleSignInSubmit}
-                        className='bg-slate-900/95 flex flex-col items-center justify-center px-8 sm:px-10 h-full text-center space-y-4'
+                        onSubmit={handleSignInSubmit}
+                        className='bg-white flex flex-col items-center justify-center px-8 sm:px-10 h-full text-center space-y-4'
                     >
                         <div className='flex items-center gap-2 mb-1'>
-                            <div className='w-8 h-8 rounded-lg bg-gradient-to-tr from-brand-600 to-amber-400 flex items-center justify-center shadow-md'>
-                                <Sparkle className='w-4 h-4 text-white' />
+                            <div className='w-8 h-8 rounded-lg bg-blue-50 text-[#5F6FFF] flex items-center justify-center shadow-xs border border-blue-200'>
+                                <Sparkle className='w-4 h-4 text-[#5F6FFF]' />
                             </div>
-                            <h1 className='font-serif text-2xl sm:text-3xl font-bold text-white'>Sign In</h1>
+                            <h1 className='text-2xl sm:text-3xl font-bold text-slate-900'>Sign In</h1>
                         </div>
 
-                        {/* Social Icons */}
-                        <div className='flex items-center gap-3 my-2'>
-                            <a
-                                href='#'
-                                className='w-10 h-10 rounded-xl bg-slate-800/80 border border-slate-700 hover:border-brand-500 flex-items-center justify-center text-slate-300 hover:text-white transition-all hover:scale-105'
-                                title='Google'
-                            >
-                                <svg className='w-4 h-4 fill-current' viewBox='0 0 24 24'>
-                                    <path d='M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 15.973 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z' />
-                                </svg>
-                            </a>
-                            <a
-                                href='#'
-                                className='w-10 h-10 rounded-xl bg-slate-800/80 border border-slate-700 hover:border-brand-500 flex-items-center justify-center text-slate-300 hover:text-white transition-all hover:scale-105'
-                                title='Facebook'
-                            >
-                                <svg className='w-4 h-4 fill-current' viewBox='0 0 24 24'>
-                                    <path d='M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z' />
-                                </svg>
-                            </a>
-                            <a
-                                href='#'
-                                className='w-10 h-10 rounded-xl bg-slate-800/80 border border-slate-700 hover:border-brand-500 flex-items-center justify-center text-slate-300 hover:text-white transition-all hover:scale-105'
-                                title='GitHub'
-                            >
-                                <svg className='w-4 h-4 fill-current' viewBox='0 0 24 24'>
-                                    <path d='M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z' />
-                                </svg>
-                            </a>
-                            <a
-                                href='#'
-                                className='w-10 h-10 rounded-xl bg-slate-800/80 border border-slate-700 hover:border-brand-500 flex-items-center justify-center text-slate-300 hover:text-white transition-all hover:scale-105'
-                                title='LinkedIn'
-                            >
-                                <svg className='w-4 h-4 fill-current' viewBox='0 0 24 24'>
-                                    <path d='M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z' />
-                                </svg>
-                            </a>
-                        </div>
+                        {errorMessage && (
+                            <p className='text-xs text-rose-500 font-semibold bg-rose-50 px-3 py-1 rounded-md border border-rose-200'>
+                                {errorMessage}
+                            </p>
+                        )}
 
-                        <span className='text-xs text-slate-400'>or use your email for register</span>
                         <div className='w-full space-y-3 pt-2'>
                             <div className='relative'>
                                 <Mail className='w-4 h-4 text-slate-400 absolute left-3.5 top-3' />
@@ -243,7 +171,8 @@ const Login = ({
                                     placeholder='Email'
                                     value={signInEmail}
                                     onChange={(e) => setSignInEmail(e.target.value)}
-                                    className='w-full pl-10 pr-4 py-2.5 bg-slate-800/90 border border-slate-700 rounded-xl sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition-colors'
+                                    className='w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl sm:text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#5F6FFF] transition-colors'
+                                    required
                                 />
                             </div>
                             <div className='relative'>
@@ -253,24 +182,13 @@ const Login = ({
                                     placeholder='Password'
                                     value={signInPassword}
                                     onChange={(e) => setSignInPassword(e.target.value)}
-                                    className='w-full pl-10 pr-4 py-2.5 bg-slate-800/90 border border-slate-700 rounded-xl sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition-colors'
+                                    className='w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl sm:text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#5F6FFF] transition-colors'
+                                    required
                                 />
-                            </div>
-                            <div className='text-right'>
-                                <a
-                                    href='#'
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        onNavigateToForgotPassword?.();
-                                    }}
-                                    className='text-xs text-rose-400 hover:underline'
-                                >
-                                    Forgot Password?
-                                </a>
                             </div>
                             <button
                                 type='submit'
-                                className='w-full py-3 mt-3 bg-white text-rose-600 border border-rose-200 font-semibold text-xs sm:text-sm rounded-xl hover:bg-gradient-to-r hover:from-pink-500 hover:to-orange-500 hover:text-white transition-all duration-300 uppercase tracking-wider shadow-md cursor-pointer'
+                                className='w-full py-3 mt-3 bg-[#5F6FFF] hover:bg-indigo-600 text-white font-semibold text-xs sm:text-sm rounded-xl transition-all duration-300 uppercase tracking-wider shadow-sm cursor-pointer'
                             >
                                 Sign In
                             </button>
@@ -285,52 +203,52 @@ const Login = ({
                         : 'rounded-l-[150px] rounded-r-none'
                         }`}
                 >
-                    {/* Sliding Gradient Overlay */}
-                    <div className={`bg-gradient-to-br from-rose-500 via-pink-500 to-orange-500 text-white relative -left-full h-full w-[200%] transition-transform duration-700 ease-in-out ${isActive
+                    {/* Sliding Blue Overlay */}
+                    <div className={`bg-[#5F6FFF] text-white relative -left-full h-full w-[200%] transition-transform duration-700 ease-in-out ${isActive
                         ? 'translate-x-1/2'
                         : 'translate-x-0'
                         }`}
                     >
-                        {/* Toggle Left Panel (shown when Sign Up active -> allows switching back to Sign In) */}
+                        {/* Toggle Left Panel (Sign In mode) */}
                         <div
                             className={`absolute top-0 flex flex-col items-center justify-center px-8 text-center h-full w-1/2 transition-transform duration-700 ease-in-out ${isActive
                                 ? 'translate-x-0'
                                 : '-translate-x-full'
                                 }`}
                         >
-                            <h1 className='font-serif text-3xl font-bold mb-2'>
+                            <h1 className='text-3xl font-extrabold mb-2'>
                                 Welcome Back!
                             </h1>
-                            <p className='text-xs text-rose-100 leading-relaxed max-w-xs mb-6'>
-                                Enter your personal details to unlock all of this web application features
+                            <p className='text-xs text-blue-100 leading-relaxed max-w-xs mb-6'>
+                                Enter your credentials to access your appointments and patient profile.
                             </p>
                             <button
                                 type='button'
                                 onClick={() => setIsActive(false)}
-                                className='px-8 py-2.5 bg-white text-rose-600 border border-white rounded-xl font-semibold text-xs uppercase tracking-wider hover:bg-slate-900 hover:text-white transition-all duration-300 shadow-lg cursor-pointer flex items-center gap-2 group'
+                                className='px-8 py-2.5 bg-white text-[#5F6FFF] border border-white rounded-xl font-semibold text-xs uppercase tracking-wider hover:bg-blue-50 transition-all duration-300 shadow-md cursor-pointer flex items-center gap-2 group'
                             >
                                 <span>Sign In</span>
                                 <ArrowRight className='w-4 h-4 group-hover:translate-x-1 transition-transform' />
                             </button>
                         </div>
 
-                        {/* Toggle Right Panel (shown when Sign In active -> allows switching back to Sign Up) */}
+                        {/* Toggle Right Panel (Sign Up mode) */}
                         <div
                             className={`absolute top-0 right-0 flex flex-col items-center justify-center px-8 text-center h-full w-1/2 transition-transform duration-700 ease-in-out ${isActive
                                 ? 'translate-x-full'
                                 : 'translate-x-0'
                                 }`}
                         >
-                            <h1 className='font-serif text-3xl font-bold mb-2'>
+                            <h1 className='text-3xl font-extrabold mb-2'>
                                 Hello, Friend!
                             </h1>
-                            <p className='text-xs text-rose-100 leading-relaxed max-w-xs mb-6'>
-                                Register with your personal details for join with us..
+                            <p className='text-xs text-blue-100 leading-relaxed max-w-xs mb-6'>
+                                Create your account to start booking appointments with top doctors.
                             </p>
                             <button
                                 type='button'
                                 onClick={() => setIsActive(true)}
-                                className='px-8 py-2.5 bg-white text-rose-600 border border-white rounded-xl font-semibold text-xs uppercase tracking-wider hover:bg-slate-900 hover:text-white transition-all duration-300 shadow-lg cursor-pointer flex items-center gap-2 group'
+                                className='px-8 py-2.5 bg-white text-[#5F6FFF] border border-white rounded-xl font-semibold text-xs uppercase tracking-wider hover:bg-blue-50 transition-all duration-300 shadow-md cursor-pointer flex items-center gap-2 group'
                             >
                                 <span>Sign Up</span>
                                 <ArrowRight className='w-4 h-4 group-hover:translate-x-1 transition-transform' />
@@ -339,34 +257,33 @@ const Login = ({
                     </div>
                 </div>
 
-                {/* Mobile Toggle Bar (For small screens where sliding panel is hidden) */}
-                <div className='sm:hidden bg-slate-800/90 border-t border-slate-700 p-4 text-center'>
+                {/* Mobile Toggle Bar */}
+                <div className='sm:hidden bg-slate-50 border-t border-slate-200 p-4 text-center'>
                     {isActive ? (
-                        <p className='text-xs text-slate-300'>
+                        <p className='text-xs text-slate-600'>
                             Already have an account? {' '}
                             <button
                                 onClick={() => setIsActive(false)}
-                                className='text-rose-400 font-bold hover:underline'
+                                className='text-[#5F6FFF] font-bold hover:underline'
                             >
                                 Sign In
                             </button>
                         </p>
                     ) : (
-                        <p className='text-xs text-slate-300'>
+                        <p className='text-xs text-slate-600'>
                             Don't have an account? {' '}
                             <button
                                 onClick={() => setIsActive(true)}
-                                className='text-rose-400 font-bold hover:underline'
+                                className='text-[#5F6FFF] font-bold hover:underline'
                             >
                                 Sign Up
                             </button>
                         </p>
                     )}
-
                 </div>
             </div>
         </div>
     );
 };
 
-export default Login
+export default Login;

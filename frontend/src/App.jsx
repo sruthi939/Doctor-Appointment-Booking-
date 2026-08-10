@@ -12,8 +12,9 @@ import DoctorRoutes from './routes/DoctorRoutes';
 import ReceptionistRoutes from './routes/ReceptionistRoutes';
 import AccountantRoutes from './routes/AccountantRoutes';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import { ProtectedUserRoute } from './components/RoleProtectedRoutes';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
@@ -21,6 +22,9 @@ const App = () => {
   const isDoctorRoute = location.pathname.startsWith('/doctor/') || location.pathname === '/doctor';
   const isReceptionistRoute = location.pathname.startsWith('/receptionist/') || location.pathname === '/receptionist';
   const isAccountantRoute = location.pathname.startsWith('/accountant/') || location.pathname === '/accountant';
+  const isLoginRoute = location.pathname === '/login';
+  const isAppointmentRoute = location.pathname.startsWith('/appointment/') || location.pathname === '/my-appointments';
+  const hideHeaderFooter = isLoginRoute || isAppointmentRoute;
 
   if (isDoctorRoute) {
     return <DoctorRoutes />;
@@ -35,9 +39,9 @@ const App = () => {
   }
 
   return (
-    <div className='min-h-screen bg-[#0b0f19] text-slate-100 px-4 sm:px-[10%] pb-12 font-sans'>
+    <div className='min-h-screen bg-[#F8F9FD] text-slate-800 px-4 sm:px-[10%] pb-12 font-sans'>
       <ToastContainer />
-      <Navbar />
+      {!hideHeaderFooter && <Navbar />}
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/doctors' element={<Doctors />} />
@@ -54,7 +58,7 @@ const App = () => {
 
         <Route path='/appointment/:docId' element={<Appointment />} />
       </Routes>
-      <Footer />
+      {!hideHeaderFooter && <Footer />}
     </div>
   );
 };

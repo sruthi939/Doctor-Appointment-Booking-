@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react'
 import { AdminContext } from '../../context/AdminContext'
 import { AppContext } from '../../context/AppContext'
-import { Stethoscope, Calendar, Users, ListFilter, XCircle } from 'lucide-react'
+import { Stethoscope, Calendar, Users, ListFilter, XCircle, Calculator, UserCheck } from 'lucide-react'
 
 const Dashboard = () => {
     const { aToken, getDashData, cancelAppointment, dashData } = useContext(AdminContext)
@@ -18,35 +18,57 @@ const Dashboard = () => {
             {/* Top Stat Cards */}
             <div className='flex flex-wrap gap-5 mb-8'>
                 {/* Doctor Stat Card */}
-                <div className='flex items-center gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm min-w-56 hover:scale-[1.02] transition-all'>
-                    <div className='w-14 h-14 rounded-xl bg-indigo-50 flex items-center justify-center text-[#5F6FFF]'>
-                        <Stethoscope className='w-7 h-7' />
+                <div className='flex items-center gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm min-w-52 hover:scale-[1.02] transition-all'>
+                    <div className='w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center text-[#5F6FFF]'>
+                        <Stethoscope className='w-6 h-6' />
                     </div>
                     <div>
                         <p className='text-2xl font-bold text-slate-800'>{dashData.doctors}</p>
-                        <p className='text-slate-500 text-sm font-medium'>Doctors</p>
+                        <p className='text-slate-500 text-xs font-medium'>Doctors</p>
                     </div>
                 </div>
 
                 {/* Appointment Stat Card */}
-                <div className='flex items-center gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm min-w-56 hover:scale-[1.02] transition-all'>
-                    <div className='w-14 h-14 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600'>
-                        <Calendar className='w-7 h-7' />
+                <div className='flex items-center gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm min-w-52 hover:scale-[1.02] transition-all'>
+                    <div className='w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600'>
+                        <Calendar className='w-6 h-6' />
                     </div>
                     <div>
                         <p className='text-2xl font-bold text-slate-800'>{dashData.appointments}</p>
-                        <p className='text-slate-500 text-sm font-medium'>Appointments</p>
+                        <p className='text-slate-500 text-xs font-medium'>Appointments</p>
                     </div>
                 </div>
 
                 {/* Patients Stat Card */}
-                <div className='flex items-center gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm min-w-56 hover:scale-[1.02] transition-all'>
-                    <div className='w-14 h-14 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600'>
-                        <Users className='w-7 h-7' />
+                <div className='flex items-center gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm min-w-52 hover:scale-[1.02] transition-all'>
+                    <div className='w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600'>
+                        <Users className='w-6 h-6' />
                     </div>
                     <div>
                         <p className='text-2xl font-bold text-slate-800'>{dashData.patients}</p>
-                        <p className='text-slate-500 text-sm font-medium'>Patients</p>
+                        <p className='text-slate-500 text-xs font-medium'>Patients</p>
+                    </div>
+                </div>
+
+                {/* Accountants Stat Card */}
+                <div className='flex items-center gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm min-w-52 hover:scale-[1.02] transition-all'>
+                    <div className='w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600'>
+                        <Calculator className='w-6 h-6' />
+                    </div>
+                    <div>
+                        <p className='text-2xl font-bold text-slate-800'>{dashData.accountants || 0}</p>
+                        <p className='text-slate-500 text-xs font-medium'>Accountants</p>
+                    </div>
+                </div>
+
+                {/* Receptionists Stat Card */}
+                <div className='flex items-center gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm min-w-52 hover:scale-[1.02] transition-all'>
+                    <div className='w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600'>
+                        <UserCheck className='w-6 h-6' />
+                    </div>
+                    <div>
+                        <p className='text-2xl font-bold text-slate-800'>{dashData.receptionists || 0}</p>
+                        <p className='text-slate-500 text-xs font-medium'>Receptionists</p>
                     </div>
                 </div>
             </div>
