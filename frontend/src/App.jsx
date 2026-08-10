@@ -12,8 +12,9 @@ import DoctorRoutes from './routes/DoctorRoutes';
 import ReceptionistRoutes from './routes/ReceptionistRoutes';
 import AccountantRoutes from './routes/AccountantRoutes';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import { ProtectedUserRoute } from './components/RoleProtectedRoutes';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
@@ -35,7 +36,7 @@ const App = () => {
   }
 
   return (
-    <div className='min-h-screen bg-[#0b0f19] text-slate-100 px-4 sm:px-[10%] pb-12 font-sans'>
+    <div className='min-h-screen bg-[#F8F9FD] text-slate-800 px-4 sm:px-[10%] pb-12 font-sans'>
       <ToastContainer />
       <Navbar />
       <Routes>
