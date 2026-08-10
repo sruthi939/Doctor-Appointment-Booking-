@@ -13,6 +13,8 @@ import ReceptionistRoutes from './routes/ReceptionistRoutes';
 import AccountantRoutes from './routes/AccountantRoutes';
 import Navbar from './components/Navbar';
 import { ProtectedUserRoute } from './components/RoleProtectedRoutes';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
   const location = useLocation();
@@ -34,6 +36,7 @@ const App = () => {
 
   return (
     <div className='min-h-screen bg-[#0b0f19] text-slate-100 px-4 sm:px-[10%] pb-12 font-sans'>
+      <ToastContainer />
       <Navbar />
       <Routes>
         <Route path='/' element={<Home />} />
@@ -42,7 +45,7 @@ const App = () => {
         <Route path='/login' element={<Login />} />
         <Route path='/about' element={<About />} />
         <Route path='/contact' element={<Contact />} />
-        
+
         {/* Protected Patient Routes */}
         <Route element={<ProtectedUserRoute />}>
           <Route path='/my-profile' element={<MyProfile />} />
