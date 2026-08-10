@@ -107,6 +107,26 @@ const getPaymentTransactions = async (req, res) => {
     }
 };
 
+// API to get invoices
+const getInvoices = async (req, res) => {
+    try {
+        const appointments = await appointmentModel.find({});
+        const invoices = appointments.map((apt, index) => ({
+            id: apt._id,
+            invoiceId: `#INV-${2000 + index}`,
+            patientName: apt.userData?.name || "Patient",
+            doctorName: apt.docData?.name || "Doctor",
+            amount: apt.amount || 50,
+            date: apt.slotDate || new Date().toISOString().split('T')[0],
+            status: apt.cancelled ? "Cancelled" : (apt.payment || apt.isCompleted) ? "Paid" : "Unpaid"
+        }));
+        res.json({ success: true, invoices });
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, invoices: [], message: error.message });
+    }
+};
+
 // API to get refund requests
 const getRefundRequests = async (req, res) => {
     try {
@@ -176,6 +196,7 @@ export {
     loginAccountant,
     getAccountantDashboard,
     getPaymentTransactions,
+    getInvoices,
     getRefundRequests,
     processRefund,
     getFinancialReport
