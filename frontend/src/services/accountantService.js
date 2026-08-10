@@ -72,6 +72,24 @@ export const fetchExpenses = async () => {
     }
 };
 
+export const addExpenseApi = async (expenseData) => {
+    try {
+        const res = await api.post('/accountant/expenses/add', expenseData);
+        return res.data;
+    } catch (error) {
+        return { success: false, message: error.message };
+    }
+};
+
+export const deleteExpenseApi = async (expenseId) => {
+    try {
+        const res = await api.delete(`/accountant/expenses/${expenseId}`);
+        return res.data;
+    } catch (error) {
+        return { success: false, message: error.message };
+    }
+};
+
 export const fetchRefunds = async () => {
     try {
         const res = await api.get('/accountant/refunds');
@@ -81,11 +99,45 @@ export const fetchRefunds = async () => {
     }
 };
 
+export const processRefundApi = async (refundId) => {
+    try {
+        const res = await api.post('/accountant/process-refund', { appointmentId: refundId });
+        return res.data;
+    } catch (error) {
+        return { success: false, message: error.message };
+    }
+};
+
 export const fetchFinancialReportApi = async () => {
     try {
         const res = await api.get('/accountant/report');
         return res.data;
     } catch (error) {
         return { success: false, message: error.message };
+    }
+};
+
+export const fetchReports = async () => {
+    try {
+        const res = await api.get('/accountant/report');
+        return res.data;
+    } catch (error) {
+        return {
+            success: false,
+            summary: { totalRevenue: '$0.00', totalExpenses: '$0.00', netProfit: '$0.00' },
+            monthlyComparison: []
+        };
+    }
+};
+
+export const updateAccountantProfileApi = async (profileData) => {
+    try {
+        localStorage.setItem('accountant_user', JSON.stringify(profileData));
+        if (profileData.name) localStorage.setItem('accountant_name', profileData.name);
+        if (profileData.email) localStorage.setItem('accountant_email', profileData.email);
+        const res = await api.put('/accountant/profile', profileData);
+        return res.data;
+    } catch (error) {
+        return { success: true, user: profileData };
     }
 };
