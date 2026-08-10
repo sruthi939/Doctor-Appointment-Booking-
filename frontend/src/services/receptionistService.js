@@ -47,9 +47,9 @@ export const fetchQueueList = async () => {
     }
 };
 
-export const markQueueServedApi = async (queueId) => {
+export const markQueueServedApi = async (appointmentId) => {
     try {
-        const res = await api.put(`/receptionist/queue/${queueId}/served`);
+        const res = await api.post('/receptionist/mark-served', { appointmentId });
         return res.data;
     } catch (error) {
         return { success: false, message: error.message };
@@ -58,10 +58,28 @@ export const markQueueServedApi = async (queueId) => {
 
 export const addWalkInAppointmentApi = async (appointmentData) => {
     try {
-        const res = await api.post('/receptionist/appointments/add', appointmentData);
+        const res = await api.post('/receptionist/book-walkin', appointmentData);
         return res.data;
     } catch (error) {
-        return { success: false, message: error.message };
+        return { success: false, message: error.response?.data?.message || error.message };
+    }
+};
+
+export const fetchReceptionistAppointments = async () => {
+    try {
+        const res = await api.get('/receptionist/appointments');
+        return res.data;
+    } catch (error) {
+        return { success: false, appointments: [] };
+    }
+};
+
+export const fetchReceptionistPatients = async () => {
+    try {
+        const res = await api.get('/receptionist/patients');
+        return res.data;
+    } catch (error) {
+        return { success: false, patients: [] };
     }
 };
 
