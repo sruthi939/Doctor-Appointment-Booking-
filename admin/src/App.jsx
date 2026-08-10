@@ -1,12 +1,16 @@
 import React, { useContext } from 'react'
-import Login from './pages/Login.jsx';
+import Login from './components/Login.jsx';
 import { ToastContainer } from 'react-toastify';
-import 'react-[#5F6FFF]';
 import 'react-toastify/dist/ReactToastify.css';
 import { AdminContext } from './context/AdminContext.jsx';
 import { DoctorContext } from './context/DoctorContext.jsx';
 import Navbar from './components/Navbar.jsx';
 import Sidebar from './components/Sidebar.jsx';
+import { Route, Routes } from 'react-router-dom';
+import Dashboard from './pages/admin/Dashboard.jsx';
+import AllAppointments from './pages/admin/AllAppointments.jsx';
+import AddDoctor from './pages/admin/AddDoctor.jsx';
+import DoctorsList from './pages/admin/DoctorsList.jsx';
 
 const App = () => {
   const { aToken } = useContext(AdminContext);
@@ -19,7 +23,13 @@ const App = () => {
       <div className='flex items-start'>
         <Sidebar />
         <div className='flex-1 p-6'>
-          {/* Main Panel Content */}
+          <Routes>
+            <Route path='/' element={<Dashboard />} />
+            <Route path='/admin-dashboard' element={<Dashboard />} />
+            <Route path='/all-appointments' element={<AllAppointments />} />
+            <Route path='/add-doctor' element={<AddDoctor />} />
+            <Route path='/doctor-list' element={<DoctorsList />} />
+          </Routes>
         </div>
       </div>
     </div>

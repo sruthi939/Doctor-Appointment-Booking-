@@ -1,17 +1,21 @@
 import { createContext, useState, useEffect } from "react";
 import { doctors as initialDoctors } from "../assets/assets";
 import api from "../services/api";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 export const AppContext = createContext();
 
 const AppContextProvider = (props) => {
     const currencySymbol = '$';
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
     const [doctors, setDoctors] = useState(() => {
         return initialDoctors.map(doc => ({
             ...doc,
             rating: doc.rating || 4.8,
             reviewsCount: doc.reviewsCount || 120,
-            available: true
+            available: doc.available !== undefined ? doc.available : true
         }));
     });
 
@@ -36,20 +40,35 @@ const AppContextProvider = (props) => {
         return [];
     });
 
-
-    const fetchDoctors = async () => {
+    // Getting Doctors Data from Backend API
+    const getDoctorsData = async () => {
         try {
-            const res = await api.get('/doctors');
-            if (res.data?.success && res.data.doctors?.length > 0) {
-                setDoctors(res.data.doctors);
+            const { data } = await axios.get(backendUrl + '/api/doctor/list')
+            if (data.success && data.doctors?.length > 0) {
+                setDoctors(data.doctors);
             }
         } catch (error) {
+            console.log(error);
+        }
+    };
+
+    // Getting User Profile Data from Backend
+    const loadUserProfileData = async () => {
+        if (!token) return;
+        try {
+            const { data } = await axios.get(backendUrl + '/api/user/get-profile', { headers: { token } });
+            if (data.success) {
+                setUserData(data.userData);
+            } else {
+                toast.error(data.message);
+            }
+        } catch (error) {
+            console.log(error);
         }
     };
 
     const fetchAppointments = async () => {
-        const activeToken = localStorage.getItem('token') || localStorage.getItem('user_token') || localStorage.getItem('doc_token');
-        if (!activeToken || activeToken === 'mock_token_12345' || activeToken === 'false') return;
+        if (!token) return;
         try {
             const res = await api.get('/appointments/my-appointments');
             if (res.data?.success && res.data.appointments) {
@@ -61,24 +80,30 @@ const AppContextProvider = (props) => {
     };
 
     useEffect(() => {
-        fetchDoctors();
+        getDoctorsData();
     }, []);
 
     useEffect(() => {
         if (token) {
-            localStorage.setItem('doc_token', token);
+            localStorage.setItem('token', token);
+            loadUserProfileData();
             fetchAppointments();
         } else {
-            localStorage.removeItem('doc_token');
+            localStorage.removeItem('token');
+            setUserData(false);
         }
     }, [token]);
 
     useEffect(() => {
-        localStorage.setItem('doc_user_profile', JSON.stringify(userData));
+        if (userData) {
+            localStorage.setItem('doc_user_profile', JSON.stringify(userData));
+        }
     }, [userData]);
 
     useEffect(() => {
-        localStorage.setItem('doc_appointments', JSON.stringify(appointments));
+        if (appointments) {
+            localStorage.setItem('doc_appointments', JSON.stringify(appointments));
+        }
     }, [appointments]);
 
     const bookAppointment = (docId, slotDate, slotTime, patientDetails, paymentMethod = "Credit Card") => {
@@ -167,17 +192,20 @@ const AppContextProvider = (props) => {
 
     const value = {
         doctors,
+        getDoctorsData,
         currencySymbol,
         token,
         setToken,
+        backendUrl,
         userData,
         setUserData,
+        loadUserProfileData,
         appointments,
+        setAppointments,
         bookAppointment,
         cancelAppointment,
         rescheduleAppointment,
-        addDoctorReview,
-        fetchDoctors
+        addDoctorReview
     };
 
     return (
@@ -188,4 +216,3 @@ const AppContextProvider = (props) => {
 };
 
 export default AppContextProvider;
-
