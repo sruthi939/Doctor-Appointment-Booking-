@@ -4,7 +4,7 @@ import dns from "dns";
 try {
     dns.setDefaultResultOrder("ipv4first");
     dns.setServers(["8.8.8.8", "1.1.1.1"]);
-} catch (e) {}
+} catch (e) { }
 
 const connectDB = async () => {
     const atlasUri = process.env.MONGODB_URL || process.env.MONGODB_URI;

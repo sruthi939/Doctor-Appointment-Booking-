@@ -6,7 +6,7 @@ import axios from 'axios'
 import { Lock, Mail, Eye, EyeOff } from 'lucide-react'
 
 const Login = () => {
-    const [state, setState] = useState('Admin')
+    const [state, setState] = useState('Admin') // 'Admin' | 'Doctor' | 'Accountant' | 'Receptionist'
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [showPassword, setShowPassword] = useState(false)
@@ -29,12 +29,32 @@ const Login = () => {
                 } else {
                     toast.error(data.message)
                 }
-            } else {
+            } else if (state === 'Doctor') {
                 const { data } = await axios.post(backendUrl + '/api/doctor/login', { email, password })
                 if (data.success) {
                     setDToken(data.token)
                     localStorage.setItem('dToken', data.token)
                     toast.success('Welcome, Doctor!')
+                } else {
+                    toast.error(data.message)
+                }
+            } else if (state === 'Accountant') {
+                const { data } = await axios.post(backendUrl + '/api/accountant/login', { email, password })
+                if (data.success) {
+                    localStorage.setItem('accountantToken', data.token)
+                    localStorage.setItem('accountant_name', data.name || 'Accountant')
+                    toast.success('Welcome, Accountant!')
+                    window.location.reload()
+                } else {
+                    toast.error(data.message)
+                }
+            } else if (state === 'Receptionist') {
+                const { data } = await axios.post(backendUrl + '/api/receptionist/login', { email, password })
+                if (data.success) {
+                    localStorage.setItem('receptionistToken', data.token)
+                    localStorage.setItem('receptionist_name', data.name || 'Receptionist')
+                    toast.success('Welcome, Receptionist!')
+                    window.location.reload()
                 } else {
                     toast.error(data.message)
                 }
@@ -49,25 +69,57 @@ const Login = () => {
 
     return (
         <div className='min-h-screen flex items-center justify-center w-full bg-[#F8F9FD] p-4'>
-            <div className='bg-white border border-slate-200 shadow-lg rounded-2xl p-8 sm:p-10 w-full max-w-md text-slate-600'>
-                <div className='text-center mb-6'>
-                    <p className='text-2xl font-bold text-[#5F6FFF]'>Medicare</p>
-                    <p className='text-base font-semibold text-slate-800 mt-1'>
-                        <span className='text-[#5F6FFF]'>{state}</span> Login
+            <div className='bg-white border border-slate-200 shadow-lg rounded-3xl p-8 sm:p-10 w-full max-w-md text-slate-600 text-left space-y-6'>
+                <div className='text-center space-y-1'>
+                    <p className='text-2xl font-extrabold text-[#5F6FFF]'>Medicare Portal</p>
+                    <p className='text-sm font-bold text-slate-800'>
+                        Sign in as <span className='text-[#5F6FFF]'>{state}</span>
                     </p>
+                </div>
+
+                {/* Role Switcher Pills */}
+                <div className='grid grid-cols-4 gap-1 p-1 bg-slate-100 rounded-2xl text-xs font-semibold text-center'>
+                    <button
+                        type='button'
+                        onClick={() => setState('Admin')}
+                        className={`py-2 rounded-xl transition-all cursor-pointer ${state === 'Admin' ? 'bg-[#5F6FFF] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}
+                    >
+                        Admin
+                    </button>
+                    <button
+                        type='button'
+                        onClick={() => setState('Doctor')}
+                        className={`py-2 rounded-xl transition-all cursor-pointer ${state === 'Doctor' ? 'bg-[#5F6FFF] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}
+                    >
+                        Doctor
+                    </button>
+                    <button
+                        type='button'
+                        onClick={() => setState('Accountant')}
+                        className={`py-2 rounded-xl transition-all cursor-pointer ${state === 'Accountant' ? 'bg-[#5F6FFF] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}
+                    >
+                        Accountant
+                    </button>
+                    <button
+                        type='button'
+                        onClick={() => setState('Receptionist')}
+                        className={`py-2 rounded-xl transition-all cursor-pointer ${state === 'Receptionist' ? 'bg-[#5F6FFF] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}
+                    >
+                        Reception
+                    </button>
                 </div>
 
                 <form onSubmit={onSubmitHandler} className='space-y-4'>
                     <div>
-                        <label className='block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1'>Email</label>
+                        <label className='block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1'>Registered Email</label>
                         <div className='relative'>
-                            <Mail className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400' />
+                            <Mail className='absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400' />
                             <input
                                 onChange={(e) => setEmail(e.target.value)}
                                 value={email}
-                                className='w-full border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:border-[#5F6FFF] outline-none transition-all'
+                                className='w-full border border-slate-200 bg-slate-50 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:border-[#5F6FFF] focus:bg-white outline-none transition-all'
                                 type='email'
-                                placeholder='Email'
+                                placeholder={`Enter ${state.toLowerCase()} email`}
                                 required
                             />
                         </div>
@@ -76,11 +128,11 @@ const Login = () => {
                     <div>
                         <label className='block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1'>Password</label>
                         <div className='relative'>
-                            <Lock className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400' />
+                            <Lock className='absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400' />
                             <input
                                 onChange={(e) => setPassword(e.target.value)}
                                 value={password}
-                                className='w-full border border-slate-200 rounded-xl pl-10 pr-10 py-2.5 text-sm focus:border-[#5F6FFF] outline-none transition-all'
+                                className='w-full border border-slate-200 bg-slate-50 rounded-xl pl-10 pr-10 py-2.5 text-sm focus:border-[#5F6FFF] focus:bg-white outline-none transition-all'
                                 type={showPassword ? 'text' : 'password'}
                                 placeholder='Password'
                                 required
@@ -88,7 +140,7 @@ const Login = () => {
                             <button
                                 type='button'
                                 onClick={() => setShowPassword(!showPassword)}
-                                className='absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors'
+                                className='absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors'
                             >
                                 {showPassword ? <EyeOff className='w-4 h-4' /> : <Eye className='w-4 h-4' />}
                             </button>
@@ -98,19 +150,11 @@ const Login = () => {
                     <button
                         type='submit'
                         disabled={loading}
-                        className='w-full py-3 bg-[#5F6FFF] hover:bg-indigo-600 text-white font-semibold rounded-xl transition-all cursor-pointer shadow-sm text-sm disabled:opacity-50'
+                        className='w-full py-3 bg-[#5F6FFF] hover:bg-indigo-600 text-white font-bold rounded-xl transition-all cursor-pointer shadow-xs text-sm disabled:opacity-50'
                     >
-                        {loading ? 'Logging in...' : 'Login'}
+                        {loading ? 'Authenticating...' : `Login as ${state}`}
                     </button>
                 </form>
-
-                <div className='text-center mt-5 text-sm text-slate-500'>
-                    {state === 'Admin' ? (
-                        <p>Doctor Login? <span onClick={() => setState('Doctor')} className='text-[#5F6FFF] underline cursor-pointer font-medium'>Click here</span></p>
-                    ) : (
-                        <p>Admin Login? <span onClick={() => setState('Admin')} className='text-[#5F6FFF] underline cursor-pointer font-medium'>Click here</span></p>
-                    )}
-                </div>
             </div>
         </div>
     )
