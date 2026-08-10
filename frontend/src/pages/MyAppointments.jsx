@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { AppContext } from '../context/AppContext';
-import { Calendar, Clock, Star, AlertCircle, RefreshCw, XCircle, CheckCircle, MessageSquare, X } from 'lucide-react';
+import { Calendar, Clock, Star, AlertCircle, RefreshCw, XCircle, MessageSquare, X, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const MyAppointments = () => {
@@ -9,7 +9,7 @@ const MyAppointments = () => {
 
     const [activeTab, setActiveTab] = useState('Upcoming'); // 'Upcoming' | 'Past'
     
-    // Modal states for Step 9 & Step 10
+    // Modal states
     const [rescheduleModalApt, setRescheduleModalApt] = useState(null);
     const [newSlotDate, setNewSlotDate] = useState('');
     const [newSlotTime, setNewSlotTime] = useState('11:00 AM');
@@ -48,26 +48,35 @@ const MyAppointments = () => {
 
     return (
         <div className='space-y-6 my-4 text-left'>
+            {/* Back to Home Navigation */}
+            <button
+                onClick={() => navigate('/')}
+                className='flex items-center gap-2 text-xs font-semibold text-slate-700 hover:text-slate-900 bg-white border border-slate-200 px-4 py-2.5 rounded-xl transition-all shadow-xs cursor-pointer'
+            >
+                <ArrowLeft className="w-4 h-4 text-[#5F6FFF]" />
+                <span>Back to Home</span>
+            </button>
+
             {/* Header & Tabs */}
-            <div className='bg-slate-900/80 border border-slate-800 rounded-3xl p-6 sm:p-8 backdrop-blur-md shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4'>
+            <div className='bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4'>
                 <div>
-                    <h1 className='text-2xl sm:text-3xl font-extrabold text-white flex items-center gap-2'>
-                        <Calendar className='text-pink-500' size={28} />
+                    <h1 className='text-2xl sm:text-3xl font-extrabold text-slate-900 flex items-center gap-2'>
+                        <Calendar className='text-[#5F6FFF]' size={28} />
                         My Appointments
                     </h1>
-                    <p className='text-slate-400 text-sm mt-1'>
+                    <p className='text-slate-500 text-sm mt-1'>
                         Manage your upcoming doctor visits, reschedule, cancel, or review completed appointments.
                     </p>
                 </div>
 
-                {/* Filter Tabs matching Step 8 diagram */}
-                <div className='flex items-center p-1.5 bg-slate-950/80 border border-slate-800 rounded-2xl shrink-0 self-start sm:self-auto'>
+                {/* Filter Tabs */}
+                <div className='flex items-center p-1.5 bg-slate-50 border border-slate-200 rounded-2xl shrink-0 self-start sm:self-auto'>
                     <button
                         onClick={() => setActiveTab('Upcoming')}
                         className={`px-5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                             activeTab === 'Upcoming'
-                                ? 'bg-gradient-to-r from-pink-500 to-rose-600 text-white shadow-md'
-                                : 'text-slate-400 hover:text-white'
+                                ? 'bg-[#5F6FFF] text-white shadow-xs'
+                                : 'text-slate-600 hover:text-slate-900'
                         }`}
                     >
                         Upcoming ({appointments.filter(a => a.status === 'Upcoming').length})
@@ -76,8 +85,8 @@ const MyAppointments = () => {
                         onClick={() => setActiveTab('Past')}
                         className={`px-5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                             activeTab === 'Past'
-                                ? 'bg-gradient-to-r from-pink-500 to-rose-600 text-white shadow-md'
-                                : 'text-slate-400 hover:text-white'
+                                ? 'bg-[#5F6FFF] text-white shadow-xs'
+                                : 'text-slate-600 hover:text-slate-900'
                         }`}
                     >
                         Past / Completed ({appointments.filter(a => a.status !== 'Upcoming').length})
@@ -87,13 +96,13 @@ const MyAppointments = () => {
 
             {/* Appointments Cards List */}
             {filteredAppointments.length === 0 ? (
-                <div className='bg-slate-900/40 border border-slate-800 rounded-3xl p-12 text-center space-y-3'>
-                    <AlertCircle size={40} className='mx-auto text-slate-500' />
-                    <p className='text-slate-300 text-base font-semibold'>No {activeTab.toLowerCase()} appointments found.</p>
-                    <p className='text-slate-400 text-xs'>Book your next consultation with certified specialists anytime.</p>
+                <div className='bg-white border border-slate-200 rounded-3xl p-12 text-center space-y-3 shadow-xs'>
+                    <AlertCircle size={40} className='mx-auto text-slate-400' />
+                    <p className='text-slate-800 text-base font-semibold'>No {activeTab.toLowerCase()} appointments found.</p>
+                    <p className='text-slate-500 text-xs'>Book your next consultation with certified specialists anytime.</p>
                     <button
                         onClick={() => navigate('/doctors')}
-                        className='px-6 py-2.5 bg-gradient-to-r from-pink-500 to-rose-600 text-white rounded-xl text-xs font-semibold transition-transform hover:scale-105 shadow-md shadow-pink-500/20'
+                        className='px-6 py-2.5 bg-[#5F6FFF] hover:bg-indigo-600 text-white rounded-xl text-xs font-semibold transition-transform hover:scale-[1.02] shadow-xs cursor-pointer'
                     >
                         Book New Appointment
                     </button>
@@ -103,45 +112,45 @@ const MyAppointments = () => {
                     {filteredAppointments.map((item) => (
                         <div
                             key={item.id}
-                            className='bg-slate-900/90 border border-slate-800 rounded-3xl p-5 sm:p-6 backdrop-blur-md shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6 hover:border-slate-700 transition-colors'
+                            className='bg-white border border-slate-200 rounded-3xl p-5 sm:p-6 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-6 hover:border-blue-300 transition-colors'
                         >
                             {/* Left: Doctor info */}
                             <div className='flex items-center gap-4'>
                                 <img
-                                    className='w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover object-top border border-slate-700 shrink-0'
+                                    className='w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover object-top border border-slate-200 shrink-0 bg-blue-50/60'
                                     src={item.doctor.image}
                                     alt={item.doctor.name}
                                 />
                                 <div className='space-y-1'>
                                     <div className='flex items-center gap-2'>
-                                        <h3 className='text-lg font-bold text-white'>{item.doctor.name}</h3>
+                                        <h3 className='text-lg font-bold text-slate-900'>{item.doctor.name}</h3>
                                         {/* Status badge */}
                                         <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${
                                             item.status === 'Upcoming'
-                                                ? 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30'
+                                                ? 'bg-blue-50 text-[#5F6FFF] border-blue-200'
                                                 : item.status === 'Completed'
-                                                ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
-                                                : 'bg-rose-500/10 text-rose-400 border-rose-500/30'
+                                                ? 'bg-green-50 text-green-700 border-green-200'
+                                                : 'bg-rose-50 text-rose-600 border-rose-200'
                                         }`}>
                                             {item.status}
                                         </span>
                                     </div>
-                                    <p className='text-xs text-slate-400 font-medium'>{item.doctor.speciality}</p>
-                                    <p className='text-xs text-slate-400 font-mono'>Booking ID: <strong className='text-slate-300'>#{item.id}</strong></p>
+                                    <p className='text-xs text-slate-500 font-medium'>{item.doctor.speciality}</p>
+                                    <p className='text-xs text-slate-500 font-mono'>Booking ID: <strong className='text-slate-800'>#{item.id}</strong></p>
 
-                                    <div className='flex items-center gap-4 text-xs pt-1 text-slate-300'>
-                                        <span className='flex items-center gap-1 text-pink-400 font-semibold'>
+                                    <div className='flex items-center gap-4 text-xs pt-1 text-slate-700'>
+                                        <span className='flex items-center gap-1 text-[#5F6FFF] font-semibold'>
                                             <Calendar size={13} /> {item.slotDate}
                                         </span>
-                                        <span className='flex items-center gap-1 text-slate-300'>
+                                        <span className='flex items-center gap-1 text-slate-600'>
                                             <Clock size={13} /> {item.slotTime}
                                         </span>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Right: Action Buttons matching Step 8, 9, 10 */}
-                            <div className='w-full md:w-auto flex flex-col sm:flex-row md:flex-col gap-2 shrink-0 border-t md:border-t-0 border-slate-800 pt-4 md:pt-0'>
+                            {/* Right: Action Buttons */}
+                            <div className='w-full md:w-auto flex flex-col sm:flex-row md:flex-col gap-2 shrink-0 border-t md:border-t-0 border-slate-100 pt-4 md:pt-0'>
                                 {item.status === 'Upcoming' && (
                                     <>
                                         <button
@@ -150,14 +159,14 @@ const MyAppointments = () => {
                                                 setNewSlotDate(item.slotDate);
                                                 setNewSlotTime(item.slotTime);
                                             }}
-                                            className='px-5 py-2.5 bg-indigo-600/90 hover:bg-indigo-600 text-white rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-1.5 shadow-md shadow-indigo-600/20 cursor-pointer'
+                                            className='px-5 py-2.5 bg-[#5F6FFF] hover:bg-indigo-600 text-white rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-1.5 shadow-xs cursor-pointer'
                                         >
                                             <RefreshCw size={14} />
                                             Reschedule Appointment
                                         </button>
                                         <button
                                             onClick={() => setCancelModalApt(item)}
-                                            className='px-5 py-2.5 bg-rose-600/20 hover:bg-rose-600/30 text-rose-400 border border-rose-500/30 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer'
+                                            className='px-5 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer'
                                         >
                                             <XCircle size={14} />
                                             Cancel Appointment
@@ -168,14 +177,14 @@ const MyAppointments = () => {
                                 {item.status === 'Completed' && (
                                     <>
                                         {item.reviewSubmitted ? (
-                                            <div className='p-3 bg-slate-950 border border-slate-800 rounded-xl text-xs space-y-1 max-w-xs'>
-                                                <div className='flex items-center gap-1 text-amber-400 font-bold'>
+                                            <div className='p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs space-y-1 max-w-xs'>
+                                                <div className='flex items-center gap-1 text-blue-600 font-bold'>
                                                     {[...Array(item.rating || 5)].map((_, i) => (
-                                                        <Star key={i} size={12} className='fill-amber-400' />
+                                                        <Star key={i} size={12} className='fill-blue-500 text-blue-500' />
                                                     ))}
-                                                    <span className='ml-1 text-white'>Reviewed</span>
+                                                    <span className='ml-1 text-slate-800'>Reviewed</span>
                                                 </div>
-                                                <p className='text-slate-400 italic text-[11px] font-light'>"{item.reviewText}"</p>
+                                                <p className='text-slate-600 italic text-[11px] font-light'>"{item.reviewText}"</p>
                                             </div>
                                         ) : (
                                             <button
@@ -184,7 +193,7 @@ const MyAppointments = () => {
                                                     setRating(5);
                                                     setReviewText('Great doctor! Very friendly and explained everything clearly.');
                                                 }}
-                                                className='px-5 py-2.5 bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-pink-500/20 flex items-center justify-center gap-1.5 cursor-pointer'
+                                                className='px-5 py-2.5 bg-[#5F6FFF] hover:bg-indigo-600 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer'
                                             >
                                                 <MessageSquare size={14} />
                                                 Rate & Review Experience
@@ -194,7 +203,7 @@ const MyAppointments = () => {
                                 )}
 
                                 {item.status === 'Cancelled' && (
-                                    <span className='text-xs text-rose-400 italic px-3 py-1 bg-rose-500/10 rounded-lg text-center border border-rose-500/20'>
+                                    <span className='text-xs text-rose-600 italic px-3 py-1 bg-rose-50 rounded-lg text-center border border-rose-200 font-medium'>
                                         Appointment Cancelled
                                     </span>
                                 )}
@@ -204,45 +213,45 @@ const MyAppointments = () => {
                 </div>
             )}
 
-            {/* ------------ STEP 9: Reschedule Modal ------------ */}
+            {/* ------------ Reschedule Modal ------------ */}
             {rescheduleModalApt && (
-                <div className='fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200'>
-                    <div className='bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-5 relative'>
+                <div className='fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-200'>
+                    <div className='bg-white border border-slate-200 rounded-3xl max-w-md w-full p-6 shadow-xl space-y-5 relative'>
                         <button
                             onClick={() => setRescheduleModalApt(null)}
-                            className='absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 p-1.5 rounded-full'
+                            className='absolute top-4 right-4 text-slate-400 hover:text-slate-700 bg-slate-100 p-1.5 rounded-full cursor-pointer'
                         >
                             <X size={18} />
                         </button>
 
                         <div>
-                            <h3 className='text-xl font-bold text-white flex items-center gap-2'>
-                                <RefreshCw className='text-indigo-400' size={20} />
+                            <h3 className='text-xl font-bold text-slate-900 flex items-center gap-2'>
+                                <RefreshCw className='text-[#5F6FFF]' size={20} />
                                 Reschedule Appointment
                             </h3>
-                            <p className='text-slate-400 text-xs mt-1'>
+                            <p className='text-slate-500 text-xs mt-1'>
                                 Select a new date & time slot for {rescheduleModalApt.doctor.name}.
                             </p>
                         </div>
 
                         <div className='space-y-4 text-xs'>
                             <div>
-                                <label className='block text-slate-300 font-semibold mb-1'>New Appointment Date</label>
+                                <label className='block text-slate-700 font-semibold mb-1'>New Appointment Date</label>
                                 <input
                                     type='text'
                                     value={newSlotDate}
                                     onChange={(e) => setNewSlotDate(e.target.value)}
                                     placeholder='e.g. 20 May 2026'
-                                    className='w-full bg-slate-950 border border-slate-700/80 rounded-xl px-4 py-2.5 text-white font-medium focus:outline-none focus:border-indigo-500'
+                                    className='w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-800 font-medium focus:outline-none focus:border-[#5F6FFF]'
                                 />
                             </div>
 
                             <div>
-                                <label className='block text-slate-300 font-semibold mb-1'>New Time Slot</label>
+                                <label className='block text-slate-700 font-semibold mb-1'>New Time Slot</label>
                                 <select
                                     value={newSlotTime}
                                     onChange={(e) => setNewSlotTime(e.target.value)}
-                                    className='w-full bg-slate-950 border border-slate-700/80 rounded-xl px-4 py-2.5 text-white font-medium focus:outline-none focus:border-indigo-500'
+                                    className='w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-800 font-medium focus:outline-none focus:border-[#5F6FFF]'
                                 >
                                     {['09:00 AM', '10:00 AM', '11:00 AM', '02:00 PM', '04:00 PM', '06:00 PM'].map(t => (
                                         <option key={t} value={t}>{t}</option>
@@ -254,13 +263,13 @@ const MyAppointments = () => {
                         <div className='flex gap-3 pt-2'>
                             <button
                                 onClick={handleConfirmReschedule}
-                                className='flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl text-xs transition-colors shadow-md shadow-indigo-600/20'
+                                className='flex-1 py-2.5 bg-[#5F6FFF] hover:bg-indigo-600 text-white font-semibold rounded-xl text-xs transition-colors shadow-xs cursor-pointer'
                             >
                                 Confirm Reschedule
                             </button>
                             <button
                                 onClick={() => setRescheduleModalApt(null)}
-                                className='px-4 py-2.5 bg-slate-800 text-slate-300 hover:text-white rounded-xl text-xs font-semibold'
+                                className='px-4 py-2.5 border border-slate-200 text-slate-600 hover:bg-slate-50 rounded-xl text-xs font-semibold cursor-pointer'
                             >
                                 Cancel
                             </button>
@@ -269,28 +278,28 @@ const MyAppointments = () => {
                 </div>
             )}
 
-            {/* ------------ STEP 9: Cancel Modal ------------ */}
+            {/* ------------ Cancel Modal ------------ */}
             {cancelModalApt && (
-                <div className='fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200'>
-                    <div className='bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 relative text-center'>
-                        <div className='w-14 h-14 bg-rose-500/20 text-rose-400 rounded-full flex items-center justify-center mx-auto border border-rose-500/30'>
+                <div className='fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-200'>
+                    <div className='bg-white border border-slate-200 rounded-3xl max-w-md w-full p-6 shadow-xl space-y-4 relative text-center'>
+                        <div className='w-14 h-14 bg-rose-50 text-rose-600 rounded-full flex items-center justify-center mx-auto border border-rose-200'>
                             <XCircle size={32} />
                         </div>
-                        <h3 className='text-xl font-bold text-white'>Cancel Appointment?</h3>
-                        <p className='text-slate-400 text-xs leading-relaxed'>
-                            Are you sure you want to cancel your appointment with <strong className='text-white'>{cancelModalApt.doctor.name}</strong> on {cancelModalApt.slotDate}?
+                        <h3 className='text-xl font-bold text-slate-900'>Cancel Appointment?</h3>
+                        <p className='text-slate-500 text-xs leading-relaxed'>
+                            Are you sure you want to cancel your appointment with <strong className='text-slate-800'>{cancelModalApt.doctor.name}</strong> on {cancelModalApt.slotDate}?
                         </p>
 
                         <div className='flex gap-3 pt-2'>
                             <button
                                 onClick={handleConfirmCancel}
-                                className='flex-1 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-xs shadow-md shadow-rose-600/20'
+                                className='flex-1 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-xs shadow-xs cursor-pointer'
                             >
                                 Yes, Cancel Visit
                             </button>
                             <button
                                 onClick={() => setCancelModalApt(null)}
-                                className='flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl text-xs font-semibold'
+                                className='flex-1 py-2.5 border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl text-xs font-semibold cursor-pointer'
                             >
                                 Keep Appointment
                             </button>
@@ -299,38 +308,38 @@ const MyAppointments = () => {
                 </div>
             )}
 
-            {/* ------------ STEP 10: Rate & Review Modal ------------ */}
+            {/* ------------ Rate & Review Modal ------------ */}
             {reviewModalApt && (
-                <div className='fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200'>
-                    <div className='bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl space-y-5 relative text-left'>
+                <div className='fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-200'>
+                    <div className='bg-white border border-slate-200 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-xl space-y-5 relative text-left'>
                         <button
                             onClick={() => setReviewModalApt(null)}
-                            className='absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 p-1.5 rounded-full'
+                            className='absolute top-4 right-4 text-slate-400 hover:text-slate-700 bg-slate-100 p-1.5 rounded-full cursor-pointer'
                         >
                             <X size={18} />
                         </button>
 
-                        <div className='flex items-center gap-3 border-b border-slate-800 pb-4'>
-                            <img className='w-12 h-12 rounded-xl object-cover' src={reviewModalApt.doctor.image} alt='' />
+                        <div className='flex items-center gap-3 border-b border-slate-100 pb-4'>
+                            <img className='w-12 h-12 rounded-xl object-cover border border-slate-200' src={reviewModalApt.doctor.image} alt='' />
                             <div>
-                                <h3 className='text-lg font-bold text-white'>{reviewModalApt.doctor.name}</h3>
-                                <p className='text-xs text-slate-400'>{reviewModalApt.slotDate} &bull; {reviewModalApt.slotTime}</p>
+                                <h3 className='text-lg font-bold text-slate-900'>{reviewModalApt.doctor.name}</h3>
+                                <p className='text-xs text-slate-500'>{reviewModalApt.slotDate} &bull; {reviewModalApt.slotTime}</p>
                             </div>
                         </div>
 
                         <div>
-                            <label className='block text-xs font-semibold text-slate-300 mb-2'>How was your experience?</label>
-                            <div className='flex items-center gap-2 justify-center bg-slate-950 p-4 rounded-2xl border border-slate-800'>
+                            <label className='block text-xs font-semibold text-slate-700 mb-2'>How was your experience?</label>
+                            <div className='flex items-center gap-2 justify-center bg-blue-50/50 p-4 rounded-2xl border border-blue-100'>
                                 {[1, 2, 3, 4, 5].map((star) => (
                                     <button
                                         key={star}
                                         type='button'
                                         onClick={() => setRating(star)}
-                                        className='transition-transform hover:scale-125 p-1'
+                                        className='transition-transform hover:scale-125 p-1 cursor-pointer'
                                     >
                                         <Star
                                             size={28}
-                                            className={star <= rating ? 'fill-amber-400 text-amber-400' : 'text-slate-700'}
+                                            className={star <= rating ? 'fill-blue-500 text-blue-500' : 'text-slate-300'}
                                         />
                                     </button>
                                 ))}
@@ -338,19 +347,19 @@ const MyAppointments = () => {
                         </div>
 
                         <div>
-                            <label className='block text-xs font-semibold text-slate-300 mb-1'>Write a review (optional)</label>
+                            <label className='block text-xs font-semibold text-slate-700 mb-1'>Write a review (optional)</label>
                             <textarea
                                 rows={3}
                                 value={reviewText}
                                 onChange={(e) => setReviewText(e.target.value)}
-                                className='w-full bg-slate-950 border border-slate-700/80 rounded-xl px-4 py-3 text-white text-xs focus:outline-none focus:border-pink-500'
+                                className='w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 text-xs focus:outline-none focus:border-[#5F6FFF]'
                                 placeholder='Share feedback about treatment, doctor friendliness...'
                             ></textarea>
                         </div>
 
                         <button
                             onClick={handleSubmitReview}
-                            className='w-full py-3 bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white font-bold rounded-xl text-xs transition-all shadow-lg shadow-pink-500/25 cursor-pointer'
+                            className='w-full py-3 bg-[#5F6FFF] hover:bg-indigo-600 text-white font-bold rounded-xl text-xs transition-all shadow-xs cursor-pointer'
                         >
                             Submit Review
                         </button>
@@ -361,4 +370,4 @@ const MyAppointments = () => {
     );
 };
 
-export default MyAppointments;
+export default MyAppointments;

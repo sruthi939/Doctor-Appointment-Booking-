@@ -20,15 +20,38 @@ const Doctors = () => {
         setSelectedSpeciality(speciality ? decodeURIComponent(speciality) : '');
     }, [speciality]);
 
+    const isSpecialityMatch = (docSpec, filterSpec) => {
+        if (!docSpec || !filterSpec) return false;
+        const a = docSpec.toLowerCase().trim();
+        const b = filterSpec.toLowerCase().trim();
+
+        if (a === b || a.includes(b) || b.includes(a)) return true;
+
+        const getRoot = (str) => {
+            return str
+                .replace(/general\s+/g, 'gen')
+                .replace(/(ologist|ology|icians|ician|iatrics|iatric|ist|y|s)$/g, '');
+        };
+
+        const rootA = getRoot(a);
+        const rootB = getRoot(b);
+
+        if (rootA && rootB && (rootA.length >= 3 && rootB.length >= 3) && (rootA.includes(rootB) || rootB.includes(rootA))) {
+            return true;
+        }
+
+        if (a.length >= 4 && b.length >= 4 && a.substring(0, 4) === b.substring(0, 4)) {
+            return true;
+        }
+
+        return false;
+    };
+
     const applyFilter = () => {
         let result = doctors;
 
         if (selectedSpeciality) {
-            const selectedClean = selectedSpeciality.toLowerCase().trim();
-            result = result.filter(doc => {
-                const docSpecClean = (doc.speciality || '').toLowerCase().trim();
-                return docSpecClean === selectedClean || docSpecClean.includes(selectedClean) || selectedClean.includes(docSpecClean);
-            });
+            result = result.filter(doc => isSpecialityMatch(doc.speciality, selectedSpeciality));
         }
 
         if (searchQuery.trim()) {
@@ -113,7 +136,7 @@ const Doctors = () => {
 
                         {specialityData.map((item, index) => {
                             const isSelected = selectedSpeciality.toLowerCase() === item.speciality.toLowerCase();
-                            const count = doctors.filter(d => (d.speciality || '').toLowerCase().includes(item.speciality.toLowerCase())).length;
+                            const count = doctors.filter(d => isSpecialityMatch(d.speciality, item.speciality)).length;
 
                             return (
                                 <button

@@ -9,7 +9,7 @@ const Navbar = () => {
     const { token, setToken, userData } = useContext(AppContext);
 
     return (
-        <div className='flex items-center justify-between text-sm py-4 mb-6 border-b border-slate-200/80 backdrop-blur-md sticky top-0 z-40 bg-white/90 shadow-xs'>
+        <div className='flex items-center justify-between text-sm !py-1.5 mb-4 border-b border-slate-200/80 backdrop-blur-md sticky top-0 z-40 bg-white/90 shadow-xs'>
             <div className='flex items-center gap-4'>
                 <img
                     onClick={() => { navigate('/'); window.scrollTo(0, 0); }}

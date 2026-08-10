@@ -23,6 +23,8 @@ const App = () => {
   const isReceptionistRoute = location.pathname.startsWith('/receptionist/') || location.pathname === '/receptionist';
   const isAccountantRoute = location.pathname.startsWith('/accountant/') || location.pathname === '/accountant';
   const isLoginRoute = location.pathname === '/login';
+  const isAppointmentRoute = location.pathname.startsWith('/appointment/') || location.pathname === '/my-appointments';
+  const hideHeaderFooter = isLoginRoute || isAppointmentRoute;
 
   if (isDoctorRoute) {
     return <DoctorRoutes />;
@@ -39,7 +41,7 @@ const App = () => {
   return (
     <div className='min-h-screen bg-[#F8F9FD] text-slate-800 px-4 sm:px-[10%] pb-12 font-sans'>
       <ToastContainer />
-      {!isLoginRoute && <Navbar />}
+      {!hideHeaderFooter && <Navbar />}
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/doctors' element={<Doctors />} />
@@ -56,7 +58,7 @@ const App = () => {
 
         <Route path='/appointment/:docId' element={<Appointment />} />
       </Routes>
-      {!isLoginRoute && <Footer />}
+      {!hideHeaderFooter && <Footer />}
     </div>
   );
 };
