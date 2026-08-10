@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReceptionistLayout from '../../components/receptionist/ReceptionistLayout';
-import { Calendar, UserPlus, Eye, Edit3, XCircle, Search } from 'lucide-react';
+import { Calendar, UserPlus, Eye, XCircle, Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 
@@ -29,17 +29,27 @@ const ReceptionistAppointments = () => {
         fetchAppointments();
     }, []);
 
+    const getStatus = (item) => {
+        if (item.cancelled) return 'Cancelled';
+        if (item.isCompleted) return 'Completed';
+        return 'Upcoming';
+    };
+
+    const getPatientName = (item) => item.userData?.name || item.patientName || item.phone || 'Patient';
+    const getDoctorName = (item) => item.docData?.name || item.doctorName || 'Doctor';
+
     const filtered = appointmentsList.filter(item => {
-        const matchesTab = activeTab === 'All' || item.status.toLowerCase() === activeTab.toLowerCase();
-        const matchesSearch = item.patient.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                              item.doctor.toLowerCase().includes(searchQuery.toLowerCase());
+        const status = getStatus(item);
+        const matchesTab = activeTab === 'All' || status.toLowerCase() === activeTab.toLowerCase();
+        const matchesSearch = getPatientName(item).toLowerCase().includes(searchQuery.toLowerCase()) ||
+                              getDoctorName(item).toLowerCase().includes(searchQuery.toLowerCase());
         return matchesTab && matchesSearch;
     });
 
     const handleCancel = async (id) => {
         try {
-            await api.put(`/appointments/${id}/cancel`);
-            setAppointmentsList(prev => prev.map(a => a.id === id ? { ...a, status: 'Cancelled' } : a));
+            await api.post('/admin/cancel-appointment', { appointmentId: id });
+            setAppointmentsList(prev => prev.map(a => (a._id === id || a.id === id) ? { ...a, cancelled: true } : a));
         } catch (err) {
             console.error('Error cancelling appointment:', err);
         }
@@ -53,10 +63,10 @@ const ReceptionistAppointments = () => {
                     <div>
                         <h1 className='text-2xl sm:text-3xl font-extrabold text-white flex items-center gap-2'>
                             <Calendar className='text-rose-500' size={28} />
-                            Appointments
+                            Appointments List
                         </h1>
                         <p className='text-slate-400 text-sm mt-1'>
-                            View, search, add, reschedule or cancel patient appointments.
+                            Real-time view of patient appointments, walk-ins, and statuses.
                         </p>
                     </div>
 
@@ -101,55 +111,63 @@ const ReceptionistAppointments = () => {
 
                     <div className='overflow-x-auto'>
                         {loading ? (
-                            <p className='text-slate-400 text-xs py-8 text-center'>Loading appointments...</p>
+                            <p className='text-slate-400 text-xs py-8 text-center'>Loading real-time appointments...</p>
                         ) : filtered.length === 0 ? (
-                            <p className='text-slate-400 text-xs py-8 text-center'>No appointments found.</p>
+                            <p className='text-slate-400 text-xs py-8 text-center'>No appointments found in database.</p>
                         ) : (
                             <table className='w-full text-left text-xs'>
                                 <thead>
                                     <tr className='border-b border-slate-800 text-slate-400 uppercase tracking-wider pb-3'>
                                         <th className='pb-3 px-2'>Patient</th>
-                                        <th className='pb-3 px-2'>Doctor</th>
+                                        <th className='pb-3 px-2'>Doctor & Specialty</th>
                                         <th className='pb-3 px-2'>Date & Time</th>
+                                        <th className='pb-3 px-2'>Fee</th>
                                         <th className='pb-3 px-2'>Status</th>
                                         <th className='pb-3 px-2 text-right'>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody className='divide-y divide-slate-800/60'>
-                                    {filtered.map((item) => (
-                                        <tr key={item.id} className='hover:bg-slate-800/40 transition-colors'>
-                                            <td className='py-4 px-2 font-bold text-white'>{item.patient}</td>
-                                            <td className='py-4 px-2 text-slate-300 font-medium'>{item.doctor}</td>
-                                            <td className='py-4 px-2 text-slate-300 font-medium'>
-                                                <p className='text-white font-semibold'>{item.date}</p>
-                                                <p className='text-rose-400 text-[11px]'>{item.time}</p>
-                                            </td>
-                                            <td className='py-4 px-2'>
-                                                <span className={`px-3 py-1 rounded-full text-[10px] font-bold border ${
-                                                    item.status === 'Confirmed' || item.status === 'Upcoming'
-                                                        ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
-                                                        : item.status === 'Pending'
-                                                        ? 'bg-amber-500/10 text-amber-400 border-amber-500/30'
-                                                        : 'bg-rose-500/10 text-rose-400 border-rose-500/30'
-                                                }`}>
-                                                    {item.status}
-                                                </span>
-                                            </td>
-                                            <td className='py-4 px-2 text-right space-x-2'>
-                                                <button className='p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition-colors inline-flex cursor-pointer' title='View Info'>
-                                                    <Eye size={14} />
-                                                </button>
-                                                <button className='p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition-colors inline-flex cursor-pointer' title='Reschedule'>
-                                                    <Edit3 size={14} />
-                                                </button>
-                                                {item.status !== 'Cancelled' && (
-                                                    <button onClick={() => handleCancel(item.id)} className='p-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-lg transition-colors inline-flex cursor-pointer' title='Cancel'>
-                                                        <XCircle size={14} />
-                                                    </button>
-                                                )}
-                                            </td>
-                                        </tr>
-                                    ))}
+                                    {filtered.map((item, idx) => {
+                                        const status = getStatus(item);
+                                        const aptId = item._id || item.id;
+                                        return (
+                                            <tr key={aptId || idx} className='hover:bg-slate-800/40 transition-colors'>
+                                                <td className='py-4 px-2 font-bold text-white'>{getPatientName(item)}</td>
+                                                <td className='py-4 px-2 text-slate-300 font-medium'>
+                                                    <p className='text-white font-semibold'>{getDoctorName(item)}</p>
+                                                    <p className='text-rose-400 text-[11px]'>{item.docData?.speciality || 'General'}</p>
+                                                </td>
+                                                <td className='py-4 px-2 text-slate-300 font-medium'>
+                                                    <p className='text-white font-semibold'>{item.slotDate}</p>
+                                                    <p className='text-slate-400 text-[11px]'>{item.slotTime}</p>
+                                                </td>
+                                                <td className='py-4 px-2 font-bold text-emerald-400'>
+                                                    ${item.amount || item.docData?.fees || 50}
+                                                </td>
+                                                <td className='py-4 px-2'>
+                                                    <span className={`px-3 py-1 rounded-full text-[10px] font-bold border ${
+                                                        status === 'Upcoming'
+                                                            ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                                                            : status === 'Completed'
+                                                            ? 'bg-blue-500/10 text-blue-400 border-blue-500/30'
+                                                            : 'bg-rose-500/10 text-rose-400 border-rose-500/30'
+                                                    }`}>
+                                                        {status}
+                                                    </span>
+                                                </td>
+                                                <td className='py-4 px-2 text-right space-x-2'>
+                                                    {status !== 'Cancelled' && (
+                                                        <button 
+                                                            onClick={() => handleCancel(aptId)} 
+                                                            className='px-3 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-xl text-xs font-semibold transition-colors cursor-pointer inline-flex items-center gap-1'
+                                                        >
+                                                            <XCircle size={14} /> Cancel
+                                                        </button>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
                                 </tbody>
                             </table>
                         )}

@@ -70,9 +70,9 @@ const AppContextProvider = (props) => {
     const fetchAppointments = async () => {
         if (!token) return;
         try {
-            const res = await api.get('/appointments/my-appointments');
-            if (res.data?.success && res.data.appointments) {
-                setAppointments(res.data.appointments);
+            const { data } = await axios.get(backendUrl + '/api/user/appointments', { headers: { token } });
+            if (data.success && data.appointments) {
+                setAppointments(data.appointments);
             }
         } catch (error) {
             // Silently handle unauthenticated state gracefully

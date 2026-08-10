@@ -3,8 +3,11 @@ import { Upload, User } from 'lucide-react'
 import { AdminContext } from '../../context/AdminContext'
 import { toast } from 'react-toastify'
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 
 const AddDoctor = () => {
+    const navigate = useNavigate()
+
     const [docImg, setDocImg] = useState(false)
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
@@ -17,7 +20,7 @@ const AddDoctor = () => {
     const [address1, setAddress1] = useState('')
     const [address2, setAddress2] = useState('')
 
-    const { backendUrl, aToken } = useContext(AdminContext)
+    const { backendUrl, aToken, getAllDoctors } = useContext(AdminContext)
 
     const onSubmitHandler = async (event) => {
         event.preventDefault()
@@ -53,6 +56,8 @@ const AddDoctor = () => {
                 setFees('')
                 setAddress1('')
                 setAddress2('')
+                getAllDoctors()
+                navigate('/doctor-list')
             } else {
                 toast.error(data.message)
             }
@@ -102,13 +107,13 @@ const AddDoctor = () => {
                         </div>
 
                         <div className='flex-1 flex flex-col gap-1'>
-                            <p className='text-sm font-medium text-slate-700'>Doctor Password</p>
-                            <input onChange={(e) => setPassword(e.target.value)} value={password} className='border border-slate-200 rounded-xl px-3 py-2 outline-[#5F6FFF] text-sm' type="password" placeholder="Password" required />
+                            <p className='text-sm font-medium text-slate-700'>Set Password</p>
+                            <input onChange={(e) => setPassword(e.target.value)} value={password} className='border border-slate-200 rounded-xl px-3 py-2 outline-[#5F6FFF] text-sm' type="password" placeholder="Password (Min 8 chars)" required />
                         </div>
 
                         <div className='flex-1 flex flex-col gap-1'>
                             <p className='text-sm font-medium text-slate-700'>Experience</p>
-                            <select onChange={(e) => setExperience(e.target.value)} value={experience} className='border border-slate-200 rounded-xl px-3 py-2 outline-[#5F6FFF] text-sm bg-white'>
+                            <select onChange={(e) => setExperience(e.target.value)} value={experience} className='border border-slate-200 rounded-xl px-3 py-2 outline-[#5F6FFF] text-sm'>
                                 <option value="1 Year">1 Year</option>
                                 <option value="2 Years">2 Years</option>
                                 <option value="3 Years">3 Years</option>
@@ -123,46 +128,53 @@ const AddDoctor = () => {
                         </div>
 
                         <div className='flex-1 flex flex-col gap-1'>
-                            <p className='text-sm font-medium text-slate-700'>Fees</p>
-                            <input onChange={(e) => setFees(e.target.value)} value={fees} className='border border-slate-200 rounded-xl px-3 py-2 outline-[#5F6FFF] text-sm' type="number" placeholder="Consultation fees" required />
+                            <p className='text-sm font-medium text-slate-700 font-sans'>Consultation Fee ($)</p>
+                            <input onChange={(e) => setFees(e.target.value)} value={fees} className='border border-slate-200 rounded-xl px-3 py-2 outline-[#5F6FFF] text-sm' type="number" placeholder="Fee" required />
                         </div>
                     </div>
 
                     {/* Right Column */}
                     <div className='w-full lg:flex-1 flex flex-col gap-4'>
                         <div className='flex-1 flex flex-col gap-1'>
-                            <p className='text-sm font-medium text-slate-700'>Speciality</p>
-                            <select onChange={(e) => setSpeciality(e.target.value)} value={speciality} className='border border-slate-200 rounded-xl px-3 py-2 outline-[#5F6FFF] text-sm bg-white'>
+                            <p className='text-sm font-medium text-slate-700'>Specialization</p>
+                            <select onChange={(e) => setSpeciality(e.target.value)} value={speciality} className='border border-slate-200 rounded-xl px-3 py-2 outline-[#5F6FFF] text-sm'>
                                 <option value="General physician">General physician</option>
-                                <option value="Gynecologist">Gynecologist</option>
-                                <option value="Dermatologist">Dermatologist</option>
-                                <option value="Pediatricians">Pediatricians</option>
-                                <option value="Neurologist">Neurologist</option>
-                                <option value="Gastroenterologist">Gastroenterologist</option>
+                                <option value="Gynecology">Gynecology</option>
+                                <option value="Dermatology">Dermatology</option>
+                                <option value="Pediatrics">Pediatrics</option>
+                                <option value="Neurology">Neurology</option>
+                                <option value="Gastroenterology">Gastroenterology</option>
+                                <option value="Cardiology">Cardiology</option>
+                                <option value="Orthopedics">Orthopedics</option>
+                                <option value="ENT">ENT</option>
+                                <option value="Ophthalmology">Ophthalmology</option>
+                                <option value="Dentistry">Dentistry</option>
+                                <option value="Pulmonology">Pulmonology</option>
+                                <option value="Urology">Urology</option>
+                                <option value="Oncology">Oncology</option>
                             </select>
                         </div>
 
                         <div className='flex-1 flex flex-col gap-1'>
-                            <p className='text-sm font-medium text-slate-700'>Education / Degree</p>
-                            <input onChange={(e) => setDegree(e.target.value)} value={degree} className='border border-slate-200 rounded-xl px-3 py-2 outline-[#5F6FFF] text-sm' type="text" placeholder="Education (e.g. MBBS, MD)" required />
+                            <p className='text-sm font-medium text-slate-700'>Education & Degree</p>
+                            <input onChange={(e) => setDegree(e.target.value)} value={degree} className='border border-slate-200 rounded-xl px-3 py-2 outline-[#5F6FFF] text-sm' type="text" placeholder="Degree (e.g. MBBS, MD)" required />
                         </div>
 
                         <div className='flex-1 flex flex-col gap-1'>
-                            <p className='text-sm font-medium text-slate-700'>Address</p>
-                            <input onChange={(e) => setAddress1(e.target.value)} value={address1} className='border border-slate-200 rounded-xl px-3 py-2 outline-[#5F6FFF] text-sm mb-2' type="text" placeholder="Address line 1" required />
-                            <input onChange={(e) => setAddress2(e.target.value)} value={address2} className='border border-slate-200 rounded-xl px-3 py-2 outline-[#5F6FFF] text-sm' type="text" placeholder="Address line 2" required />
+                            <p className='text-sm font-medium text-slate-700'>Clinic Address</p>
+                            <input onChange={(e) => setAddress1(e.target.value)} value={address1} className='border border-slate-200 rounded-xl px-3 py-2 outline-[#5F6FFF] text-sm mb-2' type="text" placeholder="Address Line 1" required />
+                            <input onChange={(e) => setAddress2(e.target.value)} value={address2} className='border border-slate-200 rounded-xl px-3 py-2 outline-[#5F6FFF] text-sm' type="text" placeholder="Address Line 2" required />
                         </div>
                     </div>
                 </div>
 
-                {/* About Doctor Textarea */}
-                <div className='flex-1 flex flex-col gap-1 mt-6 text-slate-600'>
+                {/* About Doctor Section */}
+                <div className='flex-1 flex flex-col gap-1 mt-6'>
                     <p className='text-sm font-medium text-slate-700'>About Doctor</p>
-                    <textarea onChange={(e) => setAbout(e.target.value)} value={about} className='w-full border border-slate-200 rounded-xl px-4 py-3 outline-[#5F6FFF] text-sm' placeholder="Write about doctor's bio and background" rows={4} required />
+                    <textarea onChange={(e) => setAbout(e.target.value)} value={about} className='w-full border border-slate-200 rounded-xl p-3 outline-[#5F6FFF] text-sm' rows={4} placeholder="Write about doctor experience and medical overview..." required></textarea>
                 </div>
 
-                {/* Submit Button */}
-                <button type="submit" className='bg-[#5F6FFF] hover:bg-indigo-600 px-10 py-3 mt-6 text-white rounded-full transition-all cursor-pointer font-medium text-sm shadow-sm'>
+                <button type='submit' className='bg-[#5F6FFF] hover:bg-indigo-600 text-white font-semibold text-sm px-10 py-3 rounded-full mt-6 shadow-sm transition-all cursor-pointer'>
                     Add Doctor
                 </button>
             </div>

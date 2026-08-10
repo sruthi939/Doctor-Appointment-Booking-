@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import AccountantLayout from '../../components/accountant/AccountantLayout';
-import { DollarSign, CreditCard, FileText, TrendingDown, ArrowUpRight, Plus } from 'lucide-react';
+import { DollarSign, CreditCard, FileText, TrendingDown, ArrowUpRight, Plus, Mail } from 'lucide-react';
 import { fetchAccountantDashboard } from '../../services/accountantService';
 import { useNavigate } from 'react-router-dom';
 
@@ -8,6 +8,21 @@ const Dashboard = () => {
     const navigate = useNavigate();
     const [dashboardData, setDashboardData] = useState(null);
     const [loading, setLoading] = useState(true);
+
+    const accountantUser = (() => {
+        try {
+            const saved = localStorage.getItem('accountant_user');
+            if (saved) return JSON.parse(saved);
+            const savedEmail = localStorage.getItem('accountant_email');
+            const savedName = localStorage.getItem('accountant_name');
+            if (savedEmail || savedName) {
+                return { name: savedName || savedEmail.split('@')[0], email: savedEmail };
+            }
+            return { name: 'Accountant', email: '' };
+        } catch (e) {
+            return { name: 'Accountant', email: '' };
+        }
+    })();
 
     useEffect(() => {
         const loadDashboard = async () => {
@@ -32,11 +47,12 @@ const Dashboard = () => {
                 <div className='bg-gradient-to-r from-slate-900 via-slate-900 to-slate-950 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4'>
                     <div>
                         <span className='px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20 inline-block mb-2'>
-                            Welcome Back 👋
+                            Welcome Back 👋 {accountantUser.name}
                         </span>
                         <h1 className='text-2xl sm:text-3xl font-extrabold text-white'>Financial Dashboard</h1>
-                        <p className='text-slate-400 text-xs sm:text-sm mt-1'>
-                            Overview of total revenue, payments, invoices and clinic expenses.
+                        <p className='text-slate-400 text-xs sm:text-sm mt-1 flex items-center gap-1.5 font-mono'>
+                            <Mail size={14} className='text-amber-400' />
+                            <span>Logged In Email: <strong className='text-white'>{accountantUser.email}</strong></span>
                         </p>
                     </div>
 
@@ -60,86 +76,52 @@ const Dashboard = () => {
                                 <DollarSign size={18} />
                             </div>
                         </div>
-                        <p className='text-3xl font-extrabold text-white'>{loading ? '...' : stats.totalRevenue}</p>
-                        <p className='text-[11px] text-emerald-400 font-semibold flex items-center gap-1'>
-                            <ArrowUpRight size={14} /> Real-time DB Revenue
+                        <p className='text-2xl sm:text-3xl font-black text-white tracking-tight'>
+                            {stats.totalRevenue}
                         </p>
+                        <p className='text-[11px] text-slate-400 font-medium'>From completed clinic bookings</p>
                     </div>
 
                     {/* Total Payments */}
-                    <div className='p-6 rounded-3xl bg-slate-900/90 border border-slate-800 backdrop-blur-md space-y-2 shadow-xl hover:border-emerald-500/40 transition-colors'>
+                    <div className='p-6 rounded-3xl bg-slate-900/90 border border-slate-800 backdrop-blur-md space-y-2 shadow-xl hover:border-amber-500/40 transition-colors'>
                         <div className='flex items-center justify-between'>
                             <span className='text-xs font-bold text-slate-400 uppercase tracking-wider'>Total Payments</span>
                             <div className='w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/20'>
                                 <CreditCard size={18} />
                             </div>
                         </div>
-                        <p className='text-3xl font-extrabold text-white'>{loading ? '...' : stats.totalPayments}</p>
-                        <p className='text-[11px] text-slate-400 font-medium'>Processed via Card/UPI</p>
+                        <p className='text-2xl sm:text-3xl font-black text-white tracking-tight'>
+                            {stats.totalPayments}
+                        </p>
+                        <p className='text-[11px] text-slate-400 font-medium'>Processed patient transactions</p>
                     </div>
 
-                    {/* Total Invoices */}
-                    <div className='p-6 rounded-3xl bg-slate-900/90 border border-slate-800 backdrop-blur-md space-y-2 shadow-xl hover:border-blue-500/40 transition-colors'>
+                    {/* Invoices */}
+                    <div className='p-6 rounded-3xl bg-slate-900/90 border border-slate-800 backdrop-blur-md space-y-2 shadow-xl hover:border-amber-500/40 transition-colors'>
                         <div className='flex items-center justify-between'>
                             <span className='text-xs font-bold text-slate-400 uppercase tracking-wider'>Total Invoices</span>
                             <div className='w-8 h-8 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center border border-blue-500/20'>
                                 <FileText size={18} />
                             </div>
                         </div>
-                        <p className='text-3xl font-extrabold text-white'>{loading ? '...' : stats.totalInvoices}</p>
-                        <p className='text-[11px] text-slate-400 font-medium'>Generated invoices</p>
+                        <p className='text-2xl sm:text-3xl font-black text-white tracking-tight'>
+                            {stats.totalInvoices}
+                        </p>
+                        <p className='text-[11px] text-slate-400 font-medium'>Issued clinic billings</p>
                     </div>
 
-                    {/* Total Expenses */}
-                    <div className='p-6 rounded-3xl bg-slate-900/90 border border-slate-800 backdrop-blur-md space-y-2 shadow-xl hover:border-rose-500/40 transition-colors'>
+                    {/* Expenses */}
+                    <div className='p-6 rounded-3xl bg-slate-900/90 border border-slate-800 backdrop-blur-md space-y-2 shadow-xl hover:border-amber-500/40 transition-colors'>
                         <div className='flex items-center justify-between'>
                             <span className='text-xs font-bold text-slate-400 uppercase tracking-wider'>Total Expenses</span>
                             <div className='w-8 h-8 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center border border-rose-500/20'>
                                 <TrendingDown size={18} />
                             </div>
                         </div>
-                        <p className='text-3xl font-extrabold text-white'>{loading ? '...' : stats.totalExpenses}</p>
-                        <p className='text-[11px] text-rose-400 font-semibold'>Clinic utilities & equipment</p>
-                    </div>
-                </div>
-
-                {/* Revenue Overview Chart Section */}
-                <div className='bg-slate-900/90 border border-slate-800 rounded-3xl p-6 backdrop-blur-md shadow-2xl space-y-4'>
-                    <div className='flex items-center justify-between border-b border-slate-800 pb-3'>
-                        <h2 className='text-base font-bold text-white uppercase tracking-wider text-amber-400'>
-                            Revenue Overview
-                        </h2>
-                        <span className='text-xs text-slate-400 font-semibold bg-slate-950 px-3 py-1 rounded-full border border-slate-800'>
-                            Live Overview
-                        </span>
-                    </div>
-
-                    <div className='h-48 w-full relative flex items-end pt-6 pb-2 px-4 bg-slate-950/60 rounded-2xl border border-slate-800/80 overflow-hidden'>
-                        <svg className='w-full h-full overflow-visible' viewBox='0 0 500 120' preserveAspectRatio='none'>
-                            <defs>
-                                <linearGradient id='revenueGradient' x1='0' y1='0' x2='0' y2='1'>
-                                    <stop offset='0%' stopColor='#f59e0b' stopOpacity='0.4' />
-                                    <stop offset='100%' stopColor='#f59e0b' stopOpacity='0.0' />
-                                </linearGradient>
-                            </defs>
-                            <path
-                                d='M0,80 Q50,20 100,70 T200,40 T300,90 T400,30 T500,60 L500,120 L0,120 Z'
-                                fill='url(#revenueGradient)'
-                            />
-                            <path
-                                d='M0,80 Q50,20 100,70 T200,40 T300,90 T400,30 T500,60'
-                                fill='none'
-                                stroke='#f59e0b'
-                                strokeWidth='3'
-                            />
-                        </svg>
-                        <div className='absolute bottom-2 left-0 right-0 flex justify-between px-6 text-[10px] text-slate-400 font-bold'>
-                            <span>Phase 1</span>
-                            <span>Phase 2</span>
-                            <span>Phase 3</span>
-                            <span>Phase 4</span>
-                            <span>Current</span>
-                        </div>
+                        <p className='text-2xl sm:text-3xl font-black text-white tracking-tight'>
+                            {stats.totalExpenses}
+                        </p>
+                        <p className='text-[11px] text-slate-400 font-medium'>Clinic operational costs</p>
                     </div>
                 </div>
             </div>

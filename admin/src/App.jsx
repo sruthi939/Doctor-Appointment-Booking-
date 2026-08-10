@@ -3,7 +3,6 @@ import Login from './components/Login.jsx';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AdminContext } from './context/AdminContext.jsx';
-import { DoctorContext } from './context/DoctorContext.jsx';
 import Navbar from './components/Navbar.jsx';
 import Sidebar from './components/Sidebar.jsx';
 import { Route, Routes } from 'react-router-dom';
@@ -14,14 +13,13 @@ import DoctorsList from './pages/admin/DoctorsList.jsx';
 import AccountantsList from './pages/admin/AccountantsList.jsx';
 import ReceptionistsList from './pages/admin/ReceptionistsList.jsx';
 import DoctorDashboard from './pages/doctor/DoctorDashboard.jsx';
-import DoctorAppointments from './pages/doctor/DoctorAppointments.jsx';
-import DoctorProfile from './pages/doctor/DoctorProfile.jsx';
+import AccountantDashboard from './pages/accountant/AccountantDashboard.jsx';
+import ReceptionistDashboard from './pages/receptionist/ReceptionistDashboard.jsx';
 
 const App = () => {
   const { aToken } = useContext(AdminContext);
-  const { dToken } = useContext(DoctorContext);
 
-  return (aToken || dToken) ? (
+  return aToken ? (
     <div className='bg-[#F8F9FD] min-h-screen'>
       <ToastContainer />
       <Navbar />
@@ -29,7 +27,6 @@ const App = () => {
         <Sidebar />
         <div className='flex-1 p-6'>
           <Routes>
-            {/* Admin Routes */}
             <Route path='/' element={<Dashboard />} />
             <Route path='/admin-dashboard' element={<Dashboard />} />
             <Route path='/all-appointments' element={<AllAppointments />} />
@@ -37,11 +34,9 @@ const App = () => {
             <Route path='/doctor-list' element={<DoctorsList />} />
             <Route path='/accountants-list' element={<AccountantsList />} />
             <Route path='/receptionists-list' element={<ReceptionistsList />} />
-
-            {/* Doctor Routes */}
-            <Route path='/doctor-dashboard' element={<DoctorDashboard />} />
-            <Route path='/doctor-appointments' element={<DoctorAppointments />} />
-            <Route path='/doctor-profile' element={<DoctorProfile />} />
+            <Route path='/doctor-portal' element={<DoctorDashboard />} />
+            <Route path='/accountant-portal' element={<AccountantDashboard />} />
+            <Route path='/receptionist-portal' element={<ReceptionistDashboard />} />
           </Routes>
         </div>
       </div>

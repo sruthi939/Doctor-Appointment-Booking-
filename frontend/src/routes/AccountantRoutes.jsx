@@ -1,5 +1,6 @@
 import React from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
+import { CheckCircle2 } from 'lucide-react';
 import AccountantLogin from '../pages/accountant/AccountantLogin';
 import AccountantDashboard from '../pages/accountant/Dashboard';
 import Transactions from '../pages/accountant/Transactions';

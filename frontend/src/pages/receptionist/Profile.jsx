@@ -12,11 +12,13 @@ const ReceptionistProfile = () => {
         if (saved) {
             try { return JSON.parse(saved); } catch (e) { console.error(e); }
         }
+        const savedEmail = localStorage.getItem('receptionist_email') || 'receptionist@medicare.com';
+        const savedName = localStorage.getItem('receptionist_name') || savedEmail.split('@')[0];
         return {
-            name: 'Olivia Smith',
-            email: 'olivia.smith@example.com',
+            name: savedName,
+            email: savedEmail,
             phone: '+1 987 654 3210',
-            role: 'Receptionist',
+            role: 'Front Desk Receptionist',
             image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=250'
         };
     });
@@ -59,92 +61,90 @@ const ReceptionistProfile = () => {
                                     className='bg-slate-950 border border-slate-700 rounded-xl px-4 py-2 text-white text-xl font-bold w-full focus:outline-none focus:border-rose-500'
                                 />
                             ) : (
-                                <h1 className='text-2xl sm:text-3xl font-extrabold text-white'>{profileData.name}</h1>
+                                <h1 className='text-2xl font-black text-white tracking-tight'>{profileData.name}</h1>
                             )}
-                            <p className='text-xs font-semibold px-3 py-1 bg-rose-500/10 text-rose-400 border border-rose-500/20 rounded-full inline-block'>
-                                {profileData.role || 'Receptionist'}
-                            </p>
-                        </div>
 
-                        <button
-                            type='button'
-                            onClick={isEdit ? handleSave : () => { setFormState(profileData); setIsEdit(true); }}
-                            className={`px-6 py-2.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 cursor-pointer shadow-md ${
-                                isEdit
-                                    ? 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-emerald-500/20'
-                                    : 'bg-gradient-to-r from-rose-500 via-pink-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white shadow-rose-500/20'
-                            }`}
-                        >
-                            {isEdit ? <Save size={16} /> : <Edit3 size={16} />}
-                            {isEdit ? 'Save Changes' : 'Edit Profile'}
-                        </button>
+                            <div className='inline-flex items-center gap-1.5 px-3 py-1 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-full text-xs font-bold'>
+                                <User size={13} />
+                                <span>{profileData.role || 'Front Desk Receptionist'}</span>
+                            </div>
+                        </div>
                     </div>
 
                     {savedNotice && (
-                        <div className='p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400 text-xs font-semibold flex items-center gap-2'>
-                            <Check size={16} /> Receptionist profile updated!
+                        <div className='p-3 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold rounded-xl flex items-center gap-2'>
+                            <Check size={16} />
+                            <span>Profile details updated successfully!</span>
                         </div>
                     )}
 
-                    {/* Details Form Grid */}
-                    <div className='space-y-4 text-xs text-slate-300'>
+                    {/* Profile Fields */}
+                    <form onSubmit={handleSave} className='space-y-4'>
                         <div>
-                            <label className='block text-slate-400 mb-1'>Full Name</label>
-                            {isEdit ? (
-                                <input
-                                    type='text'
-                                    value={formState.name || ''}
-                                    onChange={(e) => setFormState(prev => ({ ...prev, name: e.target.value }))}
-                                    className='w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white'
-                                />
-                            ) : (
-                                <span className='font-bold text-white text-sm block p-2.5 bg-slate-950 rounded-xl border border-slate-800'>{profileData.name}</span>
-                            )}
-                        </div>
-
-                        <div>
-                            <label className='block text-slate-400 mb-1'>Email Address</label>
+                            <label className='block text-xs font-semibold text-slate-400 mb-1 flex items-center gap-1.5'>
+                                <Mail size={14} className='text-rose-400' /> Registered Email Address
+                            </label>
                             {isEdit ? (
                                 <input
                                     type='email'
                                     value={formState.email || ''}
                                     onChange={(e) => setFormState(prev => ({ ...prev, email: e.target.value }))}
-                                    className='w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white'
+                                    className='w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-rose-500 font-mono'
                                 />
                             ) : (
-                                <span className='font-bold text-white text-sm block p-2.5 bg-slate-950 rounded-xl border border-slate-800'>{profileData.email}</span>
+                                <p className='text-sm text-slate-200 font-mono bg-slate-950/60 p-3 rounded-xl border border-slate-800/80'>
+                                    {profileData.email}
+                                </p>
                             )}
                         </div>
 
                         <div>
-                            <label className='block text-slate-400 mb-1'>Phone Number</label>
+                            <label className='block text-xs font-semibold text-slate-400 mb-1 flex items-center gap-1.5'>
+                                <Phone size={14} className='text-rose-400' /> Phone Number
+                            </label>
                             {isEdit ? (
                                 <input
                                     type='text'
                                     value={formState.phone || ''}
                                     onChange={(e) => setFormState(prev => ({ ...prev, phone: e.target.value }))}
-                                    className='w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white'
+                                    className='w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-rose-500 font-mono'
                                 />
                             ) : (
-                                <span className='font-bold text-white text-sm block p-2.5 bg-slate-950 rounded-xl border border-slate-800'>{profileData.phone}</span>
+                                <p className='text-sm text-slate-200 font-mono bg-slate-950/60 p-3 rounded-xl border border-slate-800/80'>
+                                    {profileData.phone || '+1 987 654 3210'}
+                                </p>
                             )}
                         </div>
 
-                        <div>
-                            <label className='block text-slate-400 mb-1'>Role</label>
-                            <span className='font-bold text-rose-400 text-sm block p-2.5 bg-slate-950 rounded-xl border border-slate-800'>{profileData.role || 'Receptionist'}</span>
+                        {/* Action Buttons */}
+                        <div className='pt-4 flex justify-end gap-3'>
+                            {isEdit ? (
+                                <>
+                                    <button
+                                        type='button'
+                                        onClick={() => { setIsEdit(false); setFormState(profileData); }}
+                                        className='px-5 py-2.5 rounded-xl border border-slate-700 text-xs font-semibold text-slate-300 hover:bg-slate-800 transition-all cursor-pointer'
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type='submit'
+                                        className='px-6 py-2.5 bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-bold rounded-xl text-xs transition-all shadow-lg shadow-rose-500/25 flex items-center gap-2 cursor-pointer'
+                                    >
+                                        <Save size={16} /> Save Changes
+                                    </button>
+                                </>
+                            ) : (
+                                <button
+                                    type='button'
+                                    onClick={() => setIsEdit(true)}
+                                    className='px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl text-xs transition-all border border-slate-700 flex items-center gap-2 cursor-pointer'
+                                >
+                                    <Edit3 size={16} /> Edit Profile
+                                </button>
+                            )}
                         </div>
-
-                        {isEdit && (
-                            <button
-                                type='button'
-                                onClick={handleSave}
-                                className='w-full py-3 bg-gradient-to-r from-rose-500 via-pink-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white font-bold rounded-2xl text-xs transition-all shadow-lg shadow-pink-500/25 cursor-pointer uppercase tracking-wider mt-4'
-                            >
-                                Update Profile
-                            </button>
-                        )}
-                    </div>
+                    </form>
                 </div>
             </div>
         </ReceptionistLayout>

@@ -1,43 +1,29 @@
 import React, { useContext, useState } from 'react'
 import { AdminContext } from '../context/AdminContext'
-import { DoctorContext } from '../context/DoctorContext'
 import { toast } from 'react-toastify'
 import axios from 'axios'
-import { Lock, Mail, Eye, EyeOff } from 'lucide-react'
+import { Lock, Mail, Eye, EyeOff, ShieldCheck } from 'lucide-react'
 
 const Login = () => {
-    const [state, setState] = useState('Admin')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [showPassword, setShowPassword] = useState(false)
     const [loading, setLoading] = useState(false)
 
     const { setAToken, backendUrl } = useContext(AdminContext)
-    const { setDToken } = useContext(DoctorContext)
 
     const onSubmitHandler = async (event) => {
         event.preventDefault()
         setLoading(true)
 
         try {
-            if (state === 'Admin') {
-                const { data } = await axios.post(backendUrl + '/api/admin/login', { email, password })
-                if (data.success) {
-                    setAToken(data.token)
-                    localStorage.setItem('aToken', data.token)
-                    toast.success('Welcome, Admin!')
-                } else {
-                    toast.error(data.message)
-                }
+            const { data } = await axios.post(backendUrl + '/api/admin/login', { email, password })
+            if (data.success) {
+                setAToken(data.token)
+                localStorage.setItem('aToken', data.token)
+                toast.success('Welcome to Admin Portal!')
             } else {
-                const { data } = await axios.post(backendUrl + '/api/doctor/login', { email, password })
-                if (data.success) {
-                    setDToken(data.token)
-                    localStorage.setItem('dToken', data.token)
-                    toast.success('Welcome, Doctor!')
-                } else {
-                    toast.error(data.message)
-                }
+                toast.error(data.message)
             }
         } catch (error) {
             console.error(error)
@@ -49,48 +35,51 @@ const Login = () => {
 
     return (
         <div className='min-h-screen flex items-center justify-center w-full bg-[#F8F9FD] p-4'>
-            <div className='bg-white border border-slate-200 shadow-lg rounded-2xl p-8 sm:p-10 w-full max-w-md text-slate-600'>
-                <div className='text-center mb-6'>
-                    <p className='text-2xl font-bold text-[#5F6FFF]'>Medicare</p>
-                    <p className='text-base font-semibold text-slate-800 mt-1'>
-                        <span className='text-[#5F6FFF]'>{state}</span> Login
+            <div className='bg-white border border-slate-200 shadow-xl rounded-3xl p-8 sm:p-10 w-full max-w-md text-slate-600 text-left space-y-6'>
+                <div className='text-center space-y-2'>
+                    <div className='w-16 h-16 bg-blue-50 text-[#5F6FFF] rounded-2xl flex items-center justify-center mx-auto border border-blue-100 shadow-sm'>
+                        <ShieldCheck size={36} />
+                    </div>
+                    <p className='text-2xl font-extrabold text-slate-900'>Admin Portal Login</p>
+                    <p className='text-xs text-slate-500'>
+                        Enter authorized administrator credentials to access system management.
                     </p>
                 </div>
 
                 <form onSubmit={onSubmitHandler} className='space-y-4'>
                     <div>
-                        <label className='block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1'>Email</label>
+                        <label className='block text-xs font-bold text-slate-700 mb-1'>Admin Email</label>
                         <div className='relative'>
-                            <Mail className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400' />
+                            <Mail className='absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400' size={16} />
                             <input
-                                onChange={(e) => setEmail(e.target.value)}
-                                value={email}
-                                className='w-full border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:border-[#5F6FFF] outline-none transition-all'
                                 type='email'
-                                placeholder='Email'
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder='admin@gmail.com'
                                 required
+                                className='w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-[#5F6FFF]'
                             />
                         </div>
                     </div>
 
                     <div>
-                        <label className='block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1'>Password</label>
+                        <label className='block text-xs font-bold text-slate-700 mb-1'>Password</label>
                         <div className='relative'>
-                            <Lock className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400' />
+                            <Lock className='absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400' size={16} />
                             <input
-                                onChange={(e) => setPassword(e.target.value)}
-                                value={password}
-                                className='w-full border border-slate-200 rounded-xl pl-10 pr-10 py-2.5 text-sm focus:border-[#5F6FFF] outline-none transition-all'
                                 type={showPassword ? 'text' : 'password'}
-                                placeholder='Password'
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder='••••••••'
                                 required
+                                className='w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-10 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-[#5F6FFF]'
                             />
                             <button
                                 type='button'
                                 onClick={() => setShowPassword(!showPassword)}
-                                className='absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors'
+                                className='absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600'
                             >
-                                {showPassword ? <EyeOff className='w-4 h-4' /> : <Eye className='w-4 h-4' />}
+                                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                             </button>
                         </div>
                     </div>
@@ -98,18 +87,15 @@ const Login = () => {
                     <button
                         type='submit'
                         disabled={loading}
-                        className='w-full py-3 bg-[#5F6FFF] hover:bg-indigo-600 text-white font-semibold rounded-xl transition-all cursor-pointer shadow-sm text-sm disabled:opacity-50'
+                        className='w-full py-3 bg-[#5F6FFF] hover:bg-indigo-600 text-white font-bold rounded-xl text-xs transition-all shadow-md cursor-pointer disabled:opacity-50 mt-2'
                     >
-                        {loading ? 'Logging in...' : 'Login'}
+                        {loading ? 'Authenticating Admin...' : 'Login to Admin Panel'}
                     </button>
                 </form>
 
-                <div className='text-center mt-5 text-sm text-slate-500'>
-                    {state === 'Admin' ? (
-                        <p>Doctor Login? <span onClick={() => setState('Doctor')} className='text-[#5F6FFF] underline cursor-pointer font-medium'>Click here</span></p>
-                    ) : (
-                        <p>Admin Login? <span onClick={() => setState('Admin')} className='text-[#5F6FFF] underline cursor-pointer font-medium'>Click here</span></p>
-                    )}
+                <div className='p-3 bg-blue-50/70 border border-blue-100 rounded-2xl text-[11px] text-slate-500 leading-relaxed text-center'>
+                    <p className='font-bold text-slate-700'>Staff Member?</p>
+                    <p className='mt-0.5'>Doctors, Accountants & Receptionists sign in directly through the main application portal.</p>
                 </div>
             </div>
         </div>

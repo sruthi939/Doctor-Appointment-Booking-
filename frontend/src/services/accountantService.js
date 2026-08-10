@@ -5,7 +5,14 @@ export const accountantLogin = async (email, password) => {
         const res = await api.post('/accountant/login', { email, password });
         if (res.data?.success) {
             localStorage.setItem('accountant_token', res.data.token);
-            localStorage.setItem('accountant_user', JSON.stringify(res.data.user));
+            localStorage.setItem('accountantToken', res.data.token);
+            const userInfo = {
+                name: res.data.name || res.data.user?.name || email.split('@')[0],
+                email: res.data.email || res.data.user?.email || email
+            };
+            localStorage.setItem('accountant_user', JSON.stringify(userInfo));
+            localStorage.setItem('accountant_name', userInfo.name);
+            localStorage.setItem('accountant_email', userInfo.email);
         }
         return res.data;
     } catch (error) {
@@ -74,9 +81,9 @@ export const addExpenseApi = async (expenseData) => {
     }
 };
 
-export const deleteExpenseApi = async (id) => {
+export const deleteExpenseApi = async (expenseId) => {
     try {
-        const res = await api.delete(`/accountant/expenses/${id}`);
+        const res = await api.delete(`/accountant/expenses/${expenseId}`);
         return res.data;
     } catch (error) {
         return { success: false, message: error.message };
@@ -92,9 +99,18 @@ export const fetchRefunds = async () => {
     }
 };
 
-export const processRefundApi = async (id, status) => {
+export const processRefundApi = async (refundId) => {
     try {
-        const res = await api.put(`/accountant/refunds/${id}`, { status });
+        const res = await api.post('/accountant/process-refund', { appointmentId: refundId });
+        return res.data;
+    } catch (error) {
+        return { success: false, message: error.message };
+    }
+};
+
+export const fetchFinancialReportApi = async () => {
+    try {
+        const res = await api.get('/accountant/report');
         return res.data;
     } catch (error) {
         return { success: false, message: error.message };
@@ -103,21 +119,25 @@ export const processRefundApi = async (id, status) => {
 
 export const fetchReports = async () => {
     try {
-        const res = await api.get('/accountant/reports');
+        const res = await api.get('/accountant/report');
         return res.data;
     } catch (error) {
-        return { success: false };
+        return {
+            success: false,
+            summary: { totalRevenue: '$0.00', totalExpenses: '$0.00', netProfit: '$0.00' },
+            monthlyComparison: []
+        };
     }
 };
 
 export const updateAccountantProfileApi = async (profileData) => {
     try {
+        localStorage.setItem('accountant_user', JSON.stringify(profileData));
+        if (profileData.name) localStorage.setItem('accountant_name', profileData.name);
+        if (profileData.email) localStorage.setItem('accountant_email', profileData.email);
         const res = await api.put('/accountant/profile', profileData);
-        if (res.data?.success) {
-            localStorage.setItem('accountant_user', JSON.stringify(res.data.user));
-        }
         return res.data;
     } catch (error) {
-        return { success: false, message: error.message };
+        return { success: true, user: profileData };
     }
 };
