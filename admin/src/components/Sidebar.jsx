@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { NavLink } from 'react-router-dom'
 import { AdminContext } from '../context/AdminContext'
 import { DoctorContext } from '../context/DoctorContext'
-import { LayoutDashboard, Calendar, UserPlus, Users, User } from 'lucide-react'
+import { LayoutDashboard, Calendar, UserPlus, Users, User, Calculator, UserCheck } from 'lucide-react'
 
 const Sidebar = () => {
     const { aToken } = useContext(AdminContext)
@@ -35,7 +35,7 @@ const Sidebar = () => {
                         }
                     >
                         <Calendar className='w-5 h-5' />
-                        <p className='hidden md:block text-sm'>AllAppointments</p>
+                        <p className='hidden md:block text-sm'>All Appointments</p>
                     </NavLink>
 
                     <NavLink
@@ -62,6 +62,32 @@ const Sidebar = () => {
                     >
                         <Users className='w-5 h-5' />
                         <p className='hidden md:block text-sm'>Doctors List</p>
+                    </NavLink>
+
+                    <NavLink
+                        to={'/accountants-list'}
+                        className={({ isActive }) =>
+                            `flex items-center gap-3 py-3 px-4 rounded-xl cursor-pointer transition-all duration-200 ${isActive
+                                ? 'bg-[#F2F3FF] border-r-4 border-[#5F6FFF] text-[#5F6FFF] font-semibold'
+                                : 'hover:bg-slate-50 hover:text-slate-900'
+                            }`
+                        }
+                    >
+                        <Calculator className='w-5 h-5' />
+                        <p className='hidden md:block text-sm'>Accountants</p>
+                    </NavLink>
+
+                    <NavLink
+                        to={'/receptionists-list'}
+                        className={({ isActive }) =>
+                            `flex items-center gap-3 py-3 px-4 rounded-xl cursor-pointer transition-all duration-200 ${isActive
+                                ? 'bg-[#F2F3FF] border-r-4 border-[#5F6FFF] text-[#5F6FFF] font-semibold'
+                                : 'hover:bg-slate-50 hover:text-slate-900'
+                            }`
+                        }
+                    >
+                        <UserCheck className='w-5 h-5' />
+                        <p className='hidden md:block text-sm'>Receptionists</p>
                     </NavLink>
                 </ul>
             )}

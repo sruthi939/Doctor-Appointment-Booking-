@@ -4,17 +4,17 @@ import { v2 as cloudinary } from 'cloudinary'
 import doctorModel from '../models/doctorModel.js'
 import appointmentModel from '../models/appointmentModel.js'
 import userModel from '../models/userModel.js'
+import accountantModel from '../models/accountantModel.js'
+import receptionistModel from '../models/receptionistModel.js'
 import jwt from 'jsonwebtoken'
 
 // API for adding doctor
-
 const addDoctor = async (req, res) => {
-
     try {
         const { name, email, password, speciality, degree, experience, about, fees, address } = req.body
         const imageFile = req.file
 
-        //checking for all data to add doctor
+        // checking for all data to add doctor
         if (!name || !email || !password || !speciality || !degree || !experience || !about || !fees || !address) {
             return res.json({
                 success: false,
@@ -22,7 +22,7 @@ const addDoctor = async (req, res) => {
             })
         }
 
-        // validator email formate
+        // validator email format
         if (!validator.isEmail(email)) {
             return res.json({
                 success: false,
@@ -43,10 +43,13 @@ const addDoctor = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, salt)
 
         // upload image to cloudinary
-        const imageUpload = await cloudinary.uploader.upload(imageFile.path, {
-            resource_type: "image"
-        })
-        const imageUrl = imageUpload.secure_url
+        let imageUrl = "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=300"
+        if (imageFile) {
+            const imageUpload = await cloudinary.uploader.upload(imageFile.path, {
+                resource_type: "image"
+            })
+            imageUrl = imageUpload.secure_url
+        }
 
         const doctorData = {
             name,
@@ -84,20 +87,17 @@ const loginAdmin = async (req, res) => {
     try {
         const { email, password } = req.body
         if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
-
             const token = jwt.sign(email + password, process.env.JWT_SECRET)
             res.json({
                 success: true,
                 token
             })
-
         } else {
             res.json({
                 success: false,
                 message: "Invalid credentials"
             })
         }
-
     } catch (error) {
         console.log(error)
         res.json({
@@ -156,11 +156,15 @@ const adminDashboard = async (req, res) => {
         const doctors = await doctorModel.find({})
         const users = await userModel.find({})
         const appointments = await appointmentModel.find({})
+        const accountants = await accountantModel.find({})
+        const receptionists = await receptionistModel.find({})
 
         const dashData = {
             doctors: doctors.length,
             appointments: appointments.length,
             patients: users.length,
+            accountants: accountants.length,
+            receptionists: receptionists.length,
             latestAppointments: appointments.reverse().slice(0, 5)
         }
 
@@ -196,4 +200,88 @@ const changeAvailability = async (req, res) => {
     }
 }
 
-export { addDoctor, loginAdmin, appointmentsAdmin, appointmentCancelAdmin, adminDashboard, allDoctors, changeAvailability }
+// API to get all accountants
+const allAccountants = async (req, res) => {
+    try {
+        const accountants = await accountantModel.find({}).select('-password')
+        res.json({ success: true, accountants })
+    } catch (error) {
+        console.log(error)
+        res.json({ success: false, message: error.message })
+    }
+}
+
+// API to add accountant
+const addAccountant = async (req, res) => {
+    try {
+        const { name, email, password, phone, department } = req.body
+        if (!name || !email || !password) {
+            return res.json({ success: false, message: "Missing Details" })
+        }
+        const salt = await bcrypt.genSalt(10)
+        const hashedPassword = await bcrypt.hash(password, salt)
+
+        const newAccountant = new accountantModel({
+            name,
+            email,
+            password: hashedPassword,
+            phone: phone || "0000000000",
+            department: department || "Finance & Accounts"
+        })
+        await newAccountant.save()
+        res.json({ success: true, message: "Accountant Added Successfully" })
+    } catch (error) {
+        console.log(error)
+        res.json({ success: false, message: error.message })
+    }
+}
+
+// API to get all receptionists
+const allReceptionists = async (req, res) => {
+    try {
+        const receptionists = await receptionistModel.find({}).select('-password')
+        res.json({ success: true, receptionists })
+    } catch (error) {
+        console.log(error)
+        res.json({ success: false, message: error.message })
+    }
+}
+
+// API to add receptionist
+const addReceptionist = async (req, res) => {
+    try {
+        const { name, email, password, phone, shift } = req.body
+        if (!name || !email || !password) {
+            return res.json({ success: false, message: "Missing Details" })
+        }
+        const salt = await bcrypt.genSalt(10)
+        const hashedPassword = await bcrypt.hash(password, salt)
+
+        const newReceptionist = new receptionistModel({
+            name,
+            email,
+            password: hashedPassword,
+            phone: phone || "0000000000",
+            shift: shift || "Morning"
+        })
+        await newReceptionist.save()
+        res.json({ success: true, message: "Receptionist Added Successfully" })
+    } catch (error) {
+        console.log(error)
+        res.json({ success: false, message: error.message })
+    }
+}
+
+export {
+    addDoctor,
+    loginAdmin,
+    appointmentsAdmin,
+    appointmentCancelAdmin,
+    adminDashboard,
+    allDoctors,
+    changeAvailability,
+    allAccountants,
+    addAccountant,
+    allReceptionists,
+    addReceptionist
+}
