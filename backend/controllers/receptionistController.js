@@ -15,9 +15,18 @@ const loginReceptionist = async (req, res) => {
         if (email === envEmail && password === envPass) {
             const token = jwt.sign({ id: "RECEPTIONIST_ID" }, process.env.JWT_SECRET);
             return res.json({ success: true, token });
-        } else {
-            return res.json({ success: false, message: "Invalid Receptionist credentials" });
         }
+
+        const receptionist = await receptionistModel.findOne({ email });
+        if (receptionist) {
+            const isMatch = await bcrypt.compare(password, receptionist.password);
+            if (isMatch) {
+                const token = jwt.sign({ id: receptionist._id }, process.env.JWT_SECRET);
+                return res.json({ success: true, token });
+            }
+        }
+
+        return res.json({ success: false, message: "Invalid Receptionist credentials" });
     } catch (error) {
         console.log(error);
         res.json({ success: false, message: error.message });
