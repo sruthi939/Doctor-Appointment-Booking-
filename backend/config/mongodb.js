@@ -9,18 +9,15 @@ try {
 
 const connectDB = async () => {
     try {
-        const uri = process.env.MONGODB_URL || process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/Medicare';
-        
-        // Disable command buffering so queries fail fast instead of hanging 10s
-        mongoose.set('bufferCommands', false);
+        mongoose.connection.on('connected', () => console.log("Database Connected Successfully"));
+        mongoose.connection.on('error', (err) => console.error("Database Connection Error:", err.message));
 
+        const uri = process.env.MONGODB_URL || process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/Medicare';
         await mongoose.connect(uri, {
-            dbName: 'Medicare',
-            serverSelectionTimeoutMS: 5000,
+            dbName: 'Medicare'
         });
-        console.log("Data Base is Connected");
     } catch (error) {
-        console.log("[MongoDB Notice]", error.message);
+        console.log("MongoDB Initial Connection Error:", error.message);
     }
 };
 
