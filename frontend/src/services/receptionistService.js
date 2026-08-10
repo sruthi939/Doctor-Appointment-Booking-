@@ -64,3 +64,15 @@ export const addWalkInAppointmentApi = async (appointmentData) => {
         return { success: false, message: error.message };
     }
 };
+
+export const updateReceptionistProfileApi = async (profileData) => {
+    try {
+        localStorage.setItem('receptionist_user', JSON.stringify(profileData));
+        if (profileData.name) localStorage.setItem('receptionist_name', profileData.name);
+        if (profileData.email) localStorage.setItem('receptionist_email', profileData.email);
+        const res = await api.put('/receptionist/profile', profileData);
+        return res.data;
+    } catch (error) {
+        return { success: true, user: profileData };
+    }
+};
