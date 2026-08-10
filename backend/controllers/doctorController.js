@@ -105,6 +105,48 @@ const appointmentCancel = async (req, res) => {
     }
 };
 
+// API to get doctor dashboard data for doctor panel
+const doctorDashboard = async (req, res) => {
+    try {
+        const { docId } = req.body;
+
+        if (mongoose.connection.readyState !== 1) {
+            return res.json({ 
+                success: true, 
+                dashData: { earnings: 0, appointments: 0, patients: 0, latestAppointments: [] } 
+            });
+        }
+
+        const appointments = await appointmentModel.find({ docId });
+
+        let earnings = 0;
+        appointments.forEach((item) => {
+            if (item.isCompleted || item.payment) {
+                earnings += item.amount;
+            }
+        });
+
+        let patients = [];
+        appointments.forEach((item) => {
+            if (!patients.includes(item.userId)) {
+                patients.push(item.userId);
+            }
+        });
+
+        const dashData = {
+            earnings,
+            appointments: appointments.length,
+            patients: patients.length,
+            latestAppointments: appointments.reverse().slice(0, 5)
+        };
+
+        res.json({ success: true, dashData });
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message });
+    }
+};
+
 // API to get doctor profile for doctor panel
 const doctorProfile = async (req, res) => {
     try {
@@ -136,6 +178,7 @@ export {
     appointmentsDoctor,
     appointmentCancel,
     appointmentComplete,
+    doctorDashboard,
     doctorProfile,
     updateDoctorProfile
 };
