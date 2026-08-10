@@ -24,8 +24,8 @@ const loginReceptionist = async (req, res) => {
 
         if (isMatch) {
             const token = jwt.sign({ id: receptionist._id }, process.env.JWT_SECRET || 'medicare_secret_key_super_secure_987654321');
-            return res.json({
-                success: true,
+            return res.json({ 
+                success: true, 
                 token,
                 name: receptionist.name,
                 email: receptionist.email
@@ -69,7 +69,7 @@ const getReceptionistDashboard = async (req, res) => {
     }
 };
 
-export const bookWalkInAppointment = async (req, res) => {
+const bookWalkInAppointment = async (req, res) => {
     try {
         const { patientId, doctorId, date, time } = req.body;
 
@@ -79,8 +79,6 @@ export const bookWalkInAppointment = async (req, res) => {
                 message: "Patient, doctor, date and time are required"
             });
         }
-
-        // Add your Appointment model/database logic here
 
         res.status(201).json({
             success: true,
@@ -97,5 +95,6 @@ export const bookWalkInAppointment = async (req, res) => {
 
 export {
     loginReceptionist,
-    getReceptionistDashboard
+    getReceptionistDashboard,
+    bookWalkInAppointment
 };

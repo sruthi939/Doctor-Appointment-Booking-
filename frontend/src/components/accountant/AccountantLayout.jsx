@@ -9,8 +9,7 @@ import {
     RotateCcw, 
     Settings, 
     LogOut, 
-    Calculator,
-    Bell
+    Calculator
 } from 'lucide-react';
 
 const AccountantLayout = ({ children }) => {
@@ -19,15 +18,24 @@ const AccountantLayout = ({ children }) => {
     const accountantUser = (() => {
         try {
             const saved = localStorage.getItem('accountant_user');
-            return saved ? JSON.parse(saved) : { name: 'Olivia Smith', email: 'accountant@medicare.com' };
+            if (saved) return JSON.parse(saved);
+            const savedEmail = localStorage.getItem('accountant_email');
+            const savedName = localStorage.getItem('accountant_name');
+            if (savedEmail || savedName) {
+                return { name: savedName || savedEmail.split('@')[0], email: savedEmail };
+            }
+            return { name: 'Accountant', email: '' };
         } catch (e) {
-            return { name: 'Olivia Smith', email: 'accountant@medicare.com' };
+            return { name: 'Accountant', email: '' };
         }
     })();
 
     const handleLogout = () => {
         localStorage.removeItem('accountant_token');
+        localStorage.removeItem('accountantToken');
         localStorage.removeItem('accountant_user');
+        localStorage.removeItem('accountant_name');
+        localStorage.removeItem('accountant_email');
         navigate('/accountant/logout-success');
     };
 
@@ -85,11 +93,11 @@ const AccountantLayout = ({ children }) => {
                 <div className='pt-4 border-t border-slate-800 space-y-3 mt-4'>
                     <div className='flex items-center gap-3 px-2'>
                         <div className='w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center font-bold text-amber-400 text-xs shrink-0'>
-                            {accountantUser.name ? accountantUser.name[0] : 'A'}
+                            {accountantUser.name ? accountantUser.name[0].toUpperCase() : 'A'}
                         </div>
                         <div className='overflow-hidden'>
                             <p className='text-xs font-bold text-white truncate'>{accountantUser.name}</p>
-                            <p className='text-[10px] text-slate-400 truncate'>{accountantUser.email}</p>
+                            <p className='text-[10px] text-slate-400 font-mono truncate'>{accountantUser.email}</p>
                         </div>
                     </div>
 

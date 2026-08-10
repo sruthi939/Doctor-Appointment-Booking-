@@ -34,6 +34,7 @@ const Login = () => {
                 if (data.success) {
                     setDToken(data.token)
                     localStorage.setItem('dToken', data.token)
+                    localStorage.setItem('doctor_email', email)
                     toast.success('Welcome, Doctor!')
                 } else {
                     toast.error(data.message)
@@ -42,8 +43,9 @@ const Login = () => {
                 const { data } = await axios.post(backendUrl + '/api/accountant/login', { email, password })
                 if (data.success) {
                     localStorage.setItem('accountantToken', data.token)
-                    localStorage.setItem('accountant_name', data.name || 'Accountant')
-                    toast.success('Welcome, Accountant!')
+                    localStorage.setItem('accountant_name', data.name || email.split('@')[0])
+                    localStorage.setItem('accountant_email', data.email || email)
+                    toast.success(`Welcome, ${data.name || 'Accountant'}!`)
                     window.location.reload()
                 } else {
                     toast.error(data.message)
@@ -52,8 +54,9 @@ const Login = () => {
                 const { data } = await axios.post(backendUrl + '/api/receptionist/login', { email, password })
                 if (data.success) {
                     localStorage.setItem('receptionistToken', data.token)
-                    localStorage.setItem('receptionist_name', data.name || 'Receptionist')
-                    toast.success('Welcome, Receptionist!')
+                    localStorage.setItem('receptionist_name', data.name || email.split('@')[0])
+                    localStorage.setItem('receptionist_email', data.email || email)
+                    toast.success(`Welcome, ${data.name || 'Receptionist'}!`)
                     window.location.reload()
                 } else {
                     toast.error(data.message)

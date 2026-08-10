@@ -2,11 +2,14 @@ import React, { useContext } from 'react'
 import { NavLink } from 'react-router-dom'
 import { AdminContext } from '../context/AdminContext'
 import { DoctorContext } from '../context/DoctorContext'
-import { LayoutDashboard, Calendar, UserPlus, Users, User, Calculator, UserCheck } from 'lucide-react'
+import { LayoutDashboard, Calendar, UserPlus, Users, User, Calculator, UserCheck, DollarSign } from 'lucide-react'
 
 const Sidebar = () => {
     const { aToken } = useContext(AdminContext)
     const { dToken } = useContext(DoctorContext)
+
+    const accountantToken = localStorage.getItem('accountantToken')
+    const receptionistToken = localStorage.getItem('receptionistToken')
 
     return (
         <div className='min-h-screen bg-white border-r border-slate-200 w-64 py-5 px-3 flex flex-col gap-2 shadow-sm'>
@@ -131,6 +134,40 @@ const Sidebar = () => {
                     >
                         <User className='w-5 h-5' />
                         <p className='hidden md:block text-sm'>Profile</p>
+                    </NavLink>
+                </ul>
+            )}
+
+            {accountantToken && (
+                <ul className='text-[#515151] font-medium space-y-1'>
+                    <NavLink
+                        to={'/accountant-dashboard'}
+                        className={({ isActive }) =>
+                            `flex items-center gap-3 py-3 px-4 rounded-xl cursor-pointer transition-all duration-200 ${isActive
+                                ? 'bg-[#F2F3FF] border-r-4 border-[#5F6FFF] text-[#5F6FFF] font-semibold'
+                                : 'hover:bg-slate-50 hover:text-slate-900'
+                            }`
+                        }
+                    >
+                        <LayoutDashboard className='w-5 h-5' />
+                        <p className='hidden md:block text-sm'>Finance Dashboard</p>
+                    </NavLink>
+                </ul>
+            )}
+
+            {receptionistToken && (
+                <ul className='text-[#515151] font-medium space-y-1'>
+                    <NavLink
+                        to={'/receptionist-dashboard'}
+                        className={({ isActive }) =>
+                            `flex items-center gap-3 py-3 px-4 rounded-xl cursor-pointer transition-all duration-200 ${isActive
+                                ? 'bg-[#F2F3FF] border-r-4 border-[#5F6FFF] text-[#5F6FFF] font-semibold'
+                                : 'hover:bg-slate-50 hover:text-slate-900'
+                            }`
+                        }
+                    >
+                        <LayoutDashboard className='w-5 h-5' />
+                        <p className='hidden md:block text-sm'>Front Desk Dashboard</p>
                     </NavLink>
                 </ul>
             )}
