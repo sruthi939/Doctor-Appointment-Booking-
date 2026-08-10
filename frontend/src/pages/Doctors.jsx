@@ -14,30 +14,29 @@ const Doctors = () => {
 
     const [filterDoc, setFilterDoc] = useState([]);
     const [searchQuery, setSearchQuery] = useState(searchQueryParam);
-    const [selectedSpeciality, setSelectedSpeciality] = useState(speciality || '');
+    const [selectedSpeciality, setSelectedSpeciality] = useState(speciality ? decodeURIComponent(speciality) : '');
 
     useEffect(() => {
-        if (speciality) {
-            setSelectedSpeciality(speciality);
-        }
+        setSelectedSpeciality(speciality ? decodeURIComponent(speciality) : '');
     }, [speciality]);
 
     const applyFilter = () => {
         let result = doctors;
 
         if (selectedSpeciality) {
-            result = result.filter(doc => 
-                doc.speciality.toLowerCase().includes(selectedSpeciality.toLowerCase()) ||
-                selectedSpeciality.toLowerCase().includes(doc.speciality.toLowerCase())
-            );
+            const selectedClean = selectedSpeciality.toLowerCase().trim();
+            result = result.filter(doc => {
+                const docSpecClean = (doc.speciality || '').toLowerCase().trim();
+                return docSpecClean === selectedClean || docSpecClean.includes(selectedClean) || selectedClean.includes(docSpecClean);
+            });
         }
 
         if (searchQuery.trim()) {
             const query = searchQuery.toLowerCase().trim();
             result = result.filter(doc =>
-                doc.name.toLowerCase().includes(query) ||
-                doc.speciality.toLowerCase().includes(query) ||
-                doc.about.toLowerCase().includes(query)
+                (doc.name || '').toLowerCase().includes(query) ||
+                (doc.speciality || '').toLowerCase().includes(query) ||
+                (doc.about || '').toLowerCase().includes(query)
             );
         }
 
@@ -54,7 +53,7 @@ const Doctors = () => {
             navigate('/doctors');
         } else {
             setSelectedSpeciality(specName);
-            navigate(`/doctors/${specName}`);
+            navigate(`/doctors/${encodeURIComponent(specName)}`);
         }
     };
 
@@ -73,7 +72,7 @@ const Doctors = () => {
                         </p>
                     </div>
                     <span className='text-xs font-semibold px-3 py-1.5 rounded-full bg-blue-50 text-[#5F6FFF] border border-blue-200 self-start md:self-auto'>
-                        Showing {filterDoc.length} Available Doctors
+                        Showing {filterDoc.length} {selectedSpeciality ? selectedSpeciality : 'Available'} Doctors
                     </span>
                 </div>
 
@@ -114,7 +113,7 @@ const Doctors = () => {
 
                         {specialityData.map((item, index) => {
                             const isSelected = selectedSpeciality.toLowerCase() === item.speciality.toLowerCase();
-                            const count = doctors.filter(d => d.speciality.toLowerCase().includes(item.speciality.toLowerCase())).length;
+                            const count = doctors.filter(d => (d.speciality || '').toLowerCase().includes(item.speciality.toLowerCase())).length;
 
                             return (
                                 <button
@@ -142,10 +141,12 @@ const Doctors = () => {
                 <div className='w-full flex-1'>
                     {filterDoc.length === 0 ? (
                         <div className='bg-white border border-slate-200 rounded-3xl p-12 text-center space-y-3 shadow-xs'>
-                            <p className='text-slate-500 text-base'>No doctors found matching your filters.</p>
+                            <p className='text-slate-500 text-base'>
+                                No doctors found for <span className='font-semibold text-slate-800'>{selectedSpeciality || searchQuery}</span>.
+                            </p>
                             <button
                                 onClick={() => { setSelectedSpeciality(''); setSearchQuery(''); navigate('/doctors'); }}
-                                className='px-6 py-2 bg-blue-50 text-[#5F6FFF] hover:bg-blue-100 border border-blue-200 rounded-xl text-xs font-semibold transition-colors'
+                                className='px-6 py-2 bg-blue-50 text-[#5F6FFF] hover:bg-blue-100 border border-blue-200 rounded-xl text-xs font-semibold transition-colors cursor-pointer'
                             >
                                 Reset Search Filters
                             </button>

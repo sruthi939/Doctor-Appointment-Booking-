@@ -13,7 +13,7 @@ const SpecialityMenu = () => {
                         key={index}
                         onClick={() => window.scrollTo(0, 0)}
                         className='flex flex-col items-center text-xs font-medium cursor-pointer flex-shrink-0 hover:-translate-y-2.5 transition-all duration-500 text-slate-700 hover:text-[#5F6FFF] group'
-                        to={`/doctors/${item.speciality}`}
+                        to={`/doctors/${encodeURIComponent(item.speciality)}`}
                     >
                         <div className='w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-blue-50/70 border border-blue-100 flex items-center justify-center p-3.5 mb-2 group-hover:bg-blue-100 group-hover:border-[#5F6FFF] transition-all duration-300 shadow-xs aspect-square shrink-0'>
                             <img
