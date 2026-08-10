@@ -1,34 +1,47 @@
-@import url('https://fonts.googleapis.com/css?family=Outfit:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
-@config "../tailwind.config.js";
 
 * {
-    font-family: Outline;
+    font-family: 'Outfit', sans-serif;
 }
 
 @theme {
-    --color-primary: #f43f5e;
-    --color-primary-dark: #e11d48;
-    --color-primary-light: #fff1f2;
+    --color-primary: #5F6FFF;
+    --color-primary-dark: #4C5BD4;
+    --color-primary-light: #F2F3FF;
     --grid-template-columns-auto: repeat(auto-fill, minmax(200px, 1fr));
 }
 
 html {
     scroll-behavior: smooth;
-    background-color: #0b0f19;
-    color: #f8fafc;
+    background-color: #F8F9FD;
+    color: #1e293b;
 }
 
 body {
-    background-color: #0b0f19;
-    color: #f8fafc;
+    background-color: #F8F9FD;
+    color: #1e293b;
     min-height: 100vh;
 }
 
 .active hr {
-    @apply block;
+    display: block;
 }
 
 ::-webkit-scrollbar {
-    display: none;
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
 }
