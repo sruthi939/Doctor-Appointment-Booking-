@@ -11,6 +11,8 @@ import Dashboard from './pages/admin/Dashboard.jsx';
 import AllAppointments from './pages/admin/AllAppointments.jsx';
 import AddDoctor from './pages/admin/AddDoctor.jsx';
 import DoctorsList from './pages/admin/DoctorsList.jsx';
+import AccountantsList from './pages/admin/AccountantsList.jsx';
+import ReceptionistsList from './pages/admin/ReceptionistsList.jsx';
 import DoctorDashboard from './pages/doctor/DoctorDashboard.jsx';
 import DoctorAppointments from './pages/doctor/DoctorAppointments.jsx';
 import DoctorProfile from './pages/doctor/DoctorProfile.jsx';
@@ -33,6 +35,8 @@ const App = () => {
             <Route path='/all-appointments' element={<AllAppointments />} />
             <Route path='/add-doctor' element={<AddDoctor />} />
             <Route path='/doctor-list' element={<DoctorsList />} />
+            <Route path='/accountants-list' element={<AccountantsList />} />
+            <Route path='/receptionists-list' element={<ReceptionistsList />} />
 
             {/* Doctor Routes */}
             <Route path='/doctor-dashboard' element={<DoctorDashboard />} />
