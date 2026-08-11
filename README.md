@@ -159,7 +159,7 @@ CLOUDINARY_SECRET_KEY=your_cloudinary_secret_key
 ``` 
 
 👩‍💻 Developed By
-Sruthi Alex
+Sruthi Alex (UI/UX Designing)
 
 ---
 
